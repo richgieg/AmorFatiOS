@@ -20,7 +20,7 @@ void console_set_text_color(uint8_t color) {
 }
 
 void console_print_at(uint8_t row, uint8_t col, const char * str) {
-    int pos = row * ROWS + col;
+    int pos = (row * COLUMNS * 2) + (col * 2);
     while (*str) {
         screen[pos] = *str;
         pos += 2;

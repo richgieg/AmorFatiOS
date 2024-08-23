@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "pic.h"
+#include "console.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -32,274 +33,209 @@ void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
 
 __attribute__((naked))
 void exception_handler_00(void) {
-    char *p = (char *)0xb8000;
-    p[160] = '0';
-    p[162] = '0';
+    console_print_at(1, 0, "00");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_01(void) {
-    char *p = (char *)0xb8000;
-    p[164] = '0';
-    p[166] = '1';
+    console_print_at(1, 2, "01");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_02(void) {
-    char *p = (char *)0xb8000;
-    p[168] = '0';
-    p[170] = '2';
+    console_print_at(1, 4, "02");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_03(void) {
-    char *p = (char *)0xb8000;
-    p[172] = '0';
-    p[174] = '3';
+    console_print_at(1, 6, "03");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_04(void) {
-    char *p = (char *)0xb8000;
-    p[176] = '0';
-    p[178] = '4';
+    console_print_at(1, 8, "04");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_05(void) {
-    char *p = (char *)0xb8000;
-    p[180] = '0';
-    p[182] = '5';
+    console_print_at(1, 10, "05");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_06(void) {
-    char *p = (char *)0xb8000;
-    p[184] = '0';
-    p[186] = '6';
+    console_print_at(1, 12, "06");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_07(void) {
-    char *p = (char *)0xb8000;
-    p[188] = '0';
-    p[190] = '7';
+    console_print_at(1, 14, "07");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_08(void) {
-    char *p = (char *)0xb8000;
-    p[192] = '0';
-    p[194] = '8';
+    console_print_at(1, 16, "08");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_09(void) {
-    char *p = (char *)0xb8000;
-    p[196] = '0';
-    p[198] = '9';
+    console_print_at(1, 18, "09");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_10(void) {
-    char *p = (char *)0xb8000;
-    p[200] = '1';
-    p[202] = '0';
+    console_print_at(1, 20, "10");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_11(void) {
-    char *p = (char *)0xb8000;
-    p[204] = '1';
-    p[206] = '1';
+    console_print_at(1, 22, "11");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_12(void) {
-    char *p = (char *)0xb8000;
-    p[208] = '1';
-    p[210] = '2';
+    console_print_at(1, 24, "12");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_13(void) {
-    char *p = (char *)0xb8000;
-    p[212] = '1';
-    p[214] = '3';
+    console_print_at(1, 26, "13");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_14(void) {
-    char *p = (char *)0xb8000;
-    p[216] = '1';
-    p[218] = '4';
+    console_print_at(1, 28, "14");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_15(void) {
-    char *p = (char *)0xb8000;
-    p[220] = '1';
-    p[222] = '5';
+    console_print_at(1, 30, "15");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_16(void) {
-    char *p = (char *)0xb8000;
-    p[224] = '1';
-    p[226] = '6';
+    console_print_at(1, 32, "16");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_17(void) {
-    char *p = (char *)0xb8000;
-    p[228] = '1';
-    p[230] = '7';
+    console_print_at(1, 34, "17");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_18(void) {
-    char *p = (char *)0xb8000;
-    p[232] = '1';
-    p[234] = '8';
+    console_print_at(1, 36, "18");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_19(void) {
-    char *p = (char *)0xb8000;
-    p[236] = '1';
-    p[238] = '9';
+    console_print_at(1, 38, "19");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_20(void) {
-    char *p = (char *)0xb8000;
-    p[240] = '2';
-    p[242] = '0';
+    console_print_at(1, 40, "20");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_21(void) {
-    char *p = (char *)0xb8000;
-    p[244] = '2';
-    p[246] = '1';
+    console_print_at(1, 42, "21");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_22(void) {
-    char *p = (char *)0xb8000;
-    p[248] = '2';
-    p[250] = '2';
+    console_print_at(1, 44, "22");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_23(void) {
-    char *p = (char *)0xb8000;
-    p[252] = '2';
-    p[254] = '3';
+    console_print_at(1, 46, "23");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_24(void) {
-    char *p = (char *)0xb8000;
-    p[256] = '2';
-    p[258] = '4';
+    console_print_at(1, 48, "24");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_25(void) {
-    char *p = (char *)0xb8000;
-    p[260] = '2';
-    p[262] = '5';
+    console_print_at(1, 50, "25");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_26(void) {
-    char *p = (char *)0xb8000;
-    p[264] = '2';
-    p[266] = '6';
+    console_print_at(1, 52, "26");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_27(void) {
-    char *p = (char *)0xb8000;
-    p[268] = '2';
-    p[270] = '7';
+    console_print_at(1, 54, "27");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_28(void) {
-    char *p = (char *)0xb8000;
-    p[272] = '2';
-    p[274] = '8';
+    console_print_at(1, 56, "28");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_29(void) {
-    char *p = (char *)0xb8000;
-    p[276] = '2';
-    p[278] = '9';
+    console_print_at(1, 58, "29");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_30(void) {
-    char *p = (char *)0xb8000;
-    p[280] = '3';
-    p[282] = '0';
+    console_print_at(1, 60, "30");
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_31(void) {
-    char *p = (char *)0xb8000;
-    p[284] = '3';
-    p[286] = '1';
+    console_print_at(1, 62, "31");
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void irq_handler_01(void) {
-    char *p = (char *)0xb8000;
-    p[288] = '#';
+    console_print_at(0, 79, "#");
     __asm__ volatile ("iret");
 }
 
