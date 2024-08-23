@@ -9,9 +9,9 @@ void _start(void) {
     console_set_text_color(15);
     console_print_at(0, 0, greeting);
 
-    init_idt();
+    idt_init();
     pic_init();
-    pic_unmask_irq(1);
+    pic_unmask_irq(1); // enable keyboard interrupts
 
     while (1) {
         __asm__("hlt");

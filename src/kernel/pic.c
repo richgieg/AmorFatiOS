@@ -60,7 +60,7 @@ void pic_init() {
     __asm__("sti");
 }
 
-/// Mask an IRQ by number (0-15)
+// Mask an IRQ by number (0-15)
 void pic_mask_irq(uint8_t num) {
     // Which PIC do we need to talk to?
     if (num < 8) {
@@ -81,7 +81,7 @@ void pic_mask_irq(uint8_t num) {
     }
 }
 
-/// Unmask an IRQ by number (0-15)
+// Unmask an IRQ by number (0-15)
 void pic_unmask_irq(uint8_t num) {
     // Which PIC do we need to talk to?
     if (num < 8) {
