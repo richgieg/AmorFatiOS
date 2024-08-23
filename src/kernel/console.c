@@ -19,8 +19,8 @@ void console_set_text_color(uint8_t color) {
     }
 }
 
-void console_print_at(uint8_t row, uint8_t col, const char * str) {
-    int pos = (row * COLUMNS * 2) + (col * 2);
+void console_print_at(const char * str, uint8_t x, uint8_t y) {
+    int pos = (y * COLUMNS * 2) + (x * 2);
     while (*str) {
         screen[pos] = *str;
         pos += 2;

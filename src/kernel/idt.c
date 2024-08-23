@@ -33,209 +33,209 @@ void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
 
 __attribute__((naked))
 void exception_handler_00(void) {
-    console_print_at(1, 0, "00");
+    console_print_at("00", 0, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_01(void) {
-    console_print_at(1, 2, "01");
+    console_print_at("01", 2, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_02(void) {
-    console_print_at(1, 4, "02");
+    console_print_at("02", 4, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_03(void) {
-    console_print_at(1, 6, "03");
+    console_print_at("03", 6, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_04(void) {
-    console_print_at(1, 8, "04");
+    console_print_at("04", 8, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_05(void) {
-    console_print_at(1, 10, "05");
+    console_print_at("05", 10, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_06(void) {
-    console_print_at(1, 12, "06");
+    console_print_at("06", 12, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_07(void) {
-    console_print_at(1, 14, "07");
+    console_print_at("07", 14, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_08(void) {
-    console_print_at(1, 16, "08");
+    console_print_at("08", 16, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_09(void) {
-    console_print_at(1, 18, "09");
+    console_print_at("09", 18, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_10(void) {
-    console_print_at(1, 20, "10");
+    console_print_at("10", 20, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_11(void) {
-    console_print_at(1, 22, "11");
+    console_print_at("11", 22, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_12(void) {
-    console_print_at(1, 24, "12");
+    console_print_at("12", 24, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_13(void) {
-    console_print_at(1, 26, "13");
+    console_print_at("13", 26, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_14(void) {
-    console_print_at(1, 28, "14");
+    console_print_at("14", 28, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_15(void) {
-    console_print_at(1, 30, "15");
+    console_print_at("15", 30, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_16(void) {
-    console_print_at(1, 32, "16");
+    console_print_at("16", 32, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_17(void) {
-    console_print_at(1, 34, "17");
+    console_print_at("17", 34, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_18(void) {
-    console_print_at(1, 36, "18");
+    console_print_at("18", 36, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_19(void) {
-    console_print_at(1, 38, "19");
+    console_print_at("19", 38, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_20(void) {
-    console_print_at(1, 40, "20");
+    console_print_at("20", 40, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_21(void) {
-    console_print_at(1, 42, "21");
+    console_print_at("21", 42, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_22(void) {
-    console_print_at(1, 44, "22");
+    console_print_at("22", 44, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_23(void) {
-    console_print_at(1, 46, "23");
+    console_print_at("23", 46, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_24(void) {
-    console_print_at(1, 48, "24");
+    console_print_at("24", 48, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_25(void) {
-    console_print_at(1, 50, "25");
+    console_print_at("25", 50, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_26(void) {
-    console_print_at(1, 52, "26");
+    console_print_at("26", 52, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_27(void) {
-    console_print_at(1, 54, "27");
+    console_print_at("27", 54, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_28(void) {
-    console_print_at(1, 56, "28");
+    console_print_at("28", 56, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_29(void) {
-    console_print_at(1, 58, "29");
+    console_print_at("29", 58, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_30(void) {
-    console_print_at(1, 60, "30");
+    console_print_at("30", 60, 1);
     __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void exception_handler_31(void) {
-    console_print_at(1, 62, "31");
+    console_print_at("31", 62, 1);
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void irq_handler_01(void) {
-    console_print_at(0, 79, "#");
+    console_print_at("#", 79, 0);
     __asm__ volatile ("iret");
 }
 
