@@ -1,4 +1,4 @@
-#include "init_idt.h"
+#include "idt.h"
 #include "pic.h"
 #include "console.h"
 
