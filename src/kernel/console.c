@@ -10,6 +10,7 @@ char *const screen = (char *)0xb8000;
 void console_init(void) {
     // Enable usage of all 16 background colors.
     // This ensures that attribute bit 7 is used for color instead of blink.
+    // https://www.reddit.com/r/osdev/comments/70fcig/blinking_text/
     __asm__(
         // Read I/O Address 0x03da to reset index/data flip-flop
         "mov dx, 0x03da\n"
@@ -29,7 +30,7 @@ void console_init(void) {
     );
 }
 
-void console_set_bg_color(uint8_t color) {
+void console_set_bg_color(enum console_color color) {
     for (int i = 0; i < ROWS * COLUMNS; i++) {
         char attributes = screen[i * 2 + 1];
         screen[i * 2 + 1] = (attributes & 0x0f) | (color << 4);
