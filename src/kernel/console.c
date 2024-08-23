@@ -1,9 +1,33 @@
+// Reference: https://en.wikipedia.org/wiki/VGA_text_mode
+
 #include "console.h"
 
 #define ROWS 25
 #define COLUMNS 80
 
 char *const screen = (char *)0xb8000;
+
+void console_init(void) {
+    // Enable usage of all 16 background colors.
+    // This ensures that attribute bit 7 is used for color instead of blink.
+    __asm__(
+        // Read I/O Address 0x03da to reset index/data flip-flop
+        "mov dx, 0x03da\n"
+        "in al, dx\n"
+        // Write index 0x30 to 0x03c0 to set register index to 0x30
+        "mov dx, 0x03c0\n"
+        "mov al, 0x30\n"
+        "out dx, al\n"
+        // Read from 0x03c1 to get register contents
+        "inc dx\n"
+        "in al, dx\n"
+        // Unset Bit 3 to disable Blink
+        "and al, 0xf7\n"
+        // Write to 0x03c0 to update register with changed value
+        "dec dx\n"
+        "out dx, al\n"
+    );
+}
 
 void console_set_bg_color(uint8_t color) {
     for (int i = 0; i < ROWS * COLUMNS; i++) {

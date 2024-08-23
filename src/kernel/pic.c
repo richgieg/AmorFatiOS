@@ -23,7 +23,7 @@
  * Initialize the PICs to pass IRQs starting at 0x20
  * Based on code from https://wiki.osdev.org/PIC
  */
-void pic_init() {
+void pic_init(void) {
     // Start initializing PICs
     outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();

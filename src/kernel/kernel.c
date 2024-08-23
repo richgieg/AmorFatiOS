@@ -5,6 +5,7 @@
 const char greeting[] = "AmorFatiOS v0.0.1";
 
 void _start(void) {
+    console_init();
     console_set_bg_color(3);
     console_set_text_color(15);
     console_print_at(greeting, 0, 0);
