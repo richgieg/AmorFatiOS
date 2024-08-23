@@ -1,0 +1,14 @@
+# Ensure bin directory exists.
+mkdir -p bin
+
+# Assemble the boot sector.
+nasm -f bin -o bin/boot src/boot/boot.s
+
+# Compile the kernel.
+gcc -m32 -ffreestanding -nostdlib -Wall -std=c11 -pedantic \
+    -Wl,-Trodata=0x21000 -Wl,-Ttext=0x22000 -o bin/kernel \
+    src/kernel/kernel.c
+
+# Write boot sector and kernel to virtual floppy disk file.
+sudo dd if=bin/boot of=bin/os.flp
+sudo dd if=bin/kernel of=bin/os.flp seek=1
