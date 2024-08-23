@@ -72,7 +72,7 @@ gdt_data:
 gdt_end:
 
 gdt_desc:
-    dw gdt_end - gdt
+    dw gdt_end - gdt - 1
     dd gdt
 
 ; Pad with zeroes as needed up to the 510-byte mark.
