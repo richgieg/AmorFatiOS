@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "pic.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -98,6 +99,7 @@ void exception_handler_08(void) {
     char *p = (char *)0xb8000;
     p[192] = '0';
     p[194] = '8';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -114,6 +116,7 @@ void exception_handler_10(void) {
     char *p = (char *)0xb8000;
     p[200] = '1';
     p[202] = '0';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -122,6 +125,7 @@ void exception_handler_11(void) {
     char *p = (char *)0xb8000;
     p[204] = '1';
     p[206] = '1';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -130,6 +134,7 @@ void exception_handler_12(void) {
     char *p = (char *)0xb8000;
     p[208] = '1';
     p[210] = '2';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -138,6 +143,7 @@ void exception_handler_13(void) {
     char *p = (char *)0xb8000;
     p[212] = '1';
     p[214] = '3';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -146,6 +152,7 @@ void exception_handler_14(void) {
     char *p = (char *)0xb8000;
     p[216] = '1';
     p[218] = '4';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -170,6 +177,7 @@ void exception_handler_17(void) {
     char *p = (char *)0xb8000;
     p[228] = '1';
     p[230] = '7';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -202,6 +210,7 @@ void exception_handler_21(void) {
     char *p = (char *)0xb8000;
     p[244] = '2';
     p[246] = '1';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -266,6 +275,7 @@ void exception_handler_29(void) {
     char *p = (char *)0xb8000;
     p[276] = '2';
     p[278] = '9';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -274,6 +284,7 @@ void exception_handler_30(void) {
     char *p = (char *)0xb8000;
     p[280] = '3';
     p[282] = '0';
+    __asm__ volatile ("add esp, 4"); // remove error code from stack
     __asm__ volatile ("iret");
 }
 
@@ -282,6 +293,13 @@ void exception_handler_31(void) {
     char *p = (char *)0xb8000;
     p[284] = '3';
     p[286] = '1';
+    __asm__ volatile ("iret");
+}
+
+__attribute__((naked))
+void irq_handler_01(void) {
+    char *p = (char *)0xb8000;
+    p[288] = '#';
     __asm__ volatile ("iret");
 }
 
@@ -321,7 +339,7 @@ void init_idt(void) {
     idt_set_descriptor(29, exception_handler_29, 0x8e);
     idt_set_descriptor(30, exception_handler_30, 0x8e);
     idt_set_descriptor(31, exception_handler_31, 0x8e);
+    idt_set_descriptor(IRQ1_INTERRUPT, irq_handler_01, 0x8e);
 
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
-    __asm__ volatile ("sti"); // enable interrupts
 }
