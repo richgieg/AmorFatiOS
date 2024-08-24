@@ -2,12 +2,13 @@
 #include "console.h"
 #include "port.h"
 #include "idt.h"
+#include "ps2.h"
 #include "pic.h"
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
     char *p = " ";
-    p[0] = inb(0x60);
+    p[0] = inb(PS2_DATA_PORT);
     console_print_at(p, 24, 2);
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC2_COMMAND, PIC_EOI);
