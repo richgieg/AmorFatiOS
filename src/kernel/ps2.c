@@ -99,33 +99,33 @@ void ps2_init(void) {
     // TODO: Handle result other than PS2_CONTROLLER_TEST_OK
 
     // Step 7: Determine If There Are 2 Channels
-    // outb(PS2_COMMAND_PORT, PS2_ENABLE_SECOND);
-    // outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
-    // wait_output_full();
-    // config = inb(PS2_DATA_PORT);
-    // s[0] = config;
-    // console_print_at(s, 3, 3);
+    outb(PS2_COMMAND_PORT, PS2_ENABLE_SECOND);
+    outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
+    wait_output_full();
+    config = inb(PS2_DATA_PORT);
+    s[0] = config;
+    console_print_at(s, 3, 3);
 
-    // if (!(config & PS2_CFG_SECOND_CLOCK)) {
-    //     outb(PS2_COMMAND_PORT, PS2_DISABLE_SECOND);
-    //     outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
-    //     wait_output_full();
-    //     config = inb(PS2_DATA_PORT);
-    //     s[0] = config;
-    //     console_print_at(s, 4, 3);
+    if (!(config & PS2_CFG_SECOND_CLOCK)) {
+        outb(PS2_COMMAND_PORT, PS2_DISABLE_SECOND);
+        outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
+        wait_output_full();
+        config = inb(PS2_DATA_PORT);
+        s[0] = config;
+        console_print_at(s, 4, 3);
 
-    //     // Clear bit to disable IRQs for port 2.
-    //     config &= ~PS2_CFG_SECOND_PORT;
-    //     // Clear bit to enable clock for port 2.
-    //     config &= ~PS2_CFG_SECOND_CLOCK;
+        // Clear bit to disable IRQs for port 2.
+        config &= ~PS2_CFG_SECOND_PORT;
+        // Clear bit to enable clock for port 2.
+        config &= ~PS2_CFG_SECOND_CLOCK;
 
-    //     s[0] = config;
-    //     console_print_at(s, 5, 3);
+        s[0] = config;
+        console_print_at(s, 5, 3);
 
-    //     outb(PS2_COMMAND_PORT, PS2_WRITE_CONFIG);
-    //     wait_input_clear();
-    //     outb(PS2_DATA_PORT, config);
-    // }
+        outb(PS2_COMMAND_PORT, PS2_WRITE_CONFIG);
+        wait_input_clear();
+        outb(PS2_DATA_PORT, config);
+    }
 
     // Step 8: Perform Interface Tests
     outb(PS2_COMMAND_PORT, PS2_TEST_FIRST);
@@ -138,30 +138,30 @@ void ps2_init(void) {
     }
     console_print_at(s, 6, 3);
 
-    // if (!(config & PS2_CFG_SECOND_CLOCK)) {
-    //     outb(PS2_COMMAND_PORT, PS2_TEST_SECOND);
-    //     wait_output_full();
-    //     result = inb(PS2_DATA_PORT);
-    //     if (result == PS2_PORT_TEST_OK) {
-    //         s[0] = 'Y';
-    //     } else {
-    //         s[0] = 'N';
-    //     }
-    //     console_print_at(s, 7, 3);
-    // }
+    if (!(config & PS2_CFG_SECOND_CLOCK)) {
+        outb(PS2_COMMAND_PORT, PS2_TEST_SECOND);
+        wait_output_full();
+        result = inb(PS2_DATA_PORT);
+        if (result == PS2_PORT_TEST_OK) {
+            s[0] = 'Y';
+        } else {
+            s[0] = 'N';
+        }
+        console_print_at(s, 7, 3);
+    }
 
     // Step 9: Enable Devices
     // TODO: Only enable devices that pass the previous test.
     outb(PS2_COMMAND_PORT, PS2_ENABLE_FIRST);
-    // outb(PS2_COMMAND_PORT, PS2_ENABLE_SECOND);
+    outb(PS2_COMMAND_PORT, PS2_ENABLE_SECOND);
     outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
     wait_output_full();
     config = inb(PS2_DATA_PORT);
 
     // Set bit to enable IRQs for port 1.
     config |= PS2_CFG_FIRST_PORT;
-    // // Set bit to enable IRQs for port 2.
-    // config |= PS2_CFG_SECOND_PORT;
+    // Set bit to enable IRQs for port 2.
+    config |= PS2_CFG_SECOND_PORT;
 
     s[0] = config;
     console_print_at(s, 8, 3);
@@ -180,27 +180,28 @@ void ps2_init(void) {
     uint8_t r2 = inb(PS2_DATA_PORT);
     if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
         s[0] = 'Y';
-        // wait_output_full();
-        // inb(PS2_DATA_PORT);
     } else {
         s[0] = 'N';
     }
     console_print_at(s, 9, 3);
 
-    // // Reset device at port 2:
-    // outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
-    // wait_input_clear();
-    // outb(PS2_DATA_PORT, PS2_DEV_RESET);
-    // wait_output_full();
-    // r1 = inb(PS2_DATA_PORT);
-    // wait_output_full();
-    // r2 = inb(PS2_DATA_PORT);
-    // if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
-    //     s[0] = 'Y';
-    //     // wait_output_full();
-    //     // inb(PS2_DATA_PORT);
-    // } else {
-    //     s[0] = 'N';
-    // }
-    // console_print_at(s, 10, 3);
+    // Reset device at port 2:
+    outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
+    wait_input_clear();
+    outb(PS2_DATA_PORT, PS2_DEV_RESET);
+    wait_output_full();
+    r1 = inb(PS2_DATA_PORT);
+    wait_output_full();
+    r2 = inb(PS2_DATA_PORT);
+    if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
+        s[0] = 'Y';
+    } else {
+        s[0] = 'N';
+    }
+    console_print_at(s, 10, 3);
+
+    // Step 11: Enable Scanning
+    outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
+    wait_input_clear();
+    outb(PS2_DATA_PORT, PS2_DEV_ENABLE_SCAN);
 }

@@ -4,7 +4,7 @@
 #include "timer.h"
 #include "ps2.h"
 #include "keyboard.h"
-// #include "mouse.h"
+#include "mouse.h"
 
 void kernel_init(void) {
     console_init();
@@ -16,7 +16,7 @@ void kernel_init(void) {
     timer_init();
     ps2_init();
     keyboard_init();
-    // mouse_init();
+    mouse_init();
 
     while (1) {
         __asm__("hlt");
