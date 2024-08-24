@@ -1,5 +1,6 @@
 // https://wiki.osdev.org/%228042%22_PS/2_Controller
 
+#include "ps2.h"
 #include "port.h"
 #include "console.h"
 

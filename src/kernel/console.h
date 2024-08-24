@@ -1,3 +1,6 @@
+#ifndef CONSOLE_H
+#define CONSOLE_H
+
 #include <stdint.h>
 
 enum console_color {
@@ -26,3 +29,5 @@ void console_print_at_color(
     const char * str, uint8_t x, uint8_t y, enum console_color bg_color,
     enum console_color text_color
 );
+
+#endif

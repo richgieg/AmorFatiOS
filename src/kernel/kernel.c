@@ -1,3 +1,4 @@
+#include "kernel.h"
 #include "console.h"
 #include "idt.h"
 #include "pic.h"

@@ -1,5 +1,8 @@
 // Source: https://curtsinger.cs.grinnell.edu/teaching/2022S/CSC395/kernel/keyboard.html
 
+#ifndef PIC_H
+#define PIC_H
+
 #include <stdint.h>
 
 // Ports to talk to PICs
@@ -39,3 +42,5 @@ void pic_mask_irq(uint8_t num);
 
 // Unmask an IRQ by number (0-15)
 void pic_unmask_irq(uint8_t num);
+
+#endif

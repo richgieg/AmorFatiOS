@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "idt.h"
 #include "console.h"
 
 #define IDT_MAX_DESCRIPTORS 256

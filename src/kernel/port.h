@@ -1,5 +1,8 @@
 // Source: https://curtsinger.cs.grinnell.edu/teaching/2022S/CSC395/kernel/keyboard.html
 
+#ifndef PORT_H
+#define PORT_H
+
 #include <stdint.h>
 
 // Standard port input/output operations
@@ -18,3 +21,5 @@ static inline uint8_t inb(uint16_t port) {
 static inline void io_wait(void) {
     outb(0x80, 0);
 }
+
+#endif
