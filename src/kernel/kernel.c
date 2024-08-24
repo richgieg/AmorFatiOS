@@ -11,7 +11,7 @@ void _start(void) {
     pic_init();
     pic_unmask_irq(0);
     pic_unmask_irq(1); // enable keyboard interrupts
-    // pic_unmask_irq(2);
+    pic_unmask_irq(2);
     // pic_unmask_irq(3);
     // pic_unmask_irq(4);
     // pic_unmask_irq(5);
@@ -21,7 +21,7 @@ void _start(void) {
     // pic_unmask_irq(9);
     // pic_unmask_irq(10);
     // pic_unmask_irq(11);
-    // pic_unmask_irq(12);
+    pic_unmask_irq(12);
     // pic_unmask_irq(13);
     // pic_unmask_irq(14);
     // pic_unmask_irq(15);
