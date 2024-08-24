@@ -1,6 +1,7 @@
 // Reference: https://en.wikipedia.org/wiki/VGA_text_mode
 
 #include "console.h"
+#include "port.h"
 
 #define ROWS 25
 #define COLUMNS 80
@@ -31,6 +32,9 @@ void console_init(void) {
         "dec dx\n"
         "out dx, al\n"
     );
+    // Disable the cursor.
+    outb(0x3d4, 0x0a);
+    outb(0x3d5, 0x20);
 }
 
 void console_clear(void) {
