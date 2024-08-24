@@ -11,7 +11,7 @@ static void interrupt_service_routine(void) {
     console_print_at(buf, 0, 2);
     buf[0]++;
     outb(0x20, 0x20); // send EOI command to primary PIC
-    __asm__ volatile ("iret");
+    __asm__("iret");
 }
 
 void timer_init(void) {

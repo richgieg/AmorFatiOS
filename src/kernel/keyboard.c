@@ -10,7 +10,7 @@ static void interrupt_service_routine(void) {
     p[0] = inb(0x60);
     console_print_at(p, 2, 2);
     outb(0x20, 0x20); // send EOI command to primary PIC
-    __asm__ volatile ("iret");
+    __asm__("iret");
 }
 
 void keyboard_init(void) {

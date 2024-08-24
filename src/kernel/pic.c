@@ -55,9 +55,6 @@ void pic_init(void) {
     // Mask all IRQs by default
     outb(PIC1_DATA, 0xFF);
     outb(PIC2_DATA, 0xFF);
-
-    // Enable interrupts
-    __asm__("sti");
 }
 
 // Mask an IRQ by number (0-15)
