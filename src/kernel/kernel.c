@@ -9,7 +9,7 @@ void _start(void) {
 
     idt_init();
     pic_init();
-    // pic_unmask_irq(0);
+    pic_unmask_irq(0);
     pic_unmask_irq(1); // enable keyboard interrupts
     // pic_unmask_irq(2);
     // pic_unmask_irq(3);

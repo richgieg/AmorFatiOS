@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "pic.h"
+#include "port.h"
 #include "console.h"
 
 #define IDT_MAX_DESCRIPTORS 256
@@ -236,12 +237,14 @@ void exception_handler_31(void) {
 __attribute__((naked))
 void irq_handler_00(void) {
     console_print_at("00", 0, 2);
+    outb(0x20, 0x20); // send EOI command to primary PIC
     __asm__ volatile ("iret");
 }
 
 __attribute__((naked))
 void irq_handler_01(void) {
     console_print_at("01", 2, 2);
+    outb(0x20, 0x20); // send EOI command to primary PIC
     __asm__ volatile ("iret");
 }
 
