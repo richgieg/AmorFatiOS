@@ -1,6 +1,7 @@
+#include "console.h"
 #include "idt.h"
 #include "pic.h"
-#include "console.h"
+#include "timer.h"
 #include "keyboard.h"
 #include "mouse.h"
 
@@ -11,8 +12,7 @@ void kernel_init(void) {
 
     idt_init();
     pic_init();
-    pic_unmask_irq(0);
-
+    timer_init();
     keyboard_init();
     mouse_init();
 

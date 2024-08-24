@@ -2,5 +2,5 @@
 #include "pic.h"
 
 void keyboard_init(void) {
-    pic_unmask_irq(1); // enable keyboard interrupts
+    pic_unmask_irq(1);
 }
