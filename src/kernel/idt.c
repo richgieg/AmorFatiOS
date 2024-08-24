@@ -1,6 +1,4 @@
 #include <stdint.h>
-#include "pic.h"
-#include "port.h"
 #include "console.h"
 
 #define IDT_MAX_DESCRIPTORS 256
@@ -234,88 +232,6 @@ void exception_handler_31(void) {
     __asm__ volatile ("iret");
 }
 
-char buf[1] = "";
-
-__attribute__((naked))
-void irq_handler_00(void) {
-    console_print_at(buf, 0, 2);
-    buf[0]++;
-    outb(0x20, 0x20); // send EOI command to primary PIC
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_03(void) {
-    console_print_at("03", 6, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_04(void) {
-    console_print_at("04", 8, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_05(void) {
-    console_print_at("05", 10, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_06(void) {
-    console_print_at("06", 12, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_07(void) {
-    console_print_at("07", 14, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_08(void) {
-    console_print_at("08", 16, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_09(void) {
-    console_print_at("09", 18, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_10(void) {
-    console_print_at("10", 20, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_11(void) {
-    console_print_at("11", 22, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_13(void) {
-    console_print_at("13", 26, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_14(void) {
-    console_print_at("14", 28, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_15(void) {
-    console_print_at("15", 30, 2);
-    __asm__ volatile ("iret");
-}
-
 void idt_init(void) {
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
@@ -352,19 +268,6 @@ void idt_init(void) {
     idt_set_descriptor(29, exception_handler_29, 0x8e);
     idt_set_descriptor(30, exception_handler_30, 0x8e);
     idt_set_descriptor(31, exception_handler_31, 0x8e);
-    idt_set_descriptor(IRQ0_INTERRUPT, irq_handler_00, 0x8e);
-    idt_set_descriptor(IRQ3_INTERRUPT, irq_handler_03, 0x8e);
-    idt_set_descriptor(IRQ4_INTERRUPT, irq_handler_04, 0x8e);
-    idt_set_descriptor(IRQ5_INTERRUPT, irq_handler_05, 0x8e);
-    idt_set_descriptor(IRQ6_INTERRUPT, irq_handler_06, 0x8e);
-    idt_set_descriptor(IRQ7_INTERRUPT, irq_handler_07, 0x8e);
-    idt_set_descriptor(IRQ8_INTERRUPT, irq_handler_08, 0x8e);
-    idt_set_descriptor(IRQ9_INTERRUPT, irq_handler_09, 0x8e);
-    idt_set_descriptor(IRQ10_INTERRUPT, irq_handler_10, 0x8e);
-    idt_set_descriptor(IRQ11_INTERRUPT, irq_handler_11, 0x8e);
-    idt_set_descriptor(IRQ13_INTERRUPT, irq_handler_13, 0x8e);
-    idt_set_descriptor(IRQ14_INTERRUPT, irq_handler_14, 0x8e);
-    idt_set_descriptor(IRQ15_INTERRUPT, irq_handler_15, 0x8e);
 
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
 }

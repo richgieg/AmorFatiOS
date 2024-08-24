@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "init_idt.h": "c"
+        "init_idt.h": "c",
+        "port.h": "c"
     }
 }
