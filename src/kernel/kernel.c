@@ -8,7 +8,6 @@
 #define DATA_PORT 0x60
 
 #define ENABLE_AUX_PORT 0xa8
-#define ENABLE_KBD_PORT 0xae
 #define WRITE_AUX_DEVICE 0xd4
 #define RESET_MOUSE 0xff
 #define ENABLE_DATA 0xf4
@@ -32,7 +31,6 @@ void kernel_init(void) {
     pic_unmask_irq(9);
     pic_unmask_irq(10);
     pic_unmask_irq(11);
-    pic_unmask_irq(12);
     pic_unmask_irq(13);
     pic_unmask_irq(14);
     pic_unmask_irq(15);
@@ -57,6 +55,8 @@ void kernel_init(void) {
 
     while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
     outb(DATA_PORT, ENABLE_DATA);
+
+    pic_unmask_irq(12);
 
     while (1) {
         __asm__("hlt");
