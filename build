@@ -12,6 +12,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -Wall -std=c11 \
     src/kernel/console.c \
     src/kernel/idt.c \
     src/kernel/pic.c \
+    src/kernel/keyboard.c \
     src/kernel/mouse.c
 
 # Write boot sector and kernel to virtual floppy disk file.

@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "pic.h"
 #include "console.h"
+#include "keyboard.h"
 #include "mouse.h"
 
 void kernel_init(void) {
@@ -11,8 +12,8 @@ void kernel_init(void) {
     idt_init();
     pic_init();
     pic_unmask_irq(0);
-    pic_unmask_irq(1); // enable keyboard interrupts
 
+    keyboard_init();
     mouse_init();
 
     while (1) {
