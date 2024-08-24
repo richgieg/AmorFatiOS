@@ -245,15 +245,6 @@ void irq_handler_00(void) {
 }
 
 __attribute__((naked))
-void irq_handler_01(void) {
-    char *p = " ";
-    p[0] = inb(0x60);
-    console_print_at(p, 2, 2);
-    outb(0x20, 0x20); // send EOI command to primary PIC
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
 void irq_handler_02(void) {
     console_print_at("02", 4, 2);
     __asm__ volatile ("iret");
@@ -378,7 +369,6 @@ void idt_init(void) {
     idt_set_descriptor(30, exception_handler_30, 0x8e);
     idt_set_descriptor(31, exception_handler_31, 0x8e);
     idt_set_descriptor(IRQ0_INTERRUPT, irq_handler_00, 0x8e);
-    idt_set_descriptor(IRQ1_INTERRUPT, irq_handler_01, 0x8e);
     idt_set_descriptor(IRQ2_INTERRUPT, irq_handler_02, 0x8e);
     idt_set_descriptor(IRQ3_INTERRUPT, irq_handler_03, 0x8e);
     idt_set_descriptor(IRQ4_INTERRUPT, irq_handler_04, 0x8e);

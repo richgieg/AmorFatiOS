@@ -31,11 +31,11 @@
 #define IRQ14_INTERRUPT 0x2e
 #define IRQ15_INTERRUPT 0x2f
 
-/// Initialize the PICs to pass IRQs starting at 0x20
+// Initialize the PICs to pass IRQs starting at 0x20
 void pic_init();
 
-/// Mask an IRQ by number (0-15)
+// Mask an IRQ by number (0-15)
 void pic_mask_irq(uint8_t num);
 
-/// Unmask an IRQ by number (0-15)
+// Unmask an IRQ by number (0-15)
 void pic_unmask_irq(uint8_t num);
