@@ -5,7 +5,7 @@
 #include "pic.h"
 
 __attribute__((naked))
-void interrupt_service_routine(void) {
+static void interrupt_service_routine(void) {
     char *p = " ";
     p[0] = inb(0x60);
     console_print_at(p, 2, 2);

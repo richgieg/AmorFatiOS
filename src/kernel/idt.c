@@ -245,12 +245,6 @@ void irq_handler_00(void) {
 }
 
 __attribute__((naked))
-void irq_handler_02(void) {
-    console_print_at("02", 4, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
 void irq_handler_03(void) {
     console_print_at("03", 6, 2);
     __asm__ volatile ("iret");
@@ -301,16 +295,6 @@ void irq_handler_10(void) {
 __attribute__((naked))
 void irq_handler_11(void) {
     console_print_at("11", 22, 2);
-    __asm__ volatile ("iret");
-}
-
-__attribute__((naked))
-void irq_handler_12(void) {
-    char *p = " ";
-    p[0] = inb(0x60);
-    console_print_at(p, 24, 2);
-    outb(0x20, 0x20); // send EOI command to primary PIC
-    outb(0xa0, 0x20); // send EOI command to primary PIC
     __asm__ volatile ("iret");
 }
 
@@ -369,7 +353,6 @@ void idt_init(void) {
     idt_set_descriptor(30, exception_handler_30, 0x8e);
     idt_set_descriptor(31, exception_handler_31, 0x8e);
     idt_set_descriptor(IRQ0_INTERRUPT, irq_handler_00, 0x8e);
-    idt_set_descriptor(IRQ2_INTERRUPT, irq_handler_02, 0x8e);
     idt_set_descriptor(IRQ3_INTERRUPT, irq_handler_03, 0x8e);
     idt_set_descriptor(IRQ4_INTERRUPT, irq_handler_04, 0x8e);
     idt_set_descriptor(IRQ5_INTERRUPT, irq_handler_05, 0x8e);
@@ -379,7 +362,6 @@ void idt_init(void) {
     idt_set_descriptor(IRQ9_INTERRUPT, irq_handler_09, 0x8e);
     idt_set_descriptor(IRQ10_INTERRUPT, irq_handler_10, 0x8e);
     idt_set_descriptor(IRQ11_INTERRUPT, irq_handler_11, 0x8e);
-    idt_set_descriptor(IRQ12_INTERRUPT, irq_handler_12, 0x8e);
     idt_set_descriptor(IRQ13_INTERRUPT, irq_handler_13, 0x8e);
     idt_set_descriptor(IRQ14_INTERRUPT, irq_handler_14, 0x8e);
     idt_set_descriptor(IRQ15_INTERRUPT, irq_handler_15, 0x8e);
