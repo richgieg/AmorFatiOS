@@ -2,13 +2,10 @@
 #include "pic.h"
 #include "console.h"
 
-const char greeting[] = "AmorFatiOS v0.0.1";
-
 void _start(void) {
     console_init();
-    console_set_bg_color(CONSOLE_COLOR_CYAN);
-    console_set_text_color(CONSOLE_COLOR_BRIGHT_WHITE);
-    console_print_at(greeting, 0, 0);
+    console_clear();
+    console_print_at("AmorFatiOS v0.0.1", 0, 0);
 
     idt_init();
     pic_init();

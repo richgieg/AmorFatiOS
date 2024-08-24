@@ -7,6 +7,9 @@
 
 char *const screen = (char *)0xb8000;
 
+enum console_color bg_color = CONSOLE_COLOR_CYAN;
+enum console_color text_color = CONSOLE_COLOR_BRIGHT_WHITE;
+
 void console_init(void) {
     // Enable usage of all 16 background colors.
     // This ensures that attribute bit 7 is used for color instead of blink.
@@ -45,10 +48,19 @@ void console_set_text_color(uint8_t color) {
 }
 
 void console_print_at(const char * str, uint8_t x, uint8_t y) {
+    uint8_t attributes = (bg_color << 4) | (text_color);
     int pos = (y * COLUMNS * 2) + (x * 2);
     while (*str) {
-        screen[pos] = *str;
-        pos += 2;
+        screen[pos++] = *str;
+        screen[pos++] = attributes;
         str++;
+    }
+}
+
+void console_clear(void) {
+    uint8_t attributes = (bg_color << 4) | (text_color);
+    for (int i = 0; i < ROWS * COLUMNS; i++) {
+        screen[i * 2] = ' ';
+        screen[i * 2 + 1] = attributes;
     }
 }
