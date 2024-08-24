@@ -1,6 +1,15 @@
 [bits 16]
 [org 0x7c00]
 
+; Use 80x25 VGA text mode.
+mov ax, 0x0003
+int 0x10
+
+; Uncomment to change font to allow for 80x50.
+; mov ax, 0x1112
+; mov bl, 0
+; int 0x10
+
 ; Copy the first 17 sectors of kernel image from floppy to 0x20000.
 mov bx, 0x2000      ; segment location to read into
 mov es, bx
