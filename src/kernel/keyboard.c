@@ -22,22 +22,22 @@ static void interrupt_service_routine(void) {
 }
 
 void keyboard_init(void) {
-    while (inb(STATUS_PORT) & 2); // wait_input_clear
-    outb(COMMAND_PORT, ENABLE_KBD_PORT);
+    // while (inb(STATUS_PORT) & 2); // wait_input_clear
+    // outb(COMMAND_PORT, ENABLE_KBD_PORT);
 
-    while (inb(STATUS_PORT) & 2); // wait_input_clear
-    outb(DATA_PORT, RESET_KBD);
+    // while (inb(STATUS_PORT) & 2); // wait_input_clear
+    // outb(DATA_PORT, RESET_KBD);
 
-    // Read ACK (0xfa)
-    while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
-    inb(DATA_PORT);
+    // // Read ACK (0xfa)
+    // while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
+    // inb(DATA_PORT);
 
-    // Read self-test pass (0xaa)
-    while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
-    inb(DATA_PORT);
+    // // Read self-test pass (0xaa)
+    // while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
+    // inb(DATA_PORT);
 
-    while (inb(STATUS_PORT) & 2); // wait_input_clear
-    outb(DATA_PORT, ENABLE_SCANNING);
+    // while (inb(STATUS_PORT) & 2); // wait_input_clear
+    // outb(DATA_PORT, ENABLE_SCANNING);
 
     idt_set_descriptor(IRQ1_INTERRUPT, interrupt_service_routine, 0x8e);
     pic_unmask_irq(1);

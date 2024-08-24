@@ -17,6 +17,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -Wall -std=c11 \
     src/kernel/console.c \
     src/kernel/idt.c \
     src/kernel/pic.c \
+    src/kernel/ps2.c \
     src/kernel/timer.c \
     src/kernel/keyboard.c \
     src/kernel/mouse.c
