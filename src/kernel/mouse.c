@@ -18,8 +18,8 @@ static void interrupt_service_routine(void) {
     char *p = " ";
     p[0] = inb(0x60);
     console_print_at(p, 24, 2);
-    outb(0x20, 0x20); // send EOI command to primary PIC
-    outb(0xa0, 0x20); // send EOI command to primary PIC
+    outb(PIC1_COMMAND, PIC_EOI);
+    outb(PIC2_COMMAND, PIC_EOI);
     __asm__("iret");
 }
 

@@ -10,7 +10,7 @@ __attribute__((naked))
 static void interrupt_service_routine(void) {
     console_print_at(buf, 0, 2);
     buf[0]++;
-    outb(0x20, 0x20); // send EOI command to primary PIC
+    outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
 

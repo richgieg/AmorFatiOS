@@ -17,7 +17,7 @@ static void interrupt_service_routine(void) {
     char *p = " ";
     p[0] = inb(0x60);
     console_print_at(p, 2, 2);
-    outb(0x20, 0x20); // send EOI command to primary PIC
+    outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
 
