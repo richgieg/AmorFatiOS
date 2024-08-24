@@ -35,25 +35,25 @@ void kernel_init(void) {
     pic_unmask_irq(14);
     pic_unmask_irq(15);
 
-    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    while (inb(STATUS_PORT) & 2); // wait_input_clear
     outb(COMMAND_PORT, ENABLE_AUX_PORT);
 
-    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    while (inb(STATUS_PORT) & 2); // wait_input_clear
     outb(COMMAND_PORT, WRITE_AUX_DEVICE);
 
-    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    while (inb(STATUS_PORT) & 2); // wait_input_clear
     outb(DATA_PORT, RESET_MOUSE);
 
-    while ((inb(STATUS_PORT) & 1) != 1); // wait_output_full
+    while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
     inb(DATA_PORT);
 
-    while ((inb(STATUS_PORT) & 1) != 1); // wait_output_full
+    while ((inb(STATUS_PORT) & 1) == 0); // wait_output_full
     inb(DATA_PORT);
 
-    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    while (inb(STATUS_PORT) & 2); // wait_input_clear
     outb(COMMAND_PORT, WRITE_AUX_DEVICE);
 
-    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    while (inb(STATUS_PORT) & 2); // wait_input_clear
     outb(DATA_PORT, ENABLE_DATA);
 
     pic_unmask_irq(12);
