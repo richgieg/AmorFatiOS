@@ -240,6 +240,9 @@ __attribute__((naked))
 void irq_handler_00(void) {
     console_print_at(buf, 0, 2);
     buf[0]++;
+    char *p = " ";
+    p[0] = inb(0x60);
+    console_print_at(p, 1, 2);
     outb(0x20, 0x20); // send EOI command to primary PIC
     __asm__ volatile ("iret");
 }
