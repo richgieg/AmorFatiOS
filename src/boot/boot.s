@@ -32,6 +32,16 @@ mov dh, 1
 mov dl, 0
 int 0x13
 
+; Copy the next 18 sectors of kernel image from floppy.
+mov bx, 0x4600
+mov ah, 2
+mov al, 18
+mov ch, 1
+mov cl, 1
+mov dh, 0
+mov dl, 0
+int 0x13
+
 ; Disable interrupts.
 cli
 
@@ -58,7 +68,7 @@ mov ss, ax
 mov esp, 0x90000
 
 ; Jump to the kernel entry point.
-jmp 0x22000
+jmp 0x21000
 
 ; Define the global descriptor table.
 gdt:
