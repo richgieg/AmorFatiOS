@@ -234,9 +234,12 @@ void exception_handler_31(void) {
     __asm__ volatile ("iret");
 }
 
+char buf[1] = "";
+
 __attribute__((naked))
 void irq_handler_00(void) {
-    console_print_at("00", 0, 2);
+    console_print_at(buf, 0, 2);
+    buf[0]++;
     outb(0x20, 0x20); // send EOI command to primary PIC
     __asm__ volatile ("iret");
 }
