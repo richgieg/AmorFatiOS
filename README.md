@@ -24,7 +24,7 @@ sudo apt install nasm
 To build the project, run:
 
 ```
-./build
+./build.sh
 ```
 
 The build script will generate an `os.flp` file in the `bin` directory. This
