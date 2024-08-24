@@ -33,34 +33,27 @@ void console_init(void) {
     );
 }
 
-void console_set_bg_color(enum console_color color) {
+void console_clear(void) {
+    uint8_t attributes = (bg_color << 4) | (text_color);
     for (int i = 0; i < ROWS * COLUMNS; i++) {
-        char attributes = screen[i * 2 + 1];
-        screen[i * 2 + 1] = (attributes & 0x0f) | (color << 4);
-    }
-}
-
-void console_set_text_color(uint8_t color) {
-    for (int i = 0; i < ROWS * COLUMNS; i++) {
-        char attributes = screen[i * 2 + 1];
-        screen[i * 2 + 1] = (attributes & 0xf0) | (color & 0x0f);
+        screen[i * 2] = ' ';
+        screen[i * 2 + 1] = attributes;
     }
 }
 
 void console_print_at(const char * str, uint8_t x, uint8_t y) {
+    console_print_at_color(str, x, y, bg_color, text_color);
+}
+
+void console_print_at_color(
+    const char * str, uint8_t x, uint8_t y, enum console_color bg_color,
+    enum console_color text_color
+) {
     uint8_t attributes = (bg_color << 4) | (text_color);
     int pos = (y * COLUMNS * 2) + (x * 2);
     while (*str) {
         screen[pos++] = *str;
         screen[pos++] = attributes;
         str++;
-    }
-}
-
-void console_clear(void) {
-    uint8_t attributes = (bg_color << 4) | (text_color);
-    for (int i = 0; i < ROWS * COLUMNS; i++) {
-        screen[i * 2] = ' ';
-        screen[i * 2 + 1] = attributes;
     }
 }
