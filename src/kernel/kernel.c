@@ -3,6 +3,16 @@
 #include "console.h"
 #include "port.h"
 
+#define STATUS_PORT 0x64
+#define COMMAND_PORT 0x64
+#define DATA_PORT 0x60
+
+#define ENABLE_AUX_PORT 0xa8
+#define ENABLE_KBD_PORT 0xae
+#define WRITE_AUX_DEVICE 0xd4
+#define RESET_MOUSE 0xff
+#define ENABLE_DATA 0xf4
+
 void kernel_init(void) {
     console_init();
     console_clear();
@@ -27,12 +37,26 @@ void kernel_init(void) {
     pic_unmask_irq(14);
     pic_unmask_irq(15);
 
-    // outb(0x64, 0x20);
-    // uint8_t status = inb(0x64);
-    // status &= 0xdf;
-    // status |= 0x02;
-    // outb(0x64, 0x60);
-    // outb(0x60, status);
+    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    outb(COMMAND_PORT, ENABLE_AUX_PORT);
+
+    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    outb(COMMAND_PORT, WRITE_AUX_DEVICE);
+
+    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    outb(DATA_PORT, RESET_MOUSE);
+
+    while ((inb(STATUS_PORT) & 1) != 1); // wait_output_full
+    inb(DATA_PORT);
+
+    while ((inb(STATUS_PORT) & 1) != 1); // wait_output_full
+    inb(DATA_PORT);
+
+    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    outb(COMMAND_PORT, WRITE_AUX_DEVICE);
+
+    while ((inb(STATUS_PORT) & 2) != 0); // wait_input_clear
+    outb(DATA_PORT, ENABLE_DATA);
 
     while (1) {
         __asm__("hlt");
