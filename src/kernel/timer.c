@@ -8,7 +8,7 @@ char counter = 0;
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    vga_putc_at(counter, 0, 2);
+    vga_putb_at(counter, 0, 2);
     counter++;
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
