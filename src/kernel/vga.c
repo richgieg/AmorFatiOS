@@ -7,6 +7,8 @@
 #define ROWS 25
 #define COLUMNS 80
 
+const char hex_digits[] = "0123456789ABCDEF";
+
 enum vga_color bg_color = VGA_COLOR_CYAN;
 enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
 
@@ -65,86 +67,82 @@ void vga_clear(void) {
 }
 
 void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
-    char hexcodes[] = "0123456789ABCDEF";
     char str[3];
     str[2] = '\0';
-    str[1] = hexcodes[b & 0xf];
+    str[1] = hex_digits[b & 0xf];
     b >>= 4;
-    str[0] = hexcodes[b & 0xf];
+    str[0] = hex_digits[b & 0xf];
     vga_puts_at(str, x, y);
 }
 
 void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
-    char hexcodes[] = "0123456789ABCDEF";
     char str[5];
     str[4] = '\0';
-    str[3] = hexcodes[w & 0xf];
+    str[3] = hex_digits[w & 0xf];
     w >>= 4;
-    str[2] = hexcodes[w & 0xf];
+    str[2] = hex_digits[w & 0xf];
     w >>= 4;
-    str[1] = hexcodes[w & 0xf];
+    str[1] = hex_digits[w & 0xf];
     w >>= 4;
-    str[0] = hexcodes[w & 0xf];
+    str[0] = hex_digits[w & 0xf];
     vga_puts_at(str, x, y);
 }
 
 void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
-    char hexcodes[] = "0123456789ABCDEF";
     char str[9];
     str[8] = '\0';
-    str[7] = hexcodes[dw & 0xf];
+    str[7] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[6] = hexcodes[dw & 0xf];
+    str[6] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[5] = hexcodes[dw & 0xf];
+    str[5] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[4] = hexcodes[dw & 0xf];
+    str[4] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[3] = hexcodes[dw & 0xf];
+    str[3] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[2] = hexcodes[dw & 0xf];
+    str[2] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[1] = hexcodes[dw & 0xf];
+    str[1] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[0] = hexcodes[dw & 0xf];
+    str[0] = hex_digits[dw & 0xf];
     vga_puts_at(str, x, y);
 }
 
 void vga_putqw_at(uint64_t dw, uint8_t x, uint8_t y) {
-    char hexcodes[] = "0123456789ABCDEF";
     char str[17];
     str[16] = '\0';
-    str[15] = hexcodes[dw & 0xf];
+    str[15] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[14] = hexcodes[dw & 0xf];
+    str[14] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[13] = hexcodes[dw & 0xf];
+    str[13] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[12] = hexcodes[dw & 0xf];
+    str[12] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[11] = hexcodes[dw & 0xf];
+    str[11] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[10] = hexcodes[dw & 0xf];
+    str[10] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[9] = hexcodes[dw & 0xf];
+    str[9] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[8] = hexcodes[dw & 0xf];
+    str[8] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[7] = hexcodes[dw & 0xf];
+    str[7] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[6] = hexcodes[dw & 0xf];
+    str[6] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[5] = hexcodes[dw & 0xf];
+    str[5] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[4] = hexcodes[dw & 0xf];
+    str[4] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[3] = hexcodes[dw & 0xf];
+    str[3] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[2] = hexcodes[dw & 0xf];
+    str[2] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[1] = hexcodes[dw & 0xf];
+    str[1] = hex_digits[dw & 0xf];
     dw >>= 4;
-    str[0] = hexcodes[dw & 0xf];
+    str[0] = hex_digits[dw & 0xf];
     vga_puts_at(str, x, y);
 }
 
