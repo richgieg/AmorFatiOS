@@ -9,9 +9,6 @@
 
 void kernel_init(void) {
     console_init();
-    console_clear();
-    console_print_at("AmorFatiOS v0.0.1", 0, 0);
-
     idt_init();
     pic_init();
     timer_init();
@@ -19,6 +16,10 @@ void kernel_init(void) {
     keyboard_init();
     mouse_init();
 
+    console_print_at("AmorFatiOS v0.0.1", 0, 0);
+}
+
+void kernel_idle(void) {
     while (1) {
         __asm__("hlt");
     }

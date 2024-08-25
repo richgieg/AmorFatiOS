@@ -30,6 +30,8 @@ void console_init(void) {
     // Disable the cursor.
     outb(0x3d4, 0x0a);
     outb(0x3d5, 0x20);
+
+    console_clear();
 }
 
 void console_clear(void) {
