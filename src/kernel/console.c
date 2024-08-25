@@ -42,12 +42,12 @@ void console_clear(void) {
     }
 }
 
-void console_print_at(const char * str, uint8_t x, uint8_t y) {
+void console_print_at(const char *str, uint8_t x, uint8_t y) {
     console_print_at_color(str, x, y, bg_color, text_color);
 }
 
 void console_print_at_color(
-    const char * str, uint8_t x, uint8_t y, enum console_color bg_color,
+    const char *str, uint8_t x, uint8_t y, enum console_color bg_color,
     enum console_color text_color
 ) {
     uint8_t attributes = (bg_color << 4) | (text_color);
