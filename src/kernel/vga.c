@@ -67,9 +67,84 @@ void vga_clear(void) {
 void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
     char hexcodes[] = "0123456789ABCDEF";
     char str[3];
-    str[0] = hexcodes[b >> 4 & 0xf];
-    str[1] = hexcodes[b & 0xf];
     str[2] = '\0';
+    str[1] = hexcodes[b & 0xf];
+    b >>= 4;
+    str[0] = hexcodes[b & 0xf];
+    vga_puts_at(str, x, y);
+}
+
+void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
+    char hexcodes[] = "0123456789ABCDEF";
+    char str[5];
+    str[4] = '\0';
+    str[3] = hexcodes[w & 0xf];
+    w >>= 4;
+    str[2] = hexcodes[w & 0xf];
+    w >>= 4;
+    str[1] = hexcodes[w & 0xf];
+    w >>= 4;
+    str[0] = hexcodes[w & 0xf];
+    vga_puts_at(str, x, y);
+}
+
+void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
+    char hexcodes[] = "0123456789ABCDEF";
+    char str[9];
+    str[8] = '\0';
+    str[7] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[6] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[5] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[4] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[3] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[2] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[1] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[0] = hexcodes[dw & 0xf];
+    vga_puts_at(str, x, y);
+}
+
+void vga_putqw_at(uint64_t dw, uint8_t x, uint8_t y) {
+    char hexcodes[] = "0123456789ABCDEF";
+    char str[17];
+    str[16] = '\0';
+    str[15] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[14] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[13] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[12] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[11] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[10] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[9] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[8] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[7] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[6] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[5] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[4] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[3] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[2] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[1] = hexcodes[dw & 0xf];
+    dw >>= 4;
+    str[0] = hexcodes[dw & 0xf];
     vga_puts_at(str, x, y);
 }
 
