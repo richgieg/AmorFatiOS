@@ -1,15 +1,11 @@
 #include "timer.h"
-#include "vga.h"
 #include "port.h"
 #include "idt.h"
 #include "pic.h"
 
-char counter = 0;
-
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    vga_putb_at(counter, 0, 2);
-    counter++;
+    // TODO: Do something here.
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }

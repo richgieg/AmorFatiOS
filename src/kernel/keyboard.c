@@ -1,5 +1,4 @@
 #include "keyboard.h"
-#include "vga.h"
 #include "port.h"
 #include "idt.h"
 #include "ps2.h"
@@ -7,8 +6,8 @@
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    uint8_t value = inb(PS2_DATA_PORT);
-    vga_putb_at(value, 2, 2);
+    inb(PS2_DATA_PORT);
+    // TODO: Do something here.
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
