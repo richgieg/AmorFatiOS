@@ -7,9 +7,8 @@
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    char *p = " ";
-    p[0] = inb(PS2_DATA_PORT);
-    vga_print_at(p, 24, 2);
+    uint8_t value = inb(PS2_DATA_PORT);
+    vga_print_char_at(value, 24, 2);
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC2_COMMAND, PIC_EOI);
     __asm__("iret");

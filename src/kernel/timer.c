@@ -4,12 +4,12 @@
 #include "idt.h"
 #include "pic.h"
 
-char buf[1] = "";
+char counter = 0;
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    vga_print_at(buf, 0, 2);
-    buf[0]++;
+    vga_print_char_at(counter, 0, 2);
+    counter++;
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }

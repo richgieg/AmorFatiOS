@@ -28,9 +28,7 @@ void ps2_init(void) {
     outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
     wait_output_full();
     uint8_t config = inb(PS2_DATA_PORT);
-    char *s = " ";
-    s[0] = config;
-    vga_print_at(s, 0, 3);
+    vga_print_char_at(config, 0, 3);
 
     // Clear bit to disable IRQs for port 1.
     config &= ~PS2_CFG_FIRST_PORT;
@@ -38,9 +36,7 @@ void ps2_init(void) {
     config &= ~PS2_CFG_TRANSLATION;
     // Clear bit to enable clock for port 1.
     config &= ~PS2_CFG_FIRST_CLOCK;
-
-    s[0] = config;
-    vga_print_at(s, 1, 3);
+    vga_print_char_at(config, 1, 3);
 
     outb(PS2_COMMAND_PORT, PS2_WRITE_CONFIG);
     wait_input_clear();
@@ -50,8 +46,7 @@ void ps2_init(void) {
     outb(PS2_COMMAND_PORT, PS2_SELF_TEST);
     wait_output_full();
     uint8_t result = inb(PS2_DATA_PORT);
-    s[0] = result;
-    vga_print_at(s, 2, 3);
+    vga_print_char_at(result, 2, 3);
 
     // TODO: Handle result other than PS2_CONTROLLER_TEST_OK
 
@@ -60,24 +55,20 @@ void ps2_init(void) {
     outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
     wait_output_full();
     config = inb(PS2_DATA_PORT);
-    s[0] = config;
-    vga_print_at(s, 3, 3);
+    vga_print_char_at(config, 3, 3);
 
     if (!(config & PS2_CFG_SECOND_CLOCK)) {
         outb(PS2_COMMAND_PORT, PS2_DISABLE_SECOND);
         outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
         wait_output_full();
         config = inb(PS2_DATA_PORT);
-        s[0] = config;
-        vga_print_at(s, 4, 3);
+        vga_print_char_at(config, 4, 3);
 
         // Clear bit to disable IRQs for port 2.
         config &= ~PS2_CFG_SECOND_PORT;
         // Clear bit to enable clock for port 2.
         config &= ~PS2_CFG_SECOND_CLOCK;
-
-        s[0] = config;
-        vga_print_at(s, 5, 3);
+        vga_print_char_at(config, 5, 3);
 
         outb(PS2_COMMAND_PORT, PS2_WRITE_CONFIG);
         wait_input_clear();
@@ -89,22 +80,20 @@ void ps2_init(void) {
     wait_output_full();
     result = inb(PS2_DATA_PORT);
     if (result == PS2_PORT_TEST_OK) {
-        s[0] = 'Y';
+        vga_print_char_at('Y', 6, 3);
     } else {
-        s[0] = 'N';
+        vga_print_char_at('N', 6, 3);
     }
-    vga_print_at(s, 6, 3);
 
     if (!(config & PS2_CFG_SECOND_CLOCK)) {
         outb(PS2_COMMAND_PORT, PS2_TEST_SECOND);
         wait_output_full();
         result = inb(PS2_DATA_PORT);
         if (result == PS2_PORT_TEST_OK) {
-            s[0] = 'Y';
+            vga_print_char_at('Y', 7, 3);
         } else {
-            s[0] = 'N';
+            vga_print_char_at('N', 7, 3);
         }
-        vga_print_at(s, 7, 3);
     }
 
     // Step 9: Enable Devices
@@ -119,9 +108,7 @@ void ps2_init(void) {
     config |= PS2_CFG_FIRST_PORT;
     // Set bit to enable IRQs for port 2.
     config |= PS2_CFG_SECOND_PORT;
-
-    s[0] = config;
-    vga_print_at(s, 8, 3);
+    vga_print_char_at(config, 8, 3);
 
     outb(PS2_COMMAND_PORT, PS2_WRITE_CONFIG);
     wait_input_clear();
@@ -136,11 +123,10 @@ void ps2_init(void) {
     wait_output_full();
     uint8_t r2 = inb(PS2_DATA_PORT);
     if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
-        s[0] = 'Y';
+        vga_print_char_at('Y', 9, 3);
     } else {
-        s[0] = 'N';
+        vga_print_char_at('N', 9, 3);
     }
-    vga_print_at(s, 9, 3);
 
     // Reset device at port 2:
     outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
@@ -151,11 +137,10 @@ void ps2_init(void) {
     wait_output_full();
     r2 = inb(PS2_DATA_PORT);
     if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
-        s[0] = 'Y';
+        vga_print_char_at('Y', 10, 3);
     } else {
-        s[0] = 'N';
+        vga_print_char_at('N', 10, 3);
     }
-    vga_print_at(s, 10, 3);
 
     // Step 11: Enable Scanning
     outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
