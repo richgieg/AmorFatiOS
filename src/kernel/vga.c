@@ -48,6 +48,15 @@ void vga_clear(void) {
     }
 }
 
+void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
+    char hexcodes[] = "0123456789ABCDEF";
+    char str[3];
+    str[0] = hexcodes[b >> 4 & 0xf];
+    str[1] = hexcodes[b & 0xf];
+    str[2] = '\0';
+    vga_puts_at(str, x, y);
+}
+
 void vga_putc_at(char c, uint8_t x, uint8_t y) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     vga_buffer[y * COLUMNS + x] = vga_entry(c, bg_color, text_color);
