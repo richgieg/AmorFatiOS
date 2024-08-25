@@ -48,19 +48,12 @@ void vga_clear(void) {
     }
 }
 
-void vga_print_char_at(char c, uint8_t x, uint8_t y) {
+void vga_putc_at(char c, uint8_t x, uint8_t y) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     vga_buffer[y * COLUMNS + x] = vga_entry(c, bg_color, text_color);
 }
 
-void vga_print_at(const char *str, uint8_t x, uint8_t y) {
-    vga_print_at_color(str, x, y, bg_color, text_color);
-}
-
-void vga_print_at_color(
-    const char *str, uint8_t x, uint8_t y, enum vga_color bg_color,
-    enum vga_color text_color
-) {
+void vga_puts_at(const char *str, uint8_t x, uint8_t y) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     while (*str) {
         vga_buffer[y * COLUMNS + x] = vga_entry(*str, bg_color, text_color);
@@ -78,7 +71,7 @@ void vga_dump_chars(void) {
     uint8_t y = 0;
     char c = 0;
     for (int i = 0; i < 256; i++) {
-        vga_print_char_at(c, x, y);
+        vga_putc_at(c, x, y);
         c++;
         x++;
         if (x >= COLUMNS) {

@@ -16,7 +16,7 @@ void kernel_init(void) {
     keyboard_init();
     mouse_init();
 
-    vga_print_at("AmorFatiOS v0.0.1", 0, 0);
+    vga_puts_at("AmorFatiOS v0.0.1", 0, 0);
 }
 
 void kernel_idle(void) {
