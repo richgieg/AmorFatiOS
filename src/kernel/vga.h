@@ -30,5 +30,6 @@ void vga_print_at_color(
     const char *str, uint8_t x, uint8_t y, enum vga_color bg_color,
     enum vga_color text_color
 );
+void vga_dump_chars(void);
 
 #endif

@@ -72,3 +72,18 @@ void vga_print_at_color(
         }
     }
 }
+
+void vga_dump_chars(void) {
+    uint8_t x = 0;
+    uint8_t y = 0;
+    char c = 0;
+    for (int i = 0; i < 256; i++) {
+        vga_print_char_at(c, x, y);
+        c++;
+        x++;
+        if (x >= COLUMNS) {
+            x = 0;
+            y++;
+        }
+    }
+}
