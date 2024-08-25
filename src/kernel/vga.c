@@ -1,6 +1,6 @@
 // Reference: https://en.wikipedia.org/wiki/VGA_text_mode
 
-#include "console.h"
+#include "vga.h"
 #include "port.h"
 
 #define ROWS 25
@@ -8,10 +8,10 @@
 
 char *const screen = (char *)0xb8000;
 
-enum console_color bg_color = CONSOLE_COLOR_CYAN;
-enum console_color text_color = CONSOLE_COLOR_BRIGHT_WHITE;
+enum vga_color bg_color = VGA_COLOR_CYAN;
+enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
 
-void console_init(void) {
+void vga_init(void) {
     // Enable usage of all 16 background colors.
     // This ensures that attribute bit 7 is used for color instead of blink.
     // https://www.reddit.com/r/osdev/comments/70fcig/blinking_text/
@@ -31,10 +31,10 @@ void console_init(void) {
     outb(0x3d4, 0x0a);
     outb(0x3d5, 0x20);
 
-    console_clear();
+    vga_clear();
 }
 
-void console_clear(void) {
+void vga_clear(void) {
     uint8_t attributes = (bg_color << 4) | (text_color);
     for (int i = 0; i < ROWS * COLUMNS; i++) {
         screen[i * 2] = ' ';
@@ -42,13 +42,13 @@ void console_clear(void) {
     }
 }
 
-void console_print_at(const char *str, uint8_t x, uint8_t y) {
-    console_print_at_color(str, x, y, bg_color, text_color);
+void vga_print_at(const char *str, uint8_t x, uint8_t y) {
+    vga_print_at_color(str, x, y, bg_color, text_color);
 }
 
-void console_print_at_color(
-    const char *str, uint8_t x, uint8_t y, enum console_color bg_color,
-    enum console_color text_color
+void vga_print_at_color(
+    const char *str, uint8_t x, uint8_t y, enum vga_color bg_color,
+    enum vga_color text_color
 ) {
     uint8_t attributes = (bg_color << 4) | (text_color);
     int pos = (y * COLUMNS * 2) + (x * 2);

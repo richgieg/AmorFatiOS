@@ -1,5 +1,5 @@
 #include "mouse.h"
-#include "console.h"
+#include "vga.h"
 #include "port.h"
 #include "idt.h"
 #include "ps2.h"
@@ -9,7 +9,7 @@ __attribute__((naked))
 static void interrupt_service_routine(void) {
     char *p = " ";
     p[0] = inb(PS2_DATA_PORT);
-    console_print_at(p, 24, 2);
+    vga_print_at(p, 24, 2);
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC2_COMMAND, PIC_EOI);
     __asm__("iret");
