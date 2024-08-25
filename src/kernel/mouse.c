@@ -9,9 +9,6 @@ __attribute__((naked))
 static void interrupt_service_routine(void) {
     uint8_t value = inb(PS2_DATA_PORT);
     vga_print_char_at(value, 24, 2);
-    char *s = " ";
-    s[0] = value;
-    vga_print_at(s, 26, 2);
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC2_COMMAND, PIC_EOI);
     __asm__("iret");
