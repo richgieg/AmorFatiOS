@@ -33,6 +33,22 @@ void vga_init(void) {
     vga_clear();
 }
 
+enum vga_color vga_get_bg_color() {
+    return bg_color;
+}
+
+void vga_set_bg_color(enum vga_color color) {
+    bg_color = color;
+}
+
+enum vga_color vga_get_text_color() {
+    return text_color;
+}
+
+void vga_set_text_color(enum vga_color color) {
+    text_color = color;
+}
+
 static inline uint16_t vga_entry(
     char character, enum vga_color bg_color, enum vga_color text_color
 ) {
