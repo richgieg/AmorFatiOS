@@ -3,10 +3,9 @@
 #include "vga.h"
 #include "port.h"
 
+#define VGA_ADDRESS 0xb8000
 #define ROWS 25
 #define COLUMNS 80
-
-char *const screen = (char *)0xb8000;
 
 enum vga_color bg_color = VGA_COLOR_CYAN;
 enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
@@ -34,12 +33,24 @@ void vga_init(void) {
     vga_clear();
 }
 
+static inline uint16_t vga_entry(
+    char character, enum vga_color bg_color, enum vga_color text_color
+) {
+    uint8_t attributes = bg_color << 4 | text_color;
+    return (uint8_t)character | (uint16_t)attributes << 8;
+}
+
 void vga_clear(void) {
-    uint8_t attributes = (bg_color << 4) | (text_color);
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+    uint16_t entry = vga_entry(0, bg_color, text_color);
     for (int i = 0; i < ROWS * COLUMNS; i++) {
-        screen[i * 2] = ' ';
-        screen[i * 2 + 1] = attributes;
+        vga_buffer[i] = entry;
     }
+}
+
+void vga_print_char_at(char c, uint8_t x, uint8_t y) {
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+    vga_buffer[y * COLUMNS + x] = vga_entry(c, bg_color, text_color);
 }
 
 void vga_print_at(const char *str, uint8_t x, uint8_t y) {
@@ -50,11 +61,14 @@ void vga_print_at_color(
     const char *str, uint8_t x, uint8_t y, enum vga_color bg_color,
     enum vga_color text_color
 ) {
-    uint8_t attributes = (bg_color << 4) | (text_color);
-    int pos = (y * COLUMNS * 2) + (x * 2);
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     while (*str) {
-        screen[pos++] = *str;
-        screen[pos++] = attributes;
+        vga_buffer[y * COLUMNS + x] = vga_entry(*str, bg_color, text_color);
         str++;
+        x++;
+        if (x >= COLUMNS) {
+            x = 0;
+            y++;
+        }
     }
 }
