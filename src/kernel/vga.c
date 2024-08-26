@@ -69,9 +69,23 @@ void vga_set_text_color(enum vga_color color) {
     text_color = color;
 }
 
+static void scroll_one_line(void) {
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+    for (int i = 0; i < (ROWS - 1) * COLUMNS; i++) {
+        vga_buffer[i] = vga_buffer[i + COLUMNS];
+    }
+    for (int i = 0; i < COLUMNS; i++) {
+        vga_buffer[(ROWS - 1) * COLUMNS + i] = vga_entry(0, bg_color, text_color);
+    }
+}
+
 static void go_to_next_line(void) {
     cur_col = 0;
     cur_row++;
+    if (cur_row >= ROWS) {
+        cur_row = ROWS - 1;
+        scroll_one_line();
+    }
 }
 
 void vga_putc(char c) {
