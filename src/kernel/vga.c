@@ -12,8 +12,8 @@ static const char hex_digits[] = "0123456789ABCDEF";
 static enum vga_color bg_color = VGA_COLOR_CYAN;
 static enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
 
-static uint8_t col = 0;
-static uint8_t row = 0;
+static uint8_t cur_col = 0;
+static uint8_t cur_row = 0;
 
 void vga_init(void) {
     // Enable usage of all 16 background colors.
@@ -70,8 +70,8 @@ void vga_set_text_color(enum vga_color color) {
 }
 
 static void go_to_next_line(void) {
-    col = 0;
-    row++;
+    cur_col = 0;
+    cur_row++;
 }
 
 void vga_putc(char c) {
@@ -79,9 +79,9 @@ void vga_putc(char c) {
         go_to_next_line();
     } else {
         volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-        vga_buffer[row * COLUMNS + col] = vga_entry(c, bg_color, text_color);
-        col++;
-        if (col >= COLUMNS) {
+        vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, bg_color, text_color);
+        cur_col++;
+        if (cur_col >= COLUMNS) {
             go_to_next_line();
         }
     }
@@ -174,64 +174,64 @@ void vga_putqw(uint64_t qw) {
     vga_puts(str);
 }
 
-void vga_putc_at(char c, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_putc_at(char c, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_putc(c);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
-void vga_puts_at(const char *str, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_puts_at(const char *str, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_puts(str);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
-void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_putb_at(uint8_t b, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_putb(b);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
-void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_putw_at(uint16_t w, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_putw(w);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
-void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_putdw_at(uint32_t dw, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_putdw(dw);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
-void vga_putqw_at(uint64_t qw, uint8_t x, uint8_t y) {
-    uint8_t old_col = col;
-    uint8_t old_row = row;
-    col = x;
-    row = y;
+void vga_putqw_at(uint64_t qw, uint8_t col, uint8_t row) {
+    uint8_t old_col = cur_col;
+    uint8_t old_row = cur_row;
+    cur_col = col;
+    cur_row = row;
     vga_putqw(qw);
-    col = old_col;
-    row = old_row;
+    cur_col = old_col;
+    cur_row = old_row;
 }
 
 void vga_dump_chars(void) {

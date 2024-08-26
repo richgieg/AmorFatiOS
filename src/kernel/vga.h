@@ -36,12 +36,12 @@ void vga_putw(uint16_t w);
 void vga_putdw(uint32_t dw);
 void vga_putqw(uint64_t qw);
 
-void vga_putc_at(char c, uint8_t x, uint8_t y);
-void vga_puts_at(const char *str, uint8_t x, uint8_t y);
-void vga_putb_at(uint8_t b, uint8_t x, uint8_t y);
-void vga_putw_at(uint16_t w, uint8_t x, uint8_t y);
-void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y);
-void vga_putqw_at(uint64_t dw, uint8_t x, uint8_t y);
+void vga_putc_at(char c, uint8_t col, uint8_t row);
+void vga_puts_at(const char *str, uint8_t col, uint8_t row);
+void vga_putb_at(uint8_t b, uint8_t col, uint8_t row);
+void vga_putw_at(uint16_t w, uint8_t col, uint8_t row);
+void vga_putdw_at(uint32_t dw, uint8_t col, uint8_t row);
+void vga_putqw_at(uint64_t dw, uint8_t col, uint8_t row);
 void vga_dump_chars(void);
 
 #endif
