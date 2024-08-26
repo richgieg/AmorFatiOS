@@ -12,6 +12,9 @@ static const char hex_digits[] = "0123456789ABCDEF";
 static enum vga_color bg_color = VGA_COLOR_CYAN;
 static enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
 
+static uint8_t col = 0;
+static uint8_t row = 0;
+
 void vga_init(void) {
     // Enable usage of all 16 background colors.
     // This ensures that attribute bit 7 is used for color instead of blink.
@@ -35,6 +38,21 @@ void vga_init(void) {
     vga_clear();
 }
 
+static inline uint16_t vga_entry(
+    char character, enum vga_color bg_color, enum vga_color text_color
+) {
+    uint8_t attributes = bg_color << 4 | text_color;
+    return (uint8_t)character | (uint16_t)attributes << 8;
+}
+
+void vga_clear(void) {
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+    uint16_t entry = vga_entry(0, bg_color, text_color);
+    for (int i = 0; i < ROWS * COLUMNS; i++) {
+        vga_buffer[i] = entry;
+    }
+}
+
 enum vga_color vga_get_bg_color() {
     return bg_color;
 }
@@ -51,18 +69,20 @@ void vga_set_text_color(enum vga_color color) {
     text_color = color;
 }
 
-static inline uint16_t vga_entry(
-    char character, enum vga_color bg_color, enum vga_color text_color
-) {
-    uint8_t attributes = bg_color << 4 | text_color;
-    return (uint8_t)character | (uint16_t)attributes << 8;
+static void go_to_next_line(void) {
+    col = 0;
+    row++;
 }
 
-void vga_clear(void) {
-    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    uint16_t entry = vga_entry(0, bg_color, text_color);
-    for (int i = 0; i < ROWS * COLUMNS; i++) {
-        vga_buffer[i] = entry;
+void vga_putc(char c) {
+    if (c == '\n') {
+        go_to_next_line();
+    } else {
+        vga_putc_at(c, col, row);
+        col++;
+        if (col >= COLUMNS) {
+            go_to_next_line();
+        }
     }
 }
 
