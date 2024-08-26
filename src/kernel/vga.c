@@ -78,7 +78,8 @@ void vga_putc(char c) {
     if (c == '\n') {
         go_to_next_line();
     } else {
-        vga_putc_at(c, col, row);
+        volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+        vga_buffer[row * COLUMNS + col] = vga_entry(c, bg_color, text_color);
         col++;
         if (col >= COLUMNS) {
             go_to_next_line();
@@ -86,16 +87,23 @@ void vga_putc(char c) {
     }
 }
 
-void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
+void vga_puts(const char *str) {
+    while (*str) {
+        vga_putc(*str);
+        str++;
+    }
+}
+
+void vga_putb(uint8_t b) {
     char str[3];
     str[2] = '\0';
     str[1] = hex_digits[b & 0xf];
     b >>= 4;
     str[0] = hex_digits[b & 0xf];
-    vga_puts_at(str, x, y);
+    vga_puts(str);
 }
 
-void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
+void vga_putw(uint16_t w) {
     char str[5];
     str[4] = '\0';
     str[3] = hex_digits[w & 0xf];
@@ -105,10 +113,10 @@ void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
     str[1] = hex_digits[w & 0xf];
     w >>= 4;
     str[0] = hex_digits[w & 0xf];
-    vga_puts_at(str, x, y);
+    vga_puts(str);
 }
 
-void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
+void vga_putdw(uint32_t dw) {
     char str[9];
     str[8] = '\0';
     str[7] = hex_digits[dw & 0xf];
@@ -126,62 +134,104 @@ void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
     str[1] = hex_digits[dw & 0xf];
     dw >>= 4;
     str[0] = hex_digits[dw & 0xf];
-    vga_puts_at(str, x, y);
+    vga_puts(str);
 }
 
-void vga_putqw_at(uint64_t dw, uint8_t x, uint8_t y) {
+void vga_putqw(uint64_t qw) {
     char str[17];
     str[16] = '\0';
-    str[15] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[14] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[13] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[12] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[11] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[10] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[9] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[8] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[7] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[6] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[5] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[4] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[3] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[2] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[1] = hex_digits[dw & 0xf];
-    dw >>= 4;
-    str[0] = hex_digits[dw & 0xf];
-    vga_puts_at(str, x, y);
+    str[15] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[14] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[13] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[12] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[11] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[10] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[9] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[8] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[7] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[6] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[5] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[4] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[3] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[2] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[1] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[0] = hex_digits[qw & 0xf];
+    vga_puts(str);
 }
 
 void vga_putc_at(char c, uint8_t x, uint8_t y) {
-    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    vga_buffer[y * COLUMNS + x] = vga_entry(c, bg_color, text_color);
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_putc(c);
+    col = old_col;
+    row = old_row;
 }
 
 void vga_puts_at(const char *str, uint8_t x, uint8_t y) {
-    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    while (*str) {
-        vga_buffer[y * COLUMNS + x] = vga_entry(*str, bg_color, text_color);
-        str++;
-        x++;
-        if (x >= COLUMNS) {
-            x = 0;
-            y++;
-        }
-    }
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_puts(str);
+    col = old_col;
+    row = old_row;
+}
+
+void vga_putb_at(uint8_t b, uint8_t x, uint8_t y) {
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_putb(b);
+    col = old_col;
+    row = old_row;
+}
+
+void vga_putw_at(uint16_t w, uint8_t x, uint8_t y) {
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_putw(w);
+    col = old_col;
+    row = old_row;
+}
+
+void vga_putdw_at(uint32_t dw, uint8_t x, uint8_t y) {
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_putdw(dw);
+    col = old_col;
+    row = old_row;
+}
+
+void vga_putqw_at(uint64_t qw, uint8_t x, uint8_t y) {
+    uint8_t old_col = col;
+    uint8_t old_row = row;
+    col = x;
+    row = y;
+    vga_putqw(qw);
+    col = old_col;
+    row = old_row;
 }
 
 void vga_dump_chars(void) {
