@@ -4,8 +4,6 @@
 #include "port.h"
 
 #define VGA_ADDRESS 0xb8000
-#define ROWS 25
-#define COLUMNS 80
 
 static const char hex_digits[] = "0123456789ABCDEF";
 
@@ -48,7 +46,7 @@ static inline uint16_t vga_entry(
 void vga_clear(void) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     uint16_t entry = vga_entry(0, cur_bg_color, cur_text_color);
-    for (int i = 0; i < ROWS * COLUMNS; i++) {
+    for (int i = 0; i < VGA_ROWS * VGA_COLUMNS; i++) {
         vga_buffer[i] = entry;
     }
 }
@@ -76,28 +74,28 @@ void vga_set_pos(uint8_t col, uint8_t row) {
 
 static void scroll_one_line(void) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    for (int i = 0; i < (ROWS - 1) * COLUMNS; i++) {
-        vga_buffer[i] = vga_buffer[i + COLUMNS];
+    for (int i = 0; i < (VGA_ROWS - 1) * VGA_COLUMNS; i++) {
+        vga_buffer[i] = vga_buffer[i + VGA_COLUMNS];
     }
-    for (int i = 0; i < COLUMNS; i++) {
-        vga_buffer[(ROWS - 1) * COLUMNS + i] = vga_entry(0, cur_bg_color, cur_text_color);
+    for (int i = 0; i < VGA_COLUMNS; i++) {
+        vga_buffer[(VGA_ROWS - 1) * VGA_COLUMNS + i] = vga_entry(0, cur_bg_color, cur_text_color);
     }
 }
 
 static void go_to_next_line(void) {
     cur_col = 0;
     cur_row++;
-    if (cur_row >= ROWS) {
-        cur_row = ROWS - 1;
+    if (cur_row >= VGA_ROWS) {
+        cur_row = VGA_ROWS - 1;
         scroll_one_line();
     }
 }
 
 void vga_writec(char c) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
+    vga_buffer[cur_row * VGA_COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
     cur_col++;
-    if (cur_col >= COLUMNS) {
+    if (cur_col >= VGA_COLUMNS) {
         go_to_next_line();
     }
 }
@@ -107,9 +105,9 @@ void vga_putc(char c) {
         go_to_next_line();
     } else {
         volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-        vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
+        vga_buffer[cur_row * VGA_COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
         cur_col++;
-        if (cur_col >= COLUMNS) {
+        if (cur_col >= VGA_COLUMNS) {
             go_to_next_line();
         }
     }
@@ -270,7 +268,7 @@ void vga_dump_chars(void) {
         vga_putc_at(c, x, y);
         c++;
         x++;
-        if (x >= COLUMNS) {
+        if (x >= VGA_COLUMNS) {
             x = 0;
             y++;
         }

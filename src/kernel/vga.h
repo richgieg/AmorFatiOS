@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define VGA_ROWS 25
+#define VGA_COLUMNS 80
+
 enum vga_color {
     VGA_COLOR_BLACK,
     VGA_COLOR_BLUE,

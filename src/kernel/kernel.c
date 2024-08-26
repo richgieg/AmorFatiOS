@@ -19,7 +19,7 @@ void kernel_init(void) {
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    md_next();
+    md_show();
 }
 
 void kernel_idle(void) {
