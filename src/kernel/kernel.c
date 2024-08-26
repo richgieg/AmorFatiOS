@@ -6,6 +6,7 @@
 #include "ps2.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "memdump.h"
 
 void kernel_init(void) {
     vga_init();
@@ -18,34 +19,7 @@ void kernel_init(void) {
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    volatile uint8_t *memory_ptr = (volatile uint8_t *)0;
-
-    for (int k = 0; k < 25; k++) {
-        vga_putdw((uint32_t)memory_ptr);
-        vga_putc(' ');
-        vga_putc(' ');
-        vga_putc(' ');
-        vga_putc(' ');
-
-        for (int i = 0; i < 16; i++) {
-            vga_putb(*memory_ptr);
-            vga_putc(' ');
-            memory_ptr++;
-        }
-
-        vga_putc(' ');
-        vga_putc(' ');
-        vga_putc(' ');
-
-        memory_ptr -= 16;
-        for (int i = 0; i < 16; i++) {
-            vga_writec(*memory_ptr);
-            memory_ptr++;
-        }
-        if (k < 24) {
-            vga_putc('\n');
-        }
-    }
+    md_next();
 }
 
 void kernel_idle(void) {
