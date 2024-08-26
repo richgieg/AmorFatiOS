@@ -8,22 +8,31 @@
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
 
+#define SC_UP 0xe075
+#define SC_DOWN 0xe072
+#define SC_LEFT 0xe06b
+#define SC_RIGHT 0xe074
+
 static uint8_t is_break;
 static uint8_t is_extended;
 
 static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
-    vga_putb(scancode);
+    uint16_t scancodew = 0;
     if (is_extended) {
-        vga_putc('E');
+        scancodew = EXTENDED_KEY_PREFIX << 8;
     }
+    scancodew |= scancode;
+    vga_putw(scancodew);
     vga_puts("P ");
 }
 
 static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
-    vga_putb(scancode);
+    uint16_t scancodew = 0;
     if (is_extended) {
-        vga_putc('E');
+        scancodew = EXTENDED_KEY_PREFIX << 8;
     }
+    scancodew |= scancode;
+    vga_putw(scancodew);
     vga_puts("R ");
 }
 
