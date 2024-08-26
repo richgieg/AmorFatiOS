@@ -22,6 +22,8 @@ SECTIONS
     /* .bss section */
     .bss :
     {
+        _bss_start = .;
         *(.bss)
+        _bss_end = .;
     }
 }
