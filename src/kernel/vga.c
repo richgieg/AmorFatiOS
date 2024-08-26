@@ -69,6 +69,11 @@ void vga_set_text_color(enum vga_color text_color) {
     cur_text_color = text_color;
 }
 
+void vga_set_pos(uint8_t col, uint8_t row) {
+    cur_col = col;
+    cur_row = row;
+}
+
 static void scroll_one_line(void) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
     for (int i = 0; i < (ROWS - 1) * COLUMNS; i++) {

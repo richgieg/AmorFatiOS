@@ -5,6 +5,7 @@
 static volatile uint8_t *memory_ptr = (volatile uint8_t *)0;
 
 void md_next(void) {
+    vga_set_pos(0, 0);
     for (int k = 0; k < 25; k++) {
         vga_putdw((uint32_t)memory_ptr);
         vga_putc(' ');

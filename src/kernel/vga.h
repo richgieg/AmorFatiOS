@@ -28,16 +28,14 @@ enum vga_color vga_get_bg_color();
 void vga_set_bg_color(enum vga_color bg_color);
 enum vga_color vga_get_text_color();
 void vga_set_text_color(enum vga_color text_color);
-
+void vga_set_pos(uint8_t col, uint8_t row);
 void vga_writec(char c);
-
 void vga_putc(char c);
 void vga_puts(const char *str);
 void vga_putb(uint8_t);
 void vga_putw(uint16_t w);
 void vga_putdw(uint32_t dw);
 void vga_putqw(uint64_t qw);
-
 void vga_putc_at(char c, uint8_t col, uint8_t row);
 void vga_puts_at(const char *str, uint8_t col, uint8_t row);
 void vga_putb_at(uint8_t b, uint8_t col, uint8_t row);
