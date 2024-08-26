@@ -4,6 +4,7 @@
 
 #define BYTES_PER_LINE 16
 #define BYTES_PER_PAGE 4096
+#define BYTES_PER_MB 1024 * 1024
 
 static uint32_t cur_addr = 0x00000000;
 
@@ -52,5 +53,15 @@ void md_next_page(void) {
 
 void md_prev_page(void) {
     cur_addr -= BYTES_PER_PAGE;
+    md_show();
+}
+
+void md_next_mb(void) {
+    cur_addr += BYTES_PER_MB;
+    md_show();
+}
+
+void md_prev_mb(void) {
+    cur_addr -= BYTES_PER_MB;
     md_show();
 }
