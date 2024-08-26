@@ -88,6 +88,15 @@ static void go_to_next_line(void) {
     }
 }
 
+void vga_writec(char c) {
+    volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
+    vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
+    cur_col++;
+    if (cur_col >= COLUMNS) {
+        go_to_next_line();
+    }
+}
+
 void vga_putc(char c) {
     if (c == '\n') {
         go_to_next_line();

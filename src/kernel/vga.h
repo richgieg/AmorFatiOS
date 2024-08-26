@@ -29,6 +29,8 @@ void vga_set_bg_color(enum vga_color bg_color);
 enum vga_color vga_get_text_color();
 void vga_set_text_color(enum vga_color text_color);
 
+void vga_writec(char c);
+
 void vga_putc(char c);
 void vga_puts(const char *str);
 void vga_putb(uint8_t);
