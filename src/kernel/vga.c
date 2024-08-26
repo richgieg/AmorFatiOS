@@ -9,8 +9,8 @@
 
 static const char hex_digits[] = "0123456789ABCDEF";
 
-static enum vga_color bg_color = VGA_COLOR_CYAN;
-static enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
+static enum vga_color cur_bg_color = VGA_COLOR_CYAN;
+static enum vga_color cur_text_color = VGA_COLOR_BRIGHT_WHITE;
 
 static uint8_t cur_col = 0;
 static uint8_t cur_row = 0;
@@ -47,26 +47,26 @@ static inline uint16_t vga_entry(
 
 void vga_clear(void) {
     volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-    uint16_t entry = vga_entry(0, bg_color, text_color);
+    uint16_t entry = vga_entry(0, cur_bg_color, cur_text_color);
     for (int i = 0; i < ROWS * COLUMNS; i++) {
         vga_buffer[i] = entry;
     }
 }
 
 enum vga_color vga_get_bg_color() {
-    return bg_color;
+    return cur_bg_color;
 }
 
-void vga_set_bg_color(enum vga_color color) {
-    bg_color = color;
+void vga_set_bg_color(enum vga_color bg_color) {
+    cur_bg_color = bg_color;
 }
 
 enum vga_color vga_get_text_color() {
-    return text_color;
+    return cur_text_color;
 }
 
-void vga_set_text_color(enum vga_color color) {
-    text_color = color;
+void vga_set_text_color(enum vga_color text_color) {
+    cur_text_color = text_color;
 }
 
 static void scroll_one_line(void) {
@@ -75,7 +75,7 @@ static void scroll_one_line(void) {
         vga_buffer[i] = vga_buffer[i + COLUMNS];
     }
     for (int i = 0; i < COLUMNS; i++) {
-        vga_buffer[(ROWS - 1) * COLUMNS + i] = vga_entry(0, bg_color, text_color);
+        vga_buffer[(ROWS - 1) * COLUMNS + i] = vga_entry(0, cur_bg_color, cur_text_color);
     }
 }
 
@@ -93,7 +93,7 @@ void vga_putc(char c) {
         go_to_next_line();
     } else {
         volatile uint16_t *vga_buffer = (volatile uint16_t *)VGA_ADDRESS;
-        vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, bg_color, text_color);
+        vga_buffer[cur_row * COLUMNS + cur_col] = vga_entry(c, cur_bg_color, cur_text_color);
         cur_col++;
         if (cur_col >= COLUMNS) {
             go_to_next_line();
