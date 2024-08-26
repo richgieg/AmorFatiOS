@@ -7,10 +7,10 @@
 #define ROWS 25
 #define COLUMNS 80
 
-const char hex_digits[] = "0123456789ABCDEF";
+static const char hex_digits[] = "0123456789ABCDEF";
 
-enum vga_color bg_color = VGA_COLOR_CYAN;
-enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
+static enum vga_color bg_color = VGA_COLOR_CYAN;
+static enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
 
 void vga_init(void) {
     // Enable usage of all 16 background colors.
