@@ -2,7 +2,6 @@
 
 #include "ps2.h"
 #include "port.h"
-#include "vga.h"
 
 static inline void wait_input_clear(void) {
     while (inb(PS2_STATUS_PORT) & PS2_INPUT_BUFFER_FULL) {
@@ -146,4 +145,12 @@ void ps2_init(void) {
     outb(PS2_COMMAND_PORT, PS2_WRITE_SECOND);
     wait_input_clear();
     outb(PS2_DATA_PORT, PS2_DEV_ENABLE_SCAN);
+    wait_output_full();
+    result = inb(PS2_DATA_PORT);
+    // TODO: Handle failure.
+    if (result == PS2_DEV_ACK) {
+        // Scanning enabled.
+    } else {
+        // Failed to enable scan.
+    }
 }

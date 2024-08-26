@@ -3,11 +3,13 @@
 #include "idt.h"
 #include "ps2.h"
 #include "pic.h"
+#include "vga.h"
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    inb(PS2_DATA_PORT);
-    // TODO: Do something here.
+    uint8_t value = inb(PS2_DATA_PORT);
+    vga_putb(value);
+    vga_putc(' ');
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
