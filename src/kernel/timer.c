@@ -7,7 +7,6 @@
 __attribute__((naked))
 static void interrupt_service_routine(void) {
     // TODO: Do something here.
-    md_next();
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
