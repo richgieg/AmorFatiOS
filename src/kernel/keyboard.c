@@ -14,6 +14,13 @@
 #define SC_LEFT 0xe06b
 #define SC_RIGHT 0xe074
 
+#define SC_HOME 0xe06c
+#define SC_END 0xe069
+#define SC_PAGEUP 0xe07d
+#define SC_PAGEDOWN 0xe07a
+#define SC_INSERT 0xe070
+#define SC_DELETE 0xe071
+
 static uint8_t is_break;
 static uint8_t is_extended;
 
