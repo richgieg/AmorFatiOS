@@ -4,6 +4,7 @@
 #include "ps2.h"
 #include "pic.h"
 #include "vga.h"
+#include "memdump.h"
 
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
@@ -22,8 +23,17 @@ static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    vga_putw(scancodew);
-    vga_puts("P ");
+    // vga_putw(scancodew);
+    // vga_puts("P ");
+
+    switch (scancodew) {
+        case SC_DOWN:
+            md_next();
+            break;
+        case SC_UP:
+            md_prev();
+            break;
+    }
 }
 
 static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
@@ -32,8 +42,8 @@ static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    vga_putw(scancodew);
-    vga_puts("R ");
+    // vga_putw(scancodew);
+    // vga_puts("R ");
 }
 
 __attribute__((naked))

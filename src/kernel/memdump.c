@@ -35,6 +35,6 @@ void md_next(void) {
 }
 
 void md_prev(void) {
-    memory_ptr -= 16 * 25;
+    memory_ptr -= 16 * 25 * 2;
     md_next();
 }
