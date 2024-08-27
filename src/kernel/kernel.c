@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "vga.h"
+#include "mm.h"
 #include "idt.h"
 #include "pic.h"
 #include "timer.h"
@@ -8,15 +9,9 @@
 #include "mouse.h"
 #include "memdump.h"
 
-typedef struct {
-    uint64_t base_address;
-    uint64_t length;
-    uint32_t type;
-    uint32_t extended_attributes;
-} __attribute__((packed)) mem_entry;
-
 void kernel_init(void) {
     vga_init();
+    mm_init();
     idt_init();
     pic_init();
     timer_init();
@@ -27,20 +22,7 @@ void kernel_init(void) {
     // vga_puts("AmorFatiOS v0.0.1\n");
 
     // md_show();
-
-    volatile mem_entry *e = (mem_entry *)0x10000;
-
-    while (e->base_address || e->length || e->type || e->extended_attributes) {
-        vga_putqw(e->base_address);
-        vga_putc(' ');
-        vga_putqw(e->length);
-        vga_putc(' ');
-        vga_putdw(e->type);
-        vga_putc(' ');
-        vga_putdw(e->extended_attributes);
-        vga_putc('\n');
-        e++;
-    }
+    mm_show_mmap();
 }
 
 void kernel_idle(void) {
