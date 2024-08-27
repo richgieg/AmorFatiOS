@@ -4,6 +4,7 @@
 ; Populate the memory map at 0x10000 for the kernel's memory manager.
 mov ax, 0x1000
 mov es, ax
+xor edi, edi
 xor ebx, ebx
 mov edx, 0x534d4150
 
@@ -14,6 +15,11 @@ populate_map_entry:
     add di, 24
     test ebx, ebx
     jnz populate_map_entry
+
+; Write an entry of all zeroes as a marker.
+xor al, al
+mov cx, 24
+rep stosb
 
 ; Use 80x25 VGA text mode.
 mov ax, 0x0003

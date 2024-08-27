@@ -30,7 +30,7 @@ void kernel_init(void) {
 
     volatile mem_entry *e = (mem_entry *)0x10000;
 
-    for (int i = 0; i < 15; i++) {
+    while (e->base_address || e->length || e->type || e->extended_attributes) {
         vga_putqw(e->base_address);
         vga_putc(' ');
         vga_putqw(e->length);
