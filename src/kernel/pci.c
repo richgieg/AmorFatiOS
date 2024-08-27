@@ -1,6 +1,9 @@
 #include "pci.h"
 #include "vga.h"
 #include "string.h"
+#include "pic.h"
+#include "idt.h"
+#include "port.h"
 
 typedef struct {
     char signature[8];
@@ -76,7 +79,7 @@ xsdp_t * find_xsdp(void) {
     return 0;
 }
 
-mcfg_t * find_mcfg(xsdp_t *xsdp) {
+mcfg_t * find_mcfg_via_xsdp(xsdp_t *xsdp) {
     xsdt_t *xsdt = (xsdt_t *)(uint32_t)xsdp->xsdt_address;
     int num_entries = (xsdt->header.length - sizeof(xsdt->header)) / 8;
 
@@ -89,18 +92,77 @@ mcfg_t * find_mcfg(xsdp_t *xsdp) {
     return 0;
 }
 
-sdt_header_t * find_mcfg2(rsdp_t *rsdp) {
+mcfg_t * find_mcfg_via_rsdp(rsdp_t *rsdp) {
     rsdt_t *rsdt = (rsdt_t *)rsdp->rsdt_address;
     int num_entries = (rsdt->header.length - sizeof(rsdt->header)) / 4;
 
     for (int i = 0; i < num_entries; i++) {
         sdt_header_t *header = (sdt_header_t *)rsdt->sdts[i];
         if (memcmp(header->signature, "MCFG", 4) == 0) {
-            return header;
+            return (mcfg_t *)header;
         }
     }
     return 0;
 }
+
+uint32_t read_mmio_config(uint64_t base_address, uint8_t bus, uint8_t device, uint8_t function, uint8_t offset) {
+    uint64_t address = base_address +
+        (bus << 20) +
+        (device << 15) +
+        (function << 12) +
+        offset;
+    return *(volatile uint32_t *)(uint32_t)(address);
+}
+
+void write_mmio_config(uint64_t base_address, uint8_t bus, uint8_t device, uint8_t function, uint8_t offset, uint32_t data) {
+    uint64_t address = base_address +
+        (bus << 20) +
+        (device << 15) +
+        (function << 12) +
+        offset;
+    *(volatile uint32_t *)(uint32_t)(address) = data;
+}
+
+uint32_t read_mmio(uint32_t mmio_base, uint32_t offset) {
+    volatile uint32_t *mmio_address = (volatile uint32_t *)(mmio_base + offset);
+    return *mmio_address;
+}
+
+void write_mmio(uint32_t mmio_base, uint32_t offset, uint32_t value) {
+    volatile uint32_t *mmio_address = (volatile uint32_t *)(mmio_base + offset);
+    *mmio_address = value;
+}
+
+void enumerate_pci_devices(uint64_t base_address, uint8_t start_bus, uint8_t end_bus) {
+    for (uint8_t bus = start_bus; bus <= end_bus; bus++) {
+        for (uint8_t device = 0; device < 32; device++) {
+            for (uint8_t function = 0; function < 8; function++) {
+                uint32_t vendor_device_id = read_mmio_config(base_address, bus, device, function, 0);
+                if (vendor_device_id != 0xffffffff) {
+                    uint16_t vendor_id = vendor_device_id;
+                    uint16_t device_id = vendor_device_id >> 16;
+                    vga_putw(vendor_id);
+                    vga_putc(' ');
+                    vga_putw(device_id);
+                    vga_putc(' ');
+                    vga_putb(bus);
+                    vga_putc(' ');
+                    vga_putb(device);
+                    vga_putc(' ');
+                    vga_putb(function);
+                    vga_puts(" | ");
+                }
+            }
+        }
+    }
+}
+
+// __attribute__((naked))
+// static void interrupt_service_routine(void) {
+//     vga_putc('!');
+//     outb(PIC1_COMMAND, PIC_EOI);
+//     __asm__("iret");
+// }
 
 void pci_init(void) {
     xsdp_t *xsdp = find_xsdp();
@@ -116,7 +178,7 @@ void pci_init(void) {
     vga_putdw((uint32_t)xsdp->xsdt_address);
     vga_putc('\n');
 
-    mcfg_t *mcfg = find_mcfg(xsdp);
+    mcfg_t *mcfg = find_mcfg_via_xsdp(xsdp);
     if (!mcfg) {
         vga_puts("Could not find MCFG");
         return;
@@ -140,4 +202,33 @@ void pci_init(void) {
         vga_putb(mcfg->entries[i].end_bus);
         vga_putc('\n');
     }
+
+    // for (int i = 0; i < num_entries; i++) {
+    //     enumerate_pci_devices(mcfg->entries[i].base_address, mcfg->entries[i].start_bus, mcfg->entries[i].end_bus);
+    // }
+
+    // VMware Workstation NIC:
+    // uint32_t vendor_device_id = read_mmio_config(mcfg->entries[0].base_address, 2, 0, 0, 0);
+    uint32_t bar0 = read_mmio_config(mcfg->entries[0].base_address, 2, 0, 0, 0x10);
+    vga_puts("bar0 = ");
+    vga_putdw(bar0);
+    vga_putc('\n');
+
+    uint32_t bar1 = read_mmio_config(mcfg->entries[0].base_address, 2, 0, 0, 0x14);
+    vga_puts("bar1 = ");
+    vga_putdw(bar1);
+    vga_putc('\n');
+
+    // NOTE: If bit 0 in bar is 1 then I/O port should be used instead.
+    uint32_t mmio_base = bar0 & 0xfffffff0;
+    vga_puts("mmio_base = ");
+    vga_putdw(mmio_base);
+    vga_putc('\n');
+
+    uint32_t value = read_mmio(mmio_base, 0x00008);
+    // TODO: Figure out why this doesn't work!
+    vga_putdw(value);
+
+    // idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
+    // pic_unmask_irq(0xb);
 }
