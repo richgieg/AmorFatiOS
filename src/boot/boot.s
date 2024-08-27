@@ -1,6 +1,20 @@
 [bits 16]
 [org 0x7c00]
 
+; Populate the memory map at 0x10000 for the kernel's memory manager.
+mov ax, 0x1000
+mov es, ax
+xor ebx, ebx
+mov edx, 0x534d4150
+
+populate_map_entry:
+    mov eax, 0xe820
+    mov ecx, 24
+    int 0x15
+    add di, 24
+    test ebx, ebx
+    jnz populate_map_entry
+
 ; Use 80x25 VGA text mode.
 mov ax, 0x0003
 int 0x10
@@ -60,15 +74,16 @@ jmp 0x08:finish_setup
 
 [bits 32]
 
-; Initialize data and stack registers.
 finish_setup:
-mov ax, 0x10
-mov ds, ax
-mov ss, ax
-mov esp, 0x90000
+    
+    ; Initialize data and stack registers.
+    mov ax, 0x10
+    mov ds, ax
+    mov ss, ax
+    mov esp, 0x90000
 
-; Jump to the kernel entry point.
-jmp 0x21000
+    ; Jump to the kernel entry point.
+    jmp 0x21000
 
 ; Define the global descriptor table.
 gdt:

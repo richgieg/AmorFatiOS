@@ -8,6 +8,13 @@
 #include "mouse.h"
 #include "memdump.h"
 
+typedef struct {
+    uint64_t base_address;
+    uint64_t length;
+    uint32_t type;
+    uint32_t extended_attributes;
+} __attribute__((packed)) mem_entry;
+
 void kernel_init(void) {
     vga_init();
     idt_init();
@@ -19,7 +26,21 @@ void kernel_init(void) {
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    md_show();
+    // md_show();
+
+    volatile mem_entry *e = (mem_entry *)0x10000;
+
+    for (int i = 0; i < 15; i++) {
+        vga_putqw(e->base_address);
+        vga_putc(' ');
+        vga_putqw(e->length);
+        vga_putc(' ');
+        vga_putdw(e->type);
+        vga_putc(' ');
+        vga_putdw(e->extended_attributes);
+        vga_putc('\n');
+        e++;
+    }
 }
 
 void kernel_idle(void) {
