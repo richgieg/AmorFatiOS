@@ -7,7 +7,7 @@ set -e
 mkdir -p bin
 
 # Assemble the boot sector.
-nasm -f bin -o bin/boot src/boot/boot.s
+nasm -f bin -o bin/boot src/boot/boot.asm
 
 # Compile the kernel.
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
