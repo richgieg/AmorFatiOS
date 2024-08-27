@@ -64,6 +64,16 @@ void mm_show_mdump(void) {
     }
 }
 
+void mm_mdump_next_byte(void) {
+    mdump_cur_addr += 1;
+    mm_show_mdump();
+}
+
+void mm_mdump_prev_byte(void) {
+    mdump_cur_addr -= 1;
+    mm_show_mdump();
+}
+
 void mm_mdump_next_line(void) {
     mdump_cur_addr += MDUMP_BYTES_PER_LINE;
     mm_show_mdump();

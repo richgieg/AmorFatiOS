@@ -34,6 +34,12 @@ static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
     // vga_puts("P ");
 
     switch (scancodew) {
+        case SC_RIGHT:
+            mm_mdump_next_byte();
+            break;
+        case SC_LEFT:
+            mm_mdump_prev_byte();
+            break;
         case SC_DOWN:
             mm_mdump_next_line();
             break;
