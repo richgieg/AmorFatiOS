@@ -7,6 +7,7 @@
 #include "ps2.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "pci.h"
 
 void kernel_init(void) {
     vga_init();
@@ -17,10 +18,11 @@ void kernel_init(void) {
     ps2_init();
     keyboard_init();
     mouse_init();
+    pci_init();
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    mm_show_mdump();
+    // mm_show_mdump();
     // mm_show_mmap();
 }
 
