@@ -20,7 +20,7 @@ void kernel_init(void) {
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    mm_md_show();
+    mm_show_mdump();
     // mm_show_mmap();
 }
 

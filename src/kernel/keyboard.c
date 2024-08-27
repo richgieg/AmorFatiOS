@@ -35,22 +35,22 @@ static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
 
     switch (scancodew) {
         case SC_DOWN:
-            mm_md_next_line();
+            mm_mdump_next_line();
             break;
         case SC_UP:
-            mm_md_prev_line();
+            mm_mdump_prev_line();
             break;
         case SC_PAGEDOWN:
-            mm_md_next_page();
+            mm_mdump_next_page();
             break;
         case SC_PAGEUP:
-            mm_md_prev_page();
+            mm_mdump_prev_page();
             break;
         case SC_END:
-            mm_md_next_mb();
+            mm_mdump_next_mb();
             break;
         case SC_HOME:
-            mm_md_prev_mb();
+            mm_mdump_prev_mb();
             break;
     }
 }
