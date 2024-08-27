@@ -21,8 +21,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     src/kernel/ps2.c \
     src/kernel/timer.c \
     src/kernel/keyboard.c \
-    src/kernel/mouse.c \
-    src/kernel/memdump.c
+    src/kernel/mouse.c
 
 # Write boot sector and kernel to virtual floppy disk file.
 sudo dd if=/dev/zero of=bin/os.flp bs=512 count=2880

@@ -7,7 +7,6 @@
 #include "ps2.h"
 #include "keyboard.h"
 #include "mouse.h"
-#include "memdump.h"
 
 void kernel_init(void) {
     vga_init();
@@ -21,8 +20,8 @@ void kernel_init(void) {
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
-    // md_show();
-    mm_show_mmap();
+    mm_md_show();
+    // mm_show_mmap();
 }
 
 void kernel_idle(void) {

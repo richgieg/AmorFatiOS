@@ -4,7 +4,7 @@
 #include "ps2.h"
 #include "pic.h"
 #include "vga.h"
-#include "memdump.h"
+#include "mm.h"
 
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
@@ -35,22 +35,22 @@ static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
 
     switch (scancodew) {
         case SC_DOWN:
-            md_next_line();
+            mm_md_next_line();
             break;
         case SC_UP:
-            md_prev_line();
+            mm_md_prev_line();
             break;
         case SC_PAGEDOWN:
-            md_next_page();
+            mm_md_next_page();
             break;
         case SC_PAGEUP:
-            md_prev_page();
+            mm_md_prev_page();
             break;
         case SC_END:
-            md_next_mb();
+            mm_md_next_mb();
             break;
         case SC_HOME:
-            md_prev_mb();
+            mm_md_prev_mb();
             break;
     }
 }
