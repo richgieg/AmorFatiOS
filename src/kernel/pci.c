@@ -14,6 +14,7 @@
 #define R_ICS       0x000c8
 #define R_IMS       0x000d0
 
+#define CTRL_SLU    0x00000040
 #define CTRL_RST    0x04000000
 
 typedef struct {
@@ -247,24 +248,12 @@ void pci_init(void) {
     vga_putdw(ctrl);
     vga_putc('\n');
 
-    write_mmio(mmio_base, R_CTRL, ctrl | CTRL_RST);
+    write_mmio(mmio_base, R_CTRL, ctrl | CTRL_SLU);
     for (volatile int i = 0; i < 100000000; i++);
     ctrl = read_mmio(mmio_base, R_CTRL);
     vga_puts("82525EM CTRL: ");
     vga_putdw(ctrl);
     vga_putc('\n');
-
-    // write_mmio(mmio_base, 0x0, control | R_STATUS);
-    // for (volatile int i = 0; i < 100000000; i++);
-    // control = read_mmio(mmio_base, R_CTRL);
-    // vga_putdw(control);
-    // vga_putc('\n');
-
-    // write_mmio(mmio_base, R_CTRL, control & (~0x8));
-    // for (volatile int i = 0; i < 100000000; i++);
-    // control = read_mmio(mmio_base, R_CTRL);
-    // vga_putdw(control);
-    // vga_putc('\n');
 
     uint32_t status = read_mmio(mmio_base, R_STATUS);
     vga_puts("82525EM STATUS: ");
@@ -276,7 +265,6 @@ void pci_init(void) {
 
     // Enable all interrupts.
     write_mmio(mmio_base, R_IMS, 0xffffffff);
-    for (volatile int i = 0; i < 100000000; i++);
 
     // Raise "link status change" interrupt.
     write_mmio(mmio_base, R_ICS, 0x2);
