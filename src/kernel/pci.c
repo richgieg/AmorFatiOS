@@ -32,6 +32,13 @@
 // RCTL Register Bits
 #define RCTL_EN     0x00000002
 
+// ICR Register Bits
+#define ICR_RXDMT0  0x00000010
+#define ICR_RXT0    0x00000080
+
+#define RX_BUFFER_COUNT 64
+#define RX_BUFFER_SIZE 2048
+
 typedef struct {
     char signature[8];
     uint8_t checksum;
@@ -186,17 +193,35 @@ void enumerate_pci_devices(uint64_t base_address, uint8_t start_bus, uint8_t end
 
 static uint32_t mmio_base;
 
-__attribute__((aligned(0x10)))
-static uint8_t rx_descriptors[16 * 64];
+typedef struct {
+    uint64_t address;
+    uint16_t length;
+    uint16_t checksum;
+    uint8_t status;
+    uint8_t errors;
+    uint8_t reserved[2];
+} __attribute__((packed)) rx_descriptor_t;
 
-static uint8_t rx_buffers[64 * 2048];
+__attribute__((aligned(0x10)))
+static rx_descriptor_t rx_descriptors[RX_BUFFER_COUNT];
+
+static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
 
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    uint32_t cause = read_mmio(mmio_base, R_ICR);
-    vga_puts("82525EM interrupt -- cause: ");
-    vga_putdw(cause);
+    uint32_t icr = read_mmio(mmio_base, R_ICR);
+    vga_puts("82525EM interrupt -- ICR: ");
+    vga_putdw(icr);
     vga_putc('\n');
+
+    if (icr & ICR_RXDMT0) {
+        vga_puts("RXDMT0: Receive Descriptor Minimum Threshold Reached\n");
+    }
+
+    if (icr & ICR_RXT0) {
+        vga_puts("RXT0: Receiver Timer Interrupt\n");
+    }
+
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
@@ -285,18 +310,33 @@ void pci_init(void) {
     vga_putdw(rctl);
     vga_putc('\n');
 
+    // Register ISR and unmask the interrupt in the PIC.
     idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
     pic_unmask_irq(0xb);
 
     // Enable all interrupts.
     write_mmio(mmio_base, R_IMS, 0xffffffff);
 
-    // Raise "link status change" interrupt.
-    write_mmio(mmio_base, R_ICS, 0x2);
+    // // Raise "link status change" interrupt.
+    // write_mmio(mmio_base, R_ICS, 0x2);
 
-    vga_putdw((uint32_t)rx_descriptors);
-    vga_putc('\n');
+    // Store receive descriptor base address.
+    write_mmio(mmio_base, R_RDBAL, (uint32_t)rx_descriptors);
+    write_mmio(mmio_base, R_RDBAH, 0);
 
-    vga_putdw((uint32_t)rx_buffers);
-    vga_putc('\n');
+    // Store receive descriptor buffer length.
+    write_mmio(mmio_base, R_RDLEN, sizeof(rx_descriptors));
+
+    // Set the receive descriptor head and tail.
+    write_mmio(mmio_base, R_RDH, 0);
+    write_mmio(mmio_base, R_RDT, RX_BUFFER_COUNT);
+
+    // Store address of first buffer into first descriptor.
+    *(uint32_t *)rx_descriptors = (uint32_t)rx_buffers;
+
+    for (int i = 0; i < RX_BUFFER_COUNT; i++) {
+        rx_descriptors[i].address = (uint32_t)(&rx_buffers[i]);
+    }
+
+    write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN);
 }
