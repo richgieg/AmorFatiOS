@@ -8,14 +8,29 @@
 #include "idt.h"
 #include "port.h"
 
+// General Registers
 #define R_CTRL      0x00000
 #define R_STATUS    0x00008
+
+// Interrupt Registers
 #define R_ICR       0x000c0
 #define R_ICS       0x000c8
 #define R_IMS       0x000d0
 
+// Receive Registers
+#define R_RCTL      0x00100
+#define R_RDBAL     0x02800
+#define R_RDBAH     0x02804
+#define R_RDLEN     0x02808
+#define R_RDH       0x02810
+#define R_RDT       0x02818
+
+// CTRL Register Bits
 #define CTRL_SLU    0x00000040
 #define CTRL_RST    0x04000000
+
+// RCTL Register Bits
+#define RCTL_EN     0x00000002
 
 typedef struct {
     char signature[8];
@@ -171,6 +186,11 @@ void enumerate_pci_devices(uint64_t base_address, uint8_t start_bus, uint8_t end
 
 static uint32_t mmio_base;
 
+__attribute__((aligned(0x10)))
+static uint8_t rx_descriptors[16 * 64];
+
+static uint8_t rx_buffers[64 * 2048];
+
 __attribute__((naked))
 static void interrupt_service_routine(void) {
     uint32_t cause = read_mmio(mmio_base, R_ICR);
@@ -260,6 +280,11 @@ void pci_init(void) {
     vga_putdw(status);
     vga_putc('\n');
 
+    uint32_t rctl = read_mmio(mmio_base, R_RCTL);
+    vga_puts("82525EM RCTL: ");
+    vga_putdw(rctl);
+    vga_putc('\n');
+
     idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
     pic_unmask_irq(0xb);
 
@@ -268,4 +293,10 @@ void pci_init(void) {
 
     // Raise "link status change" interrupt.
     write_mmio(mmio_base, R_ICS, 0x2);
+
+    vga_putdw((uint32_t)rx_descriptors);
+    vga_putc('\n');
+
+    vga_putdw((uint32_t)rx_buffers);
+    vga_putc('\n');
 }
