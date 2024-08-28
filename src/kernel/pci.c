@@ -14,6 +14,8 @@
 #define R_ICS       0x000c8
 #define R_IMS       0x000d0
 
+#define CTRL_RST    0x04000000
+
 typedef struct {
     char signature[8];
     uint8_t checksum;
@@ -166,9 +168,14 @@ void enumerate_pci_devices(uint64_t base_address, uint8_t start_bus, uint8_t end
     }
 }
 
+static uint32_t mmio_base;
+
 __attribute__((naked))
 static void interrupt_service_routine(void) {
-    vga_putc('!');
+    uint32_t cause = read_mmio(mmio_base, R_ICR);
+    vga_puts("82525EM interrupt -- cause: ");
+    vga_putdw(cause);
+    vga_putc('\n');
     outb(PIC1_COMMAND, PIC_EOI);
     __asm__("iret");
 }
@@ -229,20 +236,23 @@ void pci_init(void) {
     vga_putc('\n');
 
     // NOTE: If bit 0 in bar is 1 then I/O port should be used instead.
-    uint32_t mmio_base = bar0 & 0xfffffff0;
+    // uint32_t mmio_base = bar0 & 0xfffffff0;
+    mmio_base = bar0 & 0xfffffff0;
     vga_puts("mmio_base = ");
     vga_putdw(mmio_base);
     vga_putc('\n');
 
-    // uint32_t control = read_mmio(mmio_base, R_CTRL);
-    // vga_putdw(control);
-    // vga_putc('\n');
+    uint32_t ctrl = read_mmio(mmio_base, R_CTRL);
+    vga_puts("82525EM CTRL: ");
+    vga_putdw(ctrl);
+    vga_putc('\n');
 
-    // write_mmio(mmio_base, R_CTRL, control | 0x4000000);
-    // for (volatile int i = 0; i < 100000000; i++);
-    // control = read_mmio(mmio_base, R_CTRL);
-    // vga_putdw(control);
-    // vga_putc('\n');
+    write_mmio(mmio_base, R_CTRL, ctrl | CTRL_RST);
+    for (volatile int i = 0; i < 100000000; i++);
+    ctrl = read_mmio(mmio_base, R_CTRL);
+    vga_puts("82525EM CTRL: ");
+    vga_putdw(ctrl);
+    vga_putc('\n');
 
     // write_mmio(mmio_base, 0x0, control | R_STATUS);
     // for (volatile int i = 0; i < 100000000; i++);
