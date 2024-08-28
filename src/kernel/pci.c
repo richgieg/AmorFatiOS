@@ -226,7 +226,6 @@ void pci_init(void) {
     vga_putc('\n');
 
     uint32_t value = read_mmio(mmio_base, 0x00008);
-    // TODO: Figure out why this doesn't work!
     vga_putdw(value);
 
     // idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
