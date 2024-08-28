@@ -1,6 +1,11 @@
 [bits 16]
 [org 0x7c00]
 
+; Enable address line 20 (A20) via BIOS.
+; Allows access to memory addresses that have bit 20 set (odd megabytes).
+mov ax, 0x2401
+int 0x15
+
 ; Populate the memory map at 0x10000 for the kernel's memory manager.
 mov ax, 0x1000
 mov es, ax
