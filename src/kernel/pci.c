@@ -266,9 +266,10 @@ void pci_init(void) {
     // vga_putdw(control);
     // vga_putc('\n');
 
-    // uint32_t status = read_mmio(mmio_base, R_STATUS);
-    // vga_putdw(status);
-    // vga_putc('\n');
+    uint32_t status = read_mmio(mmio_base, R_STATUS);
+    vga_puts("82525EM STATUS: ");
+    vga_putdw(status);
+    vga_putc('\n');
 
     idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
     pic_unmask_irq(0xb);
