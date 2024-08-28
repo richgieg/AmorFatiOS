@@ -1,9 +1,18 @@
+// NOTE: Currently a mix of PCI and Intel 82545EM network driver.
+// Network driver portion will be moved at some point.
+
 #include "pci.h"
 #include "vga.h"
 #include "string.h"
 #include "pic.h"
 #include "idt.h"
 #include "port.h"
+
+#define R_CTRL      0x00000
+#define R_STATUS    0x00008
+#define R_ICR       0x000c0
+#define R_ICS       0x000c8
+#define R_IMS       0x000d0
 
 typedef struct {
     char signature[8];
@@ -157,12 +166,12 @@ void enumerate_pci_devices(uint64_t base_address, uint8_t start_bus, uint8_t end
     }
 }
 
-// __attribute__((naked))
-// static void interrupt_service_routine(void) {
-//     vga_putc('!');
-//     outb(PIC1_COMMAND, PIC_EOI);
-//     __asm__("iret");
-// }
+__attribute__((naked))
+static void interrupt_service_routine(void) {
+    vga_putc('!');
+    outb(PIC1_COMMAND, PIC_EOI);
+    __asm__("iret");
+}
 
 void pci_init(void) {
     xsdp_t *xsdp = find_xsdp();
@@ -225,9 +234,39 @@ void pci_init(void) {
     vga_putdw(mmio_base);
     vga_putc('\n');
 
-    uint32_t value = read_mmio(mmio_base, 0x00008);
-    vga_putdw(value);
+    // uint32_t control = read_mmio(mmio_base, R_CTRL);
+    // vga_putdw(control);
+    // vga_putc('\n');
 
-    // idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
-    // pic_unmask_irq(0xb);
+    // write_mmio(mmio_base, R_CTRL, control | 0x4000000);
+    // for (volatile int i = 0; i < 100000000; i++);
+    // control = read_mmio(mmio_base, R_CTRL);
+    // vga_putdw(control);
+    // vga_putc('\n');
+
+    // write_mmio(mmio_base, 0x0, control | R_STATUS);
+    // for (volatile int i = 0; i < 100000000; i++);
+    // control = read_mmio(mmio_base, R_CTRL);
+    // vga_putdw(control);
+    // vga_putc('\n');
+
+    // write_mmio(mmio_base, R_CTRL, control & (~0x8));
+    // for (volatile int i = 0; i < 100000000; i++);
+    // control = read_mmio(mmio_base, R_CTRL);
+    // vga_putdw(control);
+    // vga_putc('\n');
+
+    // uint32_t status = read_mmio(mmio_base, R_STATUS);
+    // vga_putdw(status);
+    // vga_putc('\n');
+
+    idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
+    pic_unmask_irq(0xb);
+
+    // Enable all interrupts.
+    write_mmio(mmio_base, R_IMS, 0xffffffff);
+    for (volatile int i = 0; i < 100000000; i++);
+
+    // Raise "link status change" interrupt.
+    write_mmio(mmio_base, R_ICS, 0x2);
 }
