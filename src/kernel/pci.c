@@ -350,7 +350,7 @@ void pci_init(void) {
 
     // Register ISR and unmask the interrupt in the PIC.
     idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine_stub, 0x8e);
-    pic_unmask_irq(0xb);
+    pic_unmask_irq(11);
 
     // Enable all interrupts.
     write_mmio(mmio_base, R_IMS, 0xffffffff);
