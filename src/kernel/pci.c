@@ -36,6 +36,10 @@
 #define ICR_RXDMT0  0x00000010
 #define ICR_RXT0    0x00000080
 
+// Receive Descriptor Status Bits
+#define RX_DESC_STATUS_DD       0x01
+#define RX_DESC_STATUS_EOP      0x02
+
 #define RX_BUFFER_COUNT 64
 #define RX_BUFFER_SIZE 2048
 
@@ -204,8 +208,8 @@ typedef struct {
 
 __attribute__((aligned(0x10)))
 static rx_descriptor_t rx_descriptors[RX_BUFFER_COUNT];
-
 static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
+static uint16_t rx_cur_idx;
 
 static void interrupt_service_routine(void) {
     uint32_t icr = read_mmio(mmio_base, R_ICR);
@@ -219,39 +223,25 @@ static void interrupt_service_routine(void) {
 
     if (icr & ICR_RXT0) {
         vga_puts("RXT0: Receiver Timer Interrupt\n");
-        uint32_t head = read_mmio(mmio_base, R_RDH);
-        uint32_t tail = read_mmio(mmio_base, R_RDT);
-        // vga_puts("RDH: ");
-        // vga_putdw(head);
-        // vga_puts("\nRDT: ");
-        // vga_putdw(tail);
-        // vga_putc('\n');
 
-        uint32_t idx = (tail + 1) % RX_BUFFER_COUNT;
-        uint32_t count = (head - idx) % RX_BUFFER_COUNT;
-        // vga_puts("idx: ");
-        // vga_putdw(idx);
-        // vga_puts("\ncount: ");
-        // vga_putdw(count);
-        // vga_putc('\n');
-
-        while (count--) {
+        while (rx_descriptors[rx_cur_idx].status & RX_DESC_STATUS_DD) {
             vga_puts("Status=");
-            vga_putb(rx_descriptors[idx].status);
+            vga_putb(rx_descriptors[rx_cur_idx].status);
             vga_puts(" Length=");
-            vga_putw(rx_descriptors[idx].length);
+            vga_putw(rx_descriptors[rx_cur_idx].length);
             vga_putc('\n');
 
-            for (uint16_t i = 0; i < rx_descriptors[idx].length; i++) {
-                vga_putb(rx_buffers[idx][i]);
+            for (uint16_t i = 0; i < rx_descriptors[rx_cur_idx].length; i++) {
+                vga_putb(rx_buffers[rx_cur_idx][i]);
                 vga_putc(' ');
             }
             vga_putc('\n');
 
-            idx = (idx + 1) % RX_BUFFER_COUNT;
+            rx_descriptors[rx_cur_idx].status = 0;
+            rx_cur_idx = (rx_cur_idx + 1) % RX_BUFFER_COUNT;
         }
 
-        write_mmio(mmio_base, R_RDT, (head - 1) % RX_BUFFER_COUNT);
+        write_mmio(mmio_base, R_RDT, (rx_cur_idx - 1) % RX_BUFFER_COUNT);
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
@@ -355,9 +345,6 @@ void pci_init(void) {
     // Enable all interrupts.
     write_mmio(mmio_base, R_IMS, 0xffffffff);
 
-    // // Raise "link status change" interrupt.
-    // write_mmio(mmio_base, R_ICS, 0x2);
-
     // Store receive descriptor base address.
     write_mmio(mmio_base, R_RDBAL, (uint32_t)rx_descriptors);
     write_mmio(mmio_base, R_RDBAH, 0);
@@ -365,13 +352,14 @@ void pci_init(void) {
     // Store receive descriptor buffer length.
     write_mmio(mmio_base, R_RDLEN, sizeof(rx_descriptors));
 
+    // Set current descriptor index to beginning of ring.
+    rx_cur_idx = 0;
+
     // Set the receive descriptor head and tail.
-    write_mmio(mmio_base, R_RDH, 0);
-    write_mmio(mmio_base, R_RDT, RX_BUFFER_COUNT - 1);
+    write_mmio(mmio_base, R_RDH, rx_cur_idx);
+    write_mmio(mmio_base, R_RDT, (rx_cur_idx - 1) % RX_BUFFER_COUNT);
 
-    // Store address of first buffer into first descriptor.
-    *(uint32_t *)rx_descriptors = (uint32_t)rx_buffers;
-
+    // Store corresonding buffer addresses in descriptors.
     for (int i = 0; i < RX_BUFFER_COUNT; i++) {
         rx_descriptors[i].address = (uint32_t)(&rx_buffers[i]);
     }
