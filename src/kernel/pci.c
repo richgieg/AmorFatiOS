@@ -220,6 +220,12 @@ static void interrupt_service_routine(void) {
 
     if (icr & ICR_RXT0) {
         vga_puts("RXT0: Receiver Timer Interrupt\n");
+        uint32_t head = read_mmio(mmio_base, R_RDH);
+        uint32_t tail = read_mmio(mmio_base, R_RDT);
+        vga_puts("RDH: ");
+        vga_putdw(head);
+        vga_puts("\nRDT: ");
+        vga_putdw(tail);
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
@@ -329,7 +335,7 @@ void pci_init(void) {
 
     // Set the receive descriptor head and tail.
     write_mmio(mmio_base, R_RDH, 0);
-    write_mmio(mmio_base, R_RDT, RX_BUFFER_COUNT);
+    write_mmio(mmio_base, R_RDT, RX_BUFFER_COUNT - 1);
 
     // Store address of first buffer into first descriptor.
     *(uint32_t *)rx_descriptors = (uint32_t)rx_buffers;
