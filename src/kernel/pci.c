@@ -32,7 +32,7 @@
 // RCTL Register Bits
 #define RCTL_EN     0x00000002
 
-// ICR Register Bits
+// ICR/S Register Bits
 #define ICR_RXDMT0  0x00000010
 #define ICR_RXT0    0x00000080
 
@@ -226,9 +226,11 @@ static void interrupt_service_routine(void) {
         vga_putdw(head);
         vga_puts("\nRDT: ");
         vga_putdw(tail);
+        vga_putc('\n');
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
+    outb(PIC2_COMMAND, PIC_EOI);
     __asm__("iret");
 }
 
