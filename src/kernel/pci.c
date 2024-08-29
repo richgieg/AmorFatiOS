@@ -207,7 +207,6 @@ static rx_descriptor_t rx_descriptors[RX_BUFFER_COUNT];
 
 static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
 
-__attribute__((naked))
 static void interrupt_service_routine(void) {
     uint32_t icr = read_mmio(mmio_base, R_ICR);
     vga_puts("82525EM interrupt -- ICR: ");
@@ -222,16 +221,46 @@ static void interrupt_service_routine(void) {
         vga_puts("RXT0: Receiver Timer Interrupt\n");
         uint32_t head = read_mmio(mmio_base, R_RDH);
         uint32_t tail = read_mmio(mmio_base, R_RDT);
-        vga_puts("RDH: ");
-        vga_putdw(head);
-        vga_puts("\nRDT: ");
-        vga_putdw(tail);
-        vga_putc('\n');
+        // vga_puts("RDH: ");
+        // vga_putdw(head);
+        // vga_puts("\nRDT: ");
+        // vga_putdw(tail);
+        // vga_putc('\n');
+
+        uint32_t idx = (tail + 1) % RX_BUFFER_COUNT;
+        uint32_t count = (head - idx) % RX_BUFFER_COUNT;
+        // vga_puts("idx: ");
+        // vga_putdw(idx);
+        // vga_puts("\ncount: ");
+        // vga_putdw(count);
+        // vga_putc('\n');
+
+        while (count--) {
+            vga_puts("Status=");
+            vga_putb(rx_descriptors[idx].status);
+            vga_puts(" Length=");
+            vga_putw(rx_descriptors[idx].length);
+            vga_putc('\n');
+
+            for (uint16_t i = 0; i < rx_descriptors[idx].length; i++) {
+                vga_putb(rx_buffers[idx][i]);
+                vga_putc(' ');
+            }
+            vga_putc('\n');
+
+            idx = (idx + 1) % RX_BUFFER_COUNT;
+        }
+
         write_mmio(mmio_base, R_RDT, (head - 1) % RX_BUFFER_COUNT);
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC2_COMMAND, PIC_EOI);
+}
+
+__attribute__((naked))
+static void interrupt_service_routine_stub(void) {
+    interrupt_service_routine();
     __asm__("iret");
 }
 
@@ -320,7 +349,7 @@ void pci_init(void) {
     vga_putc('\n');
 
     // Register ISR and unmask the interrupt in the PIC.
-    idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine, 0x8e);
+    idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine_stub, 0x8e);
     pic_unmask_irq(0xb);
 
     // Enable all interrupts.
