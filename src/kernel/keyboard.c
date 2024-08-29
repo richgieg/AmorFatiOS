@@ -71,7 +71,6 @@ static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
     // vga_puts("R ");
 }
 
-__attribute__((naked))
 static void interrupt_service_routine(void) {
     uint8_t data = inb(PS2_DATA_PORT);
 
@@ -90,10 +89,15 @@ static void interrupt_service_routine(void) {
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
+}
+
+__attribute__((naked))
+static void interrupt_service_routine_stub(void) {
+    interrupt_service_routine();
     __asm__("iret");
 }
 
 void keyboard_init(void) {
-    idt_set_descriptor(IRQ1_INTERRUPT, interrupt_service_routine, 0x8e);
+    idt_set_descriptor(IRQ1_INTERRUPT, interrupt_service_routine_stub, 0x8e);
     pic_unmask_irq(1);
 }
