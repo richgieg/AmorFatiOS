@@ -44,9 +44,11 @@
 // TCTL Register Bits
 #define TCTL_EN     0x00000002
 
-// ICR/S Register Bits
-#define ICR_RXDMT0  0x00000010
-#define ICR_RXT0    0x00000080
+// ICR/ICS Register Bits
+#define ICR_TXDW    0x00000001  // Transmit Descriptor Written Back
+#define ICR_TXQE    0x00000002  // Transmit Queue Empty
+#define ICR_RXDMT0  0x00000010  // Receive Descriptor Minimum Threshold Reached
+#define ICR_RXT0    0x00000080  // Reciever Timer Interrupt
 
 // Receive Descriptor Status Bits
 #define RX_DESC_STATUS_DD       0x01    // Descriptor Done
@@ -54,6 +56,7 @@
 
 // Transmit Descriptor Command Bits
 #define TX_DESC_COMMAND_EOP     0x01    // End Of Packet
+#define TX_DESC_COMMAND_IFCS    0x02    // Insert FCS
 #define TX_DESC_COMMAND_RS      0x08    // Repot Status
 
 // Transmit Descriptor Status Bits
@@ -254,6 +257,14 @@ static void interrupt_service_routine(void) {
     vga_putdw(icr);
     vga_putc('\n');
 
+    if (icr & ICR_TXDW) {
+        vga_puts("TXDW: Transmit Descriptor Written Back\n");
+    }
+
+    if (icr & ICR_TXQE) {
+        vga_puts("TXQE: Transmit Queue Empty\n");
+    }
+
     if (icr & ICR_RXDMT0) {
         vga_puts("RXDMT0: Receive Descriptor Minimum Threshold Reached\n");
     }
@@ -429,7 +440,7 @@ void pci_init(void) {
     // Initialize the transmit descriptors.
     for (int i = 0; i < TX_BUFFER_COUNT; i++) {
         tx_descriptors[i].address = (uint32_t)(&tx_buffers[i]);
-        tx_descriptors[i].command = TX_DESC_COMMAND_RS;
+        tx_descriptors[i].command = TX_DESC_COMMAND_RS | TX_DESC_COMMAND_EOP | TX_DESC_COMMAND_IFCS;
     }
 
     // Enable receive function.
@@ -437,4 +448,25 @@ void pci_init(void) {
 
     // Enable transmit function.
     write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
+
+    // Send a test ping.
+    static uint8_t frame[] = {
+        // Destination
+        0x00, 0x0c, 0x29, 0x3c, 0x62, 0x6c,
+        // Source
+        0x00, 0x0c, 0x29, 0xb6, 0xd3, 0x84,
+        // Type
+        0x08, 0x00,
+        // Data
+        0x45, 0x00, 0x00, 0x54, 0x3e, 0x6f, 0x40, 0x00, 0x40, 0x01, 0x79, 0x8c, 0xc0, 0xa8, 0x00, 0xfa,
+        0xc0, 0xa8, 0x00, 0x63, 0x08, 0x00, 0x86, 0x6a, 0x00, 0x01, 0x00, 0x01, 0x0c, 0xc4, 0xd0, 0x66,
+        0x00, 0x00, 0x00, 0x00, 0xcb, 0x95, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x11, 0x12, 0x13,
+        0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23,
+        0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33,
+        0x34, 0x35, 0x36, 0x37,
+    };
+
+    memcpy(tx_buffers[0], frame, sizeof(frame));
+    tx_descriptors[0].length = sizeof(frame);
+    write_mmio(mmio_base, R_TDT, 1);
 }
