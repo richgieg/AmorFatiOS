@@ -49,6 +49,8 @@ void vga_clear(void) {
     for (int i = 0; i < VGA_ROWS * VGA_COLUMNS; i++) {
         vga_buffer[i] = entry;
     }
+    cur_col = 0;
+    cur_row = 0;
 }
 
 enum vga_color vga_get_bg_color() {

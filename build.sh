@@ -23,7 +23,8 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     src/kernel/keyboard.c \
     src/kernel/mouse.c \
     src/kernel/pci.c \
-    src/kernel/string.c
+    src/kernel/string.c \
+    src/kernel/bugcheck.c
 
 # Write boot sector and kernel to virtual floppy disk file.
 sudo dd if=/dev/zero of=bin/os.flp bs=512 count=2880
