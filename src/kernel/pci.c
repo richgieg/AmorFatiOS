@@ -7,6 +7,7 @@
 #include "pic.h"
 #include "idt.h"
 #include "port.h"
+#include "bugcheck.h"
 
 // General Registers
 #define R_CTRL      0x00000
@@ -225,6 +226,12 @@ static void interrupt_service_routine(void) {
         vga_puts("RXT0: Receiver Timer Interrupt\n");
 
         while (rx_descriptors[rx_cur_idx].status & RX_DESC_STATUS_DD) {
+
+            // TODO: Handle multi-descriptor packets.
+            if (!(rx_descriptors[rx_cur_idx].status & RX_DESC_STATUS_EOP)) {
+                BUGCHECK("Multi-descriptor packets not supported yet.");
+            }
+
             vga_puts("Status=");
             vga_putb(rx_descriptors[rx_cur_idx].status);
             vga_puts(" Length=");
