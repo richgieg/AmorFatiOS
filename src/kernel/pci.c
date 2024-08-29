@@ -26,6 +26,14 @@
 #define R_RDH       0x02810
 #define R_RDT       0x02818
 
+// Transmit Registers
+#define R_TCTL      0x00400
+#define R_TDBAL     0x03800
+#define R_TDBAH     0x03804
+#define R_TDLEN     0x03808
+#define R_TDH       0x03810
+#define R_TDT       0x03818
+
 // CTRL Register Bits
 #define CTRL_SLU    0x00000040
 #define CTRL_RST    0x04000000
@@ -33,16 +41,29 @@
 // RCTL Register Bits
 #define RCTL_EN     0x00000002
 
+// TCTL Register Bits
+#define TCTL_EN     0x00000002
+
 // ICR/S Register Bits
 #define ICR_RXDMT0  0x00000010
 #define ICR_RXT0    0x00000080
 
 // Receive Descriptor Status Bits
-#define RX_DESC_STATUS_DD       0x01
-#define RX_DESC_STATUS_EOP      0x02
+#define RX_DESC_STATUS_DD       0x01    // Descriptor Done
+#define RX_DESC_STATUS_EOP      0x02    // End Of Packet
+
+// Transmit Descriptor Command Bits
+#define TX_DESC_COMMAND_EOP     0x01    // End Of Packet
+#define TX_DESC_COMMAND_RS      0x08    // Repot Status
+
+// Transmit Descriptor Status Bits
+#define TX_DESC_STATUS_DD       0x01    // Descriptor Done
 
 #define RX_BUFFER_COUNT 64
 #define RX_BUFFER_SIZE 2048
+
+#define TX_BUFFER_COUNT 64
+#define TX_BUFFER_SIZE 2048
 
 typedef struct {
     char signature[8];
@@ -207,10 +228,25 @@ typedef struct {
     uint8_t reserved[2];
 } __attribute__((packed)) rx_descriptor_t;
 
+typedef struct {
+    uint64_t address;
+    uint16_t length;
+    uint8_t checksum_offset;
+    uint8_t command;
+    uint8_t status;
+    uint8_t checksum_start;
+    uint16_t special;
+} __attribute__((packed)) tx_descriptor_t;
+
 __attribute__((aligned(0x10)))
 static rx_descriptor_t rx_descriptors[RX_BUFFER_COUNT];
 static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
 static uint16_t rx_cur_idx;
+
+__attribute__((aligned(0x10)))
+static tx_descriptor_t tx_descriptors[TX_BUFFER_COUNT];
+static uint8_t tx_buffers[TX_BUFFER_COUNT][TX_BUFFER_SIZE];
+static uint16_t tx_cur_idx;
 
 static void interrupt_service_routine(void) {
     uint32_t icr = read_mmio(mmio_base, R_ICR);
@@ -345,6 +381,11 @@ void pci_init(void) {
     vga_putdw(rctl);
     vga_putc('\n');
 
+    uint32_t tctl = read_mmio(mmio_base, R_TCTL);
+    vga_puts("82525EM TCTL: ");
+    vga_putdw(tctl);
+    vga_putc('\n');
+
     // Register ISR and unmask the interrupt in the PIC.
     idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine_stub, 0x8e);
     pic_unmask_irq(11);
@@ -359,17 +400,41 @@ void pci_init(void) {
     // Store receive descriptor buffer length.
     write_mmio(mmio_base, R_RDLEN, sizeof(rx_descriptors));
 
-    // Set current descriptor index to beginning of ring.
+    // Set current receive descriptor index to beginning of ring buffer.
     rx_cur_idx = 0;
 
-    // Set the receive descriptor head and tail.
+    // Initialize the receive descriptor ring head and tail.
     write_mmio(mmio_base, R_RDH, rx_cur_idx);
     write_mmio(mmio_base, R_RDT, (rx_cur_idx - 1) % RX_BUFFER_COUNT);
 
-    // Store corresonding buffer addresses in descriptors.
+    // Initialize the receive descriptors.
     for (int i = 0; i < RX_BUFFER_COUNT; i++) {
         rx_descriptors[i].address = (uint32_t)(&rx_buffers[i]);
     }
 
+    // Store transmit descriptor base address.
+    write_mmio(mmio_base, R_TDBAL, (uint32_t)tx_descriptors);
+    write_mmio(mmio_base, R_TDBAH, 0);
+
+    // Store transmit descriptor buffer length.
+    write_mmio(mmio_base, R_TDLEN, sizeof(tx_descriptors));
+
+    // Set current transmit descriptor index to beginning of ring buffer.
+    tx_cur_idx = 0;
+
+    // Initialize the transmit descriptor ring head and tail.
+    write_mmio(mmio_base, R_TDH, tx_cur_idx);
+    write_mmio(mmio_base, R_TDT, tx_cur_idx);
+
+    // Initialize the transmit descriptors.
+    for (int i = 0; i < TX_BUFFER_COUNT; i++) {
+        tx_descriptors[i].address = (uint32_t)(&tx_buffers[i]);
+        tx_descriptors[i].command = TX_DESC_COMMAND_RS;
+    }
+
+    // Enable receive function.
     write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN);
+
+    // Enable transmit function.
+    write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
 }
