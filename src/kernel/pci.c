@@ -227,6 +227,7 @@ static void interrupt_service_routine(void) {
         vga_puts("\nRDT: ");
         vga_putdw(tail);
         vga_putc('\n');
+        write_mmio(mmio_base, R_RDT, (head - 1) % RX_BUFFER_COUNT);
     }
 
     outb(PIC1_COMMAND, PIC_EOI);
