@@ -2,9 +2,10 @@
 #include "port.h"
 #include "idt.h"
 #include "pic.h"
+#include "scheduler.h"
 
 static void interrupt_service_routine(void) {
-    // TODO: Do something here.
+    scheduler_update();
     outb(PIC1_COMMAND, PIC_EOI);
 }
 

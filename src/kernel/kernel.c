@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include "vga.h"
 #include "mm.h"
+#include "scheduler.h"
 #include "idt.h"
 #include "pic.h"
 #include "timer.h"
@@ -12,6 +13,7 @@
 void kernel_init(void) {
     vga_init();
     mm_init();
+    scheduler_init();
     idt_init();
     pic_init();
     timer_init();
