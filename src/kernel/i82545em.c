@@ -67,16 +67,16 @@
 #define TX_BUFFER_COUNT 64
 #define TX_BUFFER_SIZE 2048
 
-typedef struct {
+struct rx_descriptor {
     uint64_t address;
     uint16_t length;
     uint16_t checksum;
     uint8_t status;
     uint8_t errors;
     uint8_t reserved[2];
-} __attribute__((packed)) rx_descriptor_t;
+} __attribute__((packed));
 
-typedef struct {
+struct tx_descriptor {
     uint64_t address;
     uint16_t length;
     uint8_t checksum_offset;
@@ -84,17 +84,17 @@ typedef struct {
     uint8_t status;
     uint8_t checksum_start;
     uint16_t special;
-} __attribute__((packed)) tx_descriptor_t;
+} __attribute__((packed));
 
 static uint32_t mmio_base;
 
 __attribute__((aligned(0x10)))
-static rx_descriptor_t rx_descriptors[RX_BUFFER_COUNT];
+static struct rx_descriptor rx_descriptors[RX_BUFFER_COUNT];
 static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
 static uint16_t rx_cur_idx;
 
 __attribute__((aligned(0x10)))
-static tx_descriptor_t tx_descriptors[TX_BUFFER_COUNT];
+static struct tx_descriptor tx_descriptors[TX_BUFFER_COUNT];
 static uint8_t tx_buffers[TX_BUFFER_COUNT][TX_BUFFER_SIZE];
 static uint16_t tx_cur_idx;
 

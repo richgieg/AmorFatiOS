@@ -4,26 +4,26 @@
 
 #define IDT_MAX_DESCRIPTORS 256
 
-typedef struct {
+struct idtr {
+    uint16_t limit;
+    uint32_t base;
+} __attribute__((packed));
+
+struct idt_entry {
     uint16_t isr_low; // lower 16 bits of ISR's address
     uint16_t kernel_cs; // code segment selector
     uint8_t reserved; // should be set to zero
     uint8_t attributes; // type and attributes
     uint16_t isr_high; // higher 16 bites of ISR's address
-} __attribute__((packed)) idt_entry_t;
+} __attribute__((packed));
+
+static struct idtr idtr;
 
 __attribute__((aligned(0x10)))
-static idt_entry_t idt[256]; // array of IDT entries aligned for performance
-
-typedef struct {
-    uint16_t limit;
-    uint32_t base;
-} __attribute__((packed)) idtr_t;
-
-static idtr_t idtr;
+static struct idt_entry idt[256]; // array of IDT entries aligned for performance
 
 void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
-    idt_entry_t *descriptor = &idt[vector];
+    struct idt_entry *descriptor = &idt[vector];
     descriptor->isr_low = (uint32_t)isr & 0xffff;
     descriptor->kernel_cs = 0x08;
     descriptor->attributes = flags;
@@ -149,7 +149,7 @@ void exception_handler_19(void) {
 
 void idt_init(void) {
     idtr.base = (uintptr_t)&idt[0];
-    idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
+    idtr.limit = (uint16_t)sizeof(struct idt_entry) * IDT_MAX_DESCRIPTORS - 1;
 
     idt_set_descriptor(0, exception_handler_00, 0x8e);
     idt_set_descriptor(1, exception_handler_01, 0x8e);

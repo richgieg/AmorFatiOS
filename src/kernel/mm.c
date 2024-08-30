@@ -7,7 +7,7 @@
 #define MDUMP_BYTES_PER_PAGE 4096
 #define MDUMP_BYTES_PER_MB 1024 * 1024
 
-typedef struct {
+struct mmap_entry {
     uint64_t base_address;
     uint64_t length;
     uint32_t type;
@@ -21,7 +21,7 @@ void mm_init(void) {
 }
 
 void mm_show_mmap(void) {
-    mmap_entry *e = (mmap_entry *)MMAP_ADDRESS;
+    struct mmap_entry *e = (struct mmap_entry *)MMAP_ADDRESS;
 
     while (e->base_address || e->length || e->type || e->extended_attributes) {
         vga_putqw(e->base_address);
