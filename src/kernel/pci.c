@@ -41,6 +41,7 @@
 // RCTL Register Bits
 #define RCTL_EN     0x00000002 // Receiver Enable
 #define RCTL_BAM    0x00008000 // Broadcast Accept Mode
+#define RCTL_SECRC  0x04000000 // Strip Ethernet CRC
 
 // TCTL Register Bits
 #define TCTL_EN     0x00000002 // Transmit Enable
@@ -445,7 +446,7 @@ void pci_init(void) {
     }
 
     // Enable receive function.
-    write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN | RCTL_BAM);
+    write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN | RCTL_BAM | RCTL_SECRC);
 
     // Enable transmit function.
     write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
