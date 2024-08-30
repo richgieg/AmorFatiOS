@@ -15,14 +15,8 @@ static void interrupt_service_routine(void) {
     outb(PIC2_COMMAND, PIC_EOI);
 }
 
-__attribute__((naked))
-static void interrupt_service_routine_stub(void) {
-    interrupt_service_routine();
-    __asm__("jmp return_from_interrupt");
-}
-
 void mouse_init(void) {
-    idt_set_descriptor(IRQ12_INTERRUPT, interrupt_service_routine_stub, 0x8e);
+    idt_set_irq_handler(12, interrupt_service_routine);
     pic_unmask_irq(2);
     pic_unmask_irq(12);
 }

@@ -4,6 +4,6 @@
 #include "types.h"
 
 void idt_init(void);
-void idt_set_descriptor(u8 vector, void *isr, u8 flags);
+void idt_set_irq_handler(u8 irq, void (*handler)());
 
 #endif

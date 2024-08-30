@@ -9,13 +9,7 @@ static void interrupt_service_routine(void) {
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
-__attribute__((naked))
-static void interrupt_service_routine_stub(void) {
-    interrupt_service_routine();
-    __asm__("jmp return_from_interrupt");
-}
-
 void timer_init(void) {
-    idt_set_descriptor(IRQ0_INTERRUPT, interrupt_service_routine_stub, 0x8e);
+    idt_set_irq_handler(0, interrupt_service_routine);
     pic_unmask_irq(0);
 }

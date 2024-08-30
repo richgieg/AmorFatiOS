@@ -159,12 +159,6 @@ static void interrupt_service_routine(void) {
     outb(PIC2_COMMAND, PIC_EOI);
 }
 
-__attribute__((naked))
-static void interrupt_service_routine_stub(void) {
-    interrupt_service_routine();
-    __asm__("jmp return_from_interrupt");
-}
-
 void i82545em_init(u32 bar0) {
     // NOTE: If bit 0 in bar is 1 then I/O port should be used instead.
     // u32 mmio_base = bar0 & 0xfffffff0;
@@ -201,7 +195,8 @@ void i82545em_init(u32 bar0) {
     vga_putc('\n');
 
     // Register ISR and unmask the interrupt in the PIC.
-    idt_set_descriptor(IRQ11_INTERRUPT, interrupt_service_routine_stub, 0x8e);
+    idt_set_irq_handler(11, interrupt_service_routine);
+    pic_unmask_irq(2);
     pic_unmask_irq(11);
 
     // Enable all interrupts.
