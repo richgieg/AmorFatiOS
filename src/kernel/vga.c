@@ -202,6 +202,10 @@ void vga_putqw(uint64_t qw) {
     vga_puts(str);
 }
 
+void vga_putp(void *p) {
+    vga_putdw((uint32_t)p);
+}
+
 void vga_putc_at(char c, uint8_t col, uint8_t row) {
     uint8_t old_col = cur_col;
     uint8_t old_row = cur_row;
@@ -260,6 +264,10 @@ void vga_putqw_at(uint64_t qw, uint8_t col, uint8_t row) {
     vga_putqw(qw);
     cur_col = old_col;
     cur_row = old_row;
+}
+
+void vga_putp_at(void *p, uint8_t col, uint8_t row) {
+    vga_putdw_at((uint32_t)p, col, row);
 }
 
 void vga_dump_chars(void) {
