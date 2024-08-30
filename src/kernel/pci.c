@@ -450,7 +450,7 @@ void pci_init(void) {
     write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
 
     // Send a test ping.
-    static uint8_t frame[] = {
+    uint8_t frame[] = {
         // Destination
         0x00, 0x0c, 0x29, 0x3c, 0x62, 0x6c,
         // Source
