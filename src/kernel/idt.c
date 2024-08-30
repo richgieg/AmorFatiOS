@@ -147,6 +147,11 @@ void exception_handler_19(void) {
     exception(19);
 }
 
+__attribute__((naked))
+void return_from_interrupt(void) {
+    __asm__("iret");
+}
+
 void idt_init(void) {
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (u16)sizeof(struct idt_entry) * IDT_MAX_DESCRIPTORS - 1;

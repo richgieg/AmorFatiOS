@@ -18,7 +18,7 @@ static void interrupt_service_routine(void) {
 __attribute__((naked))
 static void interrupt_service_routine_stub(void) {
     interrupt_service_routine();
-    __asm__("iret");
+    __asm__("jmp return_from_interrupt");
 }
 
 void mouse_init(void) {
