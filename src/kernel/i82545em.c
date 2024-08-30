@@ -68,48 +68,48 @@
 #define TX_BUFFER_SIZE 2048
 
 struct rx_descriptor {
-    uint64_t address;
-    uint16_t length;
-    uint16_t checksum;
-    uint8_t status;
-    uint8_t errors;
-    uint8_t reserved[2];
+    u64 address;
+    u16 length;
+    u16 checksum;
+    u8 status;
+    u8 errors;
+    u8 reserved[2];
 } __attribute__((packed));
 
 struct tx_descriptor {
-    uint64_t address;
-    uint16_t length;
-    uint8_t checksum_offset;
-    uint8_t command;
-    uint8_t status;
-    uint8_t checksum_start;
-    uint16_t special;
+    u64 address;
+    u16 length;
+    u8 checksum_offset;
+    u8 command;
+    u8 status;
+    u8 checksum_start;
+    u16 special;
 } __attribute__((packed));
 
-static uint32_t mmio_base;
+static u32 mmio_base;
 
 __attribute__((aligned(0x10)))
 static struct rx_descriptor rx_descriptors[RX_BUFFER_COUNT];
-static uint8_t rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
-static uint16_t rx_cur_idx;
+static u8 rx_buffers[RX_BUFFER_COUNT][RX_BUFFER_SIZE];
+static u16 rx_cur_idx;
 
 __attribute__((aligned(0x10)))
 static struct tx_descriptor tx_descriptors[TX_BUFFER_COUNT];
-static uint8_t tx_buffers[TX_BUFFER_COUNT][TX_BUFFER_SIZE];
-static uint16_t tx_cur_idx;
+static u8 tx_buffers[TX_BUFFER_COUNT][TX_BUFFER_SIZE];
+static u16 tx_cur_idx;
 
-uint32_t read_mmio(uint32_t mmio_base, uint32_t offset) {
-    volatile uint32_t *mmio_address = (volatile uint32_t *)(mmio_base + offset);
+u32 read_mmio(u32 mmio_base, u32 offset) {
+    volatile u32 *mmio_address = (volatile u32 *)(mmio_base + offset);
     return *mmio_address;
 }
 
-void write_mmio(uint32_t mmio_base, uint32_t offset, uint32_t value) {
-    volatile uint32_t *mmio_address = (volatile uint32_t *)(mmio_base + offset);
+void write_mmio(u32 mmio_base, u32 offset, u32 value) {
+    volatile u32 *mmio_address = (volatile u32 *)(mmio_base + offset);
     *mmio_address = value;
 }
 
 static void interrupt_service_routine(void) {
-    uint32_t icr = read_mmio(mmio_base, R_ICR);
+    u32 icr = read_mmio(mmio_base, R_ICR);
     vga_puts("82525EM interrupt -- ICR: ");
     vga_putdw(icr);
     vga_putc('\n');
@@ -142,7 +142,7 @@ static void interrupt_service_routine(void) {
             vga_putw(rx_descriptors[rx_cur_idx].length);
             vga_putc('\n');
 
-            for (uint16_t i = 0; i < rx_descriptors[rx_cur_idx].length; i++) {
+            for (u16 i = 0; i < rx_descriptors[rx_cur_idx].length; i++) {
                 vga_putb(rx_buffers[rx_cur_idx][i]);
                 vga_putc(' ');
             }
@@ -165,15 +165,15 @@ static void interrupt_service_routine_stub(void) {
     __asm__("iret");
 }
 
-void i82545em_init(uint32_t bar0) {
+void i82545em_init(u32 bar0) {
     // NOTE: If bit 0 in bar is 1 then I/O port should be used instead.
-    // uint32_t mmio_base = bar0 & 0xfffffff0;
+    // u32 mmio_base = bar0 & 0xfffffff0;
     mmio_base = bar0 & 0xfffffff0;
     vga_puts("mmio_base = ");
     vga_putdw(mmio_base);
     vga_putc('\n');
 
-    uint32_t ctrl = read_mmio(mmio_base, R_CTRL);
+    u32 ctrl = read_mmio(mmio_base, R_CTRL);
     vga_puts("82525EM CTRL: ");
     vga_putdw(ctrl);
     vga_putc('\n');
@@ -185,17 +185,17 @@ void i82545em_init(uint32_t bar0) {
     vga_putdw(ctrl);
     vga_putc('\n');
 
-    uint32_t status = read_mmio(mmio_base, R_STATUS);
+    u32 status = read_mmio(mmio_base, R_STATUS);
     vga_puts("82525EM STATUS: ");
     vga_putdw(status);
     vga_putc('\n');
 
-    uint32_t rctl = read_mmio(mmio_base, R_RCTL);
+    u32 rctl = read_mmio(mmio_base, R_RCTL);
     vga_puts("82525EM RCTL: ");
     vga_putdw(rctl);
     vga_putc('\n');
 
-    uint32_t tctl = read_mmio(mmio_base, R_TCTL);
+    u32 tctl = read_mmio(mmio_base, R_TCTL);
     vga_puts("82525EM TCTL: ");
     vga_putdw(tctl);
     vga_putc('\n');
@@ -208,7 +208,7 @@ void i82545em_init(uint32_t bar0) {
     write_mmio(mmio_base, R_IMS, 0xffffffff);
 
     // Store receive descriptor base address.
-    write_mmio(mmio_base, R_RDBAL, (uint32_t)rx_descriptors);
+    write_mmio(mmio_base, R_RDBAL, (u32)rx_descriptors);
     write_mmio(mmio_base, R_RDBAH, 0);
 
     // Store receive descriptor buffer length.
@@ -223,11 +223,11 @@ void i82545em_init(uint32_t bar0) {
 
     // Initialize the receive descriptors.
     for (int i = 0; i < RX_BUFFER_COUNT; i++) {
-        rx_descriptors[i].address = (uint32_t)(&rx_buffers[i]);
+        rx_descriptors[i].address = (u32)(&rx_buffers[i]);
     }
 
     // Store transmit descriptor base address.
-    write_mmio(mmio_base, R_TDBAL, (uint32_t)tx_descriptors);
+    write_mmio(mmio_base, R_TDBAL, (u32)tx_descriptors);
     write_mmio(mmio_base, R_TDBAH, 0);
 
     // Store transmit descriptor buffer length.
@@ -242,7 +242,7 @@ void i82545em_init(uint32_t bar0) {
 
     // Initialize the transmit descriptors.
     for (int i = 0; i < TX_BUFFER_COUNT; i++) {
-        tx_descriptors[i].address = (uint32_t)(&tx_buffers[i]);
+        tx_descriptors[i].address = (u32)(&tx_buffers[i]);
         tx_descriptors[i].command = TX_DESC_COMMAND_RS | TX_DESC_COMMAND_EOP | TX_DESC_COMMAND_IFCS;
     }
 
@@ -253,7 +253,7 @@ void i82545em_init(uint32_t bar0) {
     write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
 
     // Send a test ping.
-    uint8_t frame[] = {
+    u8 frame[] = {
         // Destination
         0x00, 0x0c, 0x29, 0x3c, 0x62, 0x6c,
         // Source

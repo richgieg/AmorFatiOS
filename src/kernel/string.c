@@ -1,9 +1,9 @@
 #include "string.h"
-#include <stdint.h>
+#include "types.h"
 
 void * memcpy(void *destination, const void *source, size_t num) {
     while (num--) {
-        *(uint8_t *)destination++ = *(uint8_t *)source++;
+        *(u8 *)destination++ = *(u8 *)source++;
     }
     return destination;
 }
@@ -11,7 +11,7 @@ void * memcpy(void *destination, const void *source, size_t num) {
 int memcmp(const void *p1, const void *p2, size_t num) {
     int result = 0;
     while (num-- && result == 0) {
-        result = *(uint8_t *)p1++ - *(uint8_t *)p2++;
+        result = *(u8 *)p1++ - *(u8 *)p2++;
     }
     return result;
 }

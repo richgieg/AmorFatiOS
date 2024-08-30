@@ -15,7 +15,7 @@ void bugcheck(const char *file, int line, const char *message) {
     __asm__("hlt");
 }
 
-void exception(uint8_t vector) {
+void exception(u8 vector) {
     __asm__("cli");
     vga_set_bg_color(VGA_COLOR_RED);
     vga_set_text_color(VGA_COLOR_BRIGHT_WHITE);
@@ -26,7 +26,7 @@ void exception(uint8_t vector) {
     __asm__("hlt");
 }
 
-void exception_with_code(uint8_t vector, uint32_t code) {
+void exception_with_code(u8 vector, u32 code) {
     __asm__("cli");
     vga_set_bg_color(VGA_COLOR_RED);
     vga_set_text_color(VGA_COLOR_BRIGHT_WHITE);

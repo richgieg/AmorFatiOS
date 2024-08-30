@@ -1,7 +1,7 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include <stdint.h>
+#include "types.h"
 
 #define VGA_ROWS 25
 #define VGA_COLUMNS 80
@@ -31,22 +31,22 @@ enum vga_color vga_get_bg_color();
 void vga_set_bg_color(enum vga_color bg_color);
 enum vga_color vga_get_text_color();
 void vga_set_text_color(enum vga_color text_color);
-void vga_set_pos(uint8_t col, uint8_t row);
+void vga_set_pos(u8 col, u8 row);
 void vga_writec(char c);
 void vga_putc(char c);
 void vga_puts(const char *str);
-void vga_putb(uint8_t);
-void vga_putw(uint16_t w);
-void vga_putdw(uint32_t dw);
-void vga_putqw(uint64_t qw);
+void vga_putb(u8);
+void vga_putw(u16 w);
+void vga_putdw(u32 dw);
+void vga_putqw(u64 qw);
 void vga_putp(void *p);
-void vga_putc_at(char c, uint8_t col, uint8_t row);
-void vga_puts_at(const char *str, uint8_t col, uint8_t row);
-void vga_putb_at(uint8_t b, uint8_t col, uint8_t row);
-void vga_putw_at(uint16_t w, uint8_t col, uint8_t row);
-void vga_putdw_at(uint32_t dw, uint8_t col, uint8_t row);
-void vga_putqw_at(uint64_t dw, uint8_t col, uint8_t row);
-void vga_putp_at(void *p, uint8_t col, uint8_t row);
+void vga_putc_at(char c, u8 col, u8 row);
+void vga_puts_at(const char *str, u8 col, u8 row);
+void vga_putb_at(u8 b, u8 col, u8 row);
+void vga_putw_at(u16 w, u8 col, u8 row);
+void vga_putdw_at(u32 dw, u8 col, u8 row);
+void vga_putqw_at(u64 dw, u8 col, u8 row);
+void vga_putp_at(void *p, u8 col, u8 row);
 void vga_dump_chars(void);
 
 #endif

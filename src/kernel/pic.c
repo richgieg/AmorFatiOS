@@ -2,8 +2,7 @@
 
 #include "pic.h"
 
-#include <stdint.h>
-#include <stddef.h>
+#include "types.h"
 
 #include "port.h"
 
@@ -58,11 +57,11 @@ void pic_init(void) {
 }
 
 // Mask an IRQ by number (0-15)
-void pic_mask_irq(uint8_t num) {
+void pic_mask_irq(u8 num) {
     // Which PIC do we need to talk to?
     if (num < 8) {
         // Get the current mask
-        uint8_t mask = inb(PIC1_DATA);
+        u8 mask = inb(PIC1_DATA);
 
         // Update the mask
         mask |= 1<<num;
@@ -70,7 +69,7 @@ void pic_mask_irq(uint8_t num) {
 
     } else if (num < 16) {
         // Get the current mask
-        uint8_t mask = inb(PIC2_DATA);
+        u8 mask = inb(PIC2_DATA);
 
         // Update the mask
         mask |= 1<<(num - 8);
@@ -79,11 +78,11 @@ void pic_mask_irq(uint8_t num) {
 }
 
 // Unmask an IRQ by number (0-15)
-void pic_unmask_irq(uint8_t num) {
+void pic_unmask_irq(u8 num) {
     // Which PIC do we need to talk to?
     if (num < 8) {
         // Get the current mask
-        uint8_t mask = inb(PIC1_DATA);
+        u8 mask = inb(PIC1_DATA);
 
         // Update the mask
         mask &= ~(1<<num);
@@ -91,7 +90,7 @@ void pic_unmask_irq(uint8_t num) {
 
     } else if (num < 16) {
         // Get the current mask
-        uint8_t mask = inb(PIC2_DATA);
+        u8 mask = inb(PIC2_DATA);
 
         // Update the mask
         mask &= ~(1<<(num - 8));

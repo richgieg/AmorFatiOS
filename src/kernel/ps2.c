@@ -26,7 +26,7 @@ void ps2_init(void) {
     // Step 5: Set the Controller Configuration Byte
     outb(PS2_COMMAND_PORT, PS2_READ_CONFIG);
     wait_output_full();
-    uint8_t config = inb(PS2_DATA_PORT);
+    u8 config = inb(PS2_DATA_PORT);
     // vga_putb_at(config, 0, 3);
 
     // Clear bit to disable IRQs for port 1.
@@ -44,7 +44,7 @@ void ps2_init(void) {
     // Step 6: Perform Controller Self Test
     outb(PS2_COMMAND_PORT, PS2_SELF_TEST);
     wait_output_full();
-    uint8_t result = inb(PS2_DATA_PORT);
+    u8 result = inb(PS2_DATA_PORT);
     // vga_putb_at(result, 4, 3);
 
     // TODO: Handle result other than PS2_CONTROLLER_TEST_OK
@@ -118,9 +118,9 @@ void ps2_init(void) {
     wait_input_clear();
     outb(PS2_DATA_PORT, PS2_DEV_RESET);
     wait_output_full();
-    uint8_t r1 = inb(PS2_DATA_PORT);
+    u8 r1 = inb(PS2_DATA_PORT);
     wait_output_full();
-    uint8_t r2 = inb(PS2_DATA_PORT);
+    u8 r2 = inb(PS2_DATA_PORT);
     if ((r1 == PS2_DEV_ACK && r2 == PS2_DEV_RESET_ACK) || (r1 == PS2_DEV_RESET_ACK && r2 == PS2_DEV_ACK)) {
         // vga_putc_at('Y', 16, 3);
     } else {

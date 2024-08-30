@@ -21,11 +21,11 @@
 #define SC_INSERT 0xe070
 #define SC_DELETE 0xe071
 
-static uint8_t is_break;
-static uint8_t is_extended;
+static u8 is_break;
+static u8 is_extended;
 
-static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
-    uint16_t scancodew = 0;
+static void handle_key_press(u8 scancode, u8 is_extended) {
+    u16 scancodew = 0;
     if (is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
@@ -61,8 +61,8 @@ static void handle_key_press(uint8_t scancode, uint8_t is_extended) {
     }
 }
 
-static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
-    uint16_t scancodew = 0;
+static void handle_key_release(u8 scancode, u8 is_extended) {
+    u16 scancodew = 0;
     if (is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
@@ -72,7 +72,7 @@ static void handle_key_release(uint8_t scancode, uint8_t is_extended) {
 }
 
 static void interrupt_service_routine(void) {
-    uint8_t data = inb(PS2_DATA_PORT);
+    u8 data = inb(PS2_DATA_PORT);
 
     if (data == EXTENDED_KEY_PREFIX) {
         is_extended = 1;

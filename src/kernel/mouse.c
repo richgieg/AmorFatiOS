@@ -6,7 +6,7 @@
 #include "vga.h"
 
 static void interrupt_service_routine(void) {
-    uint8_t value = inb(PS2_DATA_PORT);
+    u8 value = inb(PS2_DATA_PORT);
     if (value != PS2_DEV_ACK) {
         vga_putb(value);
         vga_putc(' ');

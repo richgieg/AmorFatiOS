@@ -3,7 +3,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include <stdint.h>
+#include "types.h"
 
 // Ports to talk to PICs
 #define PIC1 0x20
@@ -38,9 +38,9 @@
 void pic_init();
 
 // Mask an IRQ by number (0-15)
-void pic_mask_irq(uint8_t num);
+void pic_mask_irq(u8 num);
 
 // Unmask an IRQ by number (0-15)
-void pic_unmask_irq(uint8_t num);
+void pic_unmask_irq(u8 num);
 
 #endif
