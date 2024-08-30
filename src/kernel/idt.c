@@ -1,5 +1,6 @@
 #include "idt.h"
 #include "vga.h"
+#include "bugcheck.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -32,204 +33,118 @@ void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
 
 __attribute__((naked))
 void exception_handler_00(void) {
-    vga_puts_at("00", 0, 24);
-    __asm__("iret");
+    exception(0);
 }
 
 __attribute__((naked))
 void exception_handler_01(void) {
-    vga_puts_at("01", 2, 24);
-    __asm__("iret");
+    exception(1);
 }
 
 __attribute__((naked))
 void exception_handler_02(void) {
-    vga_puts_at("02", 4, 24);
-    __asm__("iret");
+    exception(2);
 }
 
 __attribute__((naked))
 void exception_handler_03(void) {
-    vga_puts_at("03", 6, 24);
-    __asm__("iret");
+    exception(3);
 }
 
 __attribute__((naked))
 void exception_handler_04(void) {
-    vga_puts_at("04", 8, 24);
-    __asm__("iret");
+    exception(4);
 }
 
 __attribute__((naked))
 void exception_handler_05(void) {
-    vga_puts_at("05", 10, 24);
-    __asm__("iret");
+    exception(5);
 }
 
 __attribute__((naked))
 void exception_handler_06(void) {
-    vga_puts_at("06", 12, 24);
-    __asm__("iret");
+    exception(6);
 }
 
 __attribute__((naked))
 void exception_handler_07(void) {
-    vga_puts_at("07", 14, 24);
-    __asm__("iret");
+    exception(7);
 }
 
 __attribute__((naked))
 void exception_handler_08(void) {
-    vga_puts_at("08", 16, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 8\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_09(void) {
-    vga_puts_at("09", 18, 24);
-    __asm__("iret");
+    exception(9);
 }
 
 __attribute__((naked))
 void exception_handler_10(void) {
-    vga_puts_at("10", 20, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 10\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_11(void) {
-    vga_puts_at("11", 22, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 11\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_12(void) {
-    vga_puts_at("12", 24, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 12\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_13(void) {
-    vga_puts_at("13", 26, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 13\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_14(void) {
-    vga_puts_at("14", 28, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_15(void) {
-    vga_puts_at("15", 30, 24);
-    __asm__("iret");
+    __asm__(
+        "push 14\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_16(void) {
-    vga_puts_at("16", 32, 24);
-    __asm__("iret");
+    exception(16);
 }
 
 __attribute__((naked))
 void exception_handler_17(void) {
-    vga_puts_at("17", 34, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
+    __asm__(
+        "push 17\n"
+        "call exception_with_code"
+    );
 }
 
 __attribute__((naked))
 void exception_handler_18(void) {
-    vga_puts_at("18", 36, 24);
-    __asm__("iret");
+    exception(18);
 }
 
 __attribute__((naked))
 void exception_handler_19(void) {
-    vga_puts_at("19", 38, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_20(void) {
-    vga_puts_at("20", 40, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_21(void) {
-    vga_puts_at("21", 42, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_22(void) {
-    vga_puts_at("22", 44, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_23(void) {
-    vga_puts_at("23", 46, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_24(void) {
-    vga_puts_at("24", 48, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_25(void) {
-    vga_puts_at("25", 50, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_26(void) {
-    vga_puts_at("26", 52, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_27(void) {
-    vga_puts_at("27", 54, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_28(void) {
-    vga_puts_at("28", 56, 24);
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_29(void) {
-    vga_puts_at("29", 58, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_30(void) {
-    vga_puts_at("30", 60, 24);
-    __asm__("add esp, 4"); // remove error code from stack
-    __asm__("iret");
-}
-
-__attribute__((naked))
-void exception_handler_31(void) {
-    vga_puts_at("31", 62, 24);
-    __asm__("iret");
+    exception(19);
 }
 
 void idt_init(void) {
@@ -251,23 +166,10 @@ void idt_init(void) {
     idt_set_descriptor(12, exception_handler_12, 0x8e);
     idt_set_descriptor(13, exception_handler_13, 0x8e);
     idt_set_descriptor(14, exception_handler_14, 0x8e);
-    idt_set_descriptor(15, exception_handler_15, 0x8e);
     idt_set_descriptor(16, exception_handler_16, 0x8e);
     idt_set_descriptor(17, exception_handler_17, 0x8e);
     idt_set_descriptor(18, exception_handler_18, 0x8e);
     idt_set_descriptor(19, exception_handler_19, 0x8e);
-    idt_set_descriptor(20, exception_handler_20, 0x8e);
-    idt_set_descriptor(21, exception_handler_21, 0x8e);
-    idt_set_descriptor(22, exception_handler_22, 0x8e);
-    idt_set_descriptor(23, exception_handler_23, 0x8e);
-    idt_set_descriptor(24, exception_handler_24, 0x8e);
-    idt_set_descriptor(25, exception_handler_25, 0x8e);
-    idt_set_descriptor(26, exception_handler_26, 0x8e);
-    idt_set_descriptor(27, exception_handler_27, 0x8e);
-    idt_set_descriptor(28, exception_handler_28, 0x8e);
-    idt_set_descriptor(29, exception_handler_29, 0x8e);
-    idt_set_descriptor(30, exception_handler_30, 0x8e);
-    idt_set_descriptor(31, exception_handler_31, 0x8e);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
     __asm__("sti"); // enable interrupts
