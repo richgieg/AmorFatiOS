@@ -39,28 +39,29 @@
 #define CTRL_RST    0x04000000
 
 // RCTL Register Bits
-#define RCTL_EN     0x00000002
+#define RCTL_EN     0x00000002 // Receiver Enable
+#define RCTL_BAM    0x00008000 // Broadcast Accept Mode
 
 // TCTL Register Bits
-#define TCTL_EN     0x00000002
+#define TCTL_EN     0x00000002 // Transmit Enable
 
 // ICR/ICS Register Bits
-#define ICR_TXDW    0x00000001  // Transmit Descriptor Written Back
-#define ICR_TXQE    0x00000002  // Transmit Queue Empty
-#define ICR_RXDMT0  0x00000010  // Receive Descriptor Minimum Threshold Reached
-#define ICR_RXT0    0x00000080  // Reciever Timer Interrupt
+#define ICR_TXDW    0x00000001 // Transmit Descriptor Written Back
+#define ICR_TXQE    0x00000002 // Transmit Queue Empty
+#define ICR_RXDMT0  0x00000010 // Receive Descriptor Minimum Threshold Reached
+#define ICR_RXT0    0x00000080 // Reciever Timer Interrupt
 
 // Receive Descriptor Status Bits
-#define RX_DESC_STATUS_DD       0x01    // Descriptor Done
-#define RX_DESC_STATUS_EOP      0x02    // End Of Packet
+#define RX_DESC_STATUS_DD       0x01 // Descriptor Done
+#define RX_DESC_STATUS_EOP      0x02 // End Of Packet
 
 // Transmit Descriptor Command Bits
-#define TX_DESC_COMMAND_EOP     0x01    // End Of Packet
-#define TX_DESC_COMMAND_IFCS    0x02    // Insert FCS
-#define TX_DESC_COMMAND_RS      0x08    // Repot Status
+#define TX_DESC_COMMAND_EOP     0x01 // End Of Packet
+#define TX_DESC_COMMAND_IFCS    0x02 // Insert FCS
+#define TX_DESC_COMMAND_RS      0x08 // Repot Status
 
 // Transmit Descriptor Status Bits
-#define TX_DESC_STATUS_DD       0x01    // Descriptor Done
+#define TX_DESC_STATUS_DD       0x01 // Descriptor Done
 
 #define RX_BUFFER_COUNT 64
 #define RX_BUFFER_SIZE 2048
@@ -444,7 +445,7 @@ void pci_init(void) {
     }
 
     // Enable receive function.
-    write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN);
+    write_mmio(mmio_base, R_RCTL, rctl | RCTL_EN | RCTL_BAM);
 
     // Enable transmit function.
     write_mmio(mmio_base, R_TCTL, tctl | TCTL_EN);
