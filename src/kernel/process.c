@@ -77,10 +77,6 @@ void process_switch(void) {
     int index = (current_process_index + 1) % MAX_PROCESSES;
 
     while (count--) {
-        vga_putb(index);
-        vga_putc(' ');
-        vga_putb(processes[index].state);
-        vga_putc('\n');
         if (processes[index].state == PROCESS_STATE_RUNNABLE) {
             next_process_index = index;
             break;
@@ -88,14 +84,18 @@ void process_switch(void) {
         index = (index + 1) % MAX_PROCESSES;
     }
 
-    for (int i = 0; i < 1000000000; i++);
-
     if (next_process_index == -1) {
         BUGCHECK("Could not find a runnable process.");
     }
 
     current_process_index = next_process_index;
     next_proc = &processes[current_process_index];
+
+    vga_puts("next_proc = ");
+    vga_putdw(next_proc);
+    vga_putc('\n');
+
+    for (int i = 0; i < 1000000000; i++);
 
     if (curr_proc) {
         curr_proc->state = PROCESS_STATE_RUNNABLE;
