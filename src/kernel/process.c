@@ -54,26 +54,41 @@ void process_create(void (*start)()) {
 void process_switch(void) {
     // __asm__("cli"); // TODO: Replace with locking mechanism
 
+    vga_puts("process_switch\n");
+
+    vga_puts("current_process_index = ");
+    vga_putdw(current_process_index);
+    vga_putc('\n');
+
     struct process *curr_proc;
     struct process *next_proc;
 
     if (current_process_index != -1) {
-        curr_proc = 0;
-    } else {
         curr_proc = &processes[current_process_index];
+    } else {
+        curr_proc = 0;
     }
+    vga_puts("curr_proc = ");
+    vga_putdw(curr_proc);
+    vga_putc('\n');
 
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
 
     while (count--) {
+        vga_putb(index);
+        vga_putc(' ');
+        vga_putb(processes[index].state);
+        vga_putc('\n');
         if (processes[index].state == PROCESS_STATE_RUNNABLE) {
             next_process_index = index;
             break;
         }
         index = (index + 1) % MAX_PROCESSES;
     }
+
+    for (int i = 0; i < 1000000000; i++);
 
     if (next_process_index == -1) {
         BUGCHECK("Could not find a runnable process.");
