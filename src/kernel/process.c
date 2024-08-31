@@ -84,8 +84,40 @@ void process_switch(void) {
 
     if (current_process_index != -1) {
         // TODO: Store context of current process and update its state.
+        struct process *p = &processes[current_process_index];
+        p->state = PROCESS_STATE_RUNNABLE;
+        // TODO: Use inline assembly to save these registers.
+        // p->context.eax = 0;
+        // p->context.ebx = 0;
+        // p->context.ecx = 0;
+        // p->context.edx = 0;
+        // p->context.esi = 0;
+        // p->context.edi = 0;
+        // p->context.esp = 0;
+        // p->context.ebp = 0;
+        // p->context.cs = 0x8;
+        // p->context.ds = 0x10;
+        // p->context.es = 0x10;
+        // p->context.fs = 0x10;
+        // p->context.gs = 0x10;
     }
+
     // TODO: Find next process to run, load its context, and update its state.
+    int count = MAX_PROCESSES;
+    int next_process_index = -1;
+    int index = current_process_index + 1;
+
+    while (count--) {
+        struct process *p = &processes[index];
+        if (p->state == PROCESS_STATE_RUNNABLE) {
+            next_process_index = index;
+        }
+        index = (index + 1) % MAX_PROCESSES;
+    }
+
+    if (next_process_index == -1) {
+        BUGCHECK("Could not find a runnable process.");
+    }
 
     __asm__("sti"); // TODO: Replace with locking mechanism
 }

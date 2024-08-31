@@ -44,6 +44,7 @@ void kernel_init(void) {
 
     process_create(process0_start);
     process_create(process1_start);
+    process_switch();
 }
 
 void kernel_idle(void) {
