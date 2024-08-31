@@ -9,6 +9,7 @@
 enum process_state {
     PROCESS_STATE_NULL,
     PROCESS_STATE_RUNNING,
+    PROCESS_STATE_RUNNABLE,
     PROCESS_STATE_WAITING,
 };
 
@@ -55,7 +56,7 @@ void process_create(void (*start)()) {
 
     struct process *p = &processes[index];
     p->start = start;
-    p->state = PROCESS_STATE_WAITING;
+    p->state = PROCESS_STATE_RUNNABLE;
     p->context.eax = 0;
     p->context.ebx = 0;
     p->context.ecx = 0;
