@@ -82,7 +82,9 @@ void process_switch(void) {
     current_process_index = next_process_index;
     next_proc = &processes[current_process_index];
 
-    curr_proc->state = PROCESS_STATE_RUNNABLE;
+    if (curr_proc) {
+        curr_proc->state = PROCESS_STATE_RUNNABLE;
+    }
     next_proc->state = PROCESS_STATE_RUNNING;
 
     if (!next_proc->is_started) {
@@ -129,7 +131,9 @@ void process_switch(void) {
 
         next_proc->esp = esp;
         next_proc->is_started = true;
-    } else {
+    }
+
+    if (curr_proc) {
         __asm__ volatile(
             "pushfd;"
             "pushad;"
