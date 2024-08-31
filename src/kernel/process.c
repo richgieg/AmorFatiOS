@@ -149,12 +149,17 @@ void process_switch(void) {
     }
 
     if (curr_proc) {
+        void *label_addr = &&label;
+        vga_puts("label_addr = ");
+        vga_putdw(label_addr);
+        vga_putc('\n');
         __asm__ volatile(
+            "push %0;"
             "pushfd;"
             "pushad;"
             "mov %[old_esp], esp"
             : [old_esp] "=m" (curr_proc->esp)
-            :
+            : "r" (label_addr)
             : "memory"
         );
     }
@@ -168,6 +173,7 @@ void process_switch(void) {
         : [new_esp] "m" (next_proc->esp)
         : "memory"
     );
+label:
 
     // __asm__("sti"); // TODO: Replace with locking mechanism
 }
