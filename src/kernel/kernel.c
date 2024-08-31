@@ -14,16 +14,18 @@
 static void process0_start() {
     vga_puts("Process 0 started\n");
     while (1) {
-        __asm__("hlt");
+        process_switch();
+        // __asm__("hlt");
     }
 }
 
-// static void process1_start() {
-//     vga_puts("Process 1 started\n");
-//     while (1) {
-//         __asm__("hlt");
-//     }
-// }
+static void process1_start() {
+    vga_puts("Process 1 started\n");
+    while (1) {
+        process_switch();
+        // __asm__("hlt");
+    }
+}
 
 void kernel_init(void) {
     vga_init();
@@ -45,7 +47,7 @@ void kernel_init(void) {
     __asm__("cli");
 
     process_create(process0_start);
-    // process_create(process1_start);
+    process_create(process1_start);
     process_switch();
 }
 

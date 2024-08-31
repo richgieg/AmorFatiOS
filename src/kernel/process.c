@@ -63,16 +63,14 @@ void process_switch(void) {
         curr_proc = &processes[current_process_index];
     }
 
-    // TODO: Find next process to run, load its context, and update its state.
     int count = MAX_PROCESSES;
     int next_process_index = -1;
-    int index = current_process_index + 1;
-    struct process *p;
+    int index = (current_process_index + 1) % MAX_PROCESSES;
 
     while (count--) {
-        p = &processes[index];
-        if (p->state == PROCESS_STATE_RUNNABLE) {
+        if (processes[index].state == PROCESS_STATE_RUNNABLE) {
             next_process_index = index;
+            break;
         }
         index = (index + 1) % MAX_PROCESSES;
     }
@@ -118,7 +116,7 @@ void process_switch(void) {
         *esp = 0;
 
         esp--; // esp
-        *esp = p->esp;
+        *esp = next_proc->esp;
 
         esp--; // ebp
         *esp = 0;
@@ -132,7 +130,7 @@ void process_switch(void) {
         next_proc->esp = esp;
         next_proc->is_started = true;
     } else {
-        __asm__(
+        __asm__ volatile(
             "pushfd;"
             "pushad;"
             "mov %[old_esp], esp"
