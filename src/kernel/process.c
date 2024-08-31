@@ -32,6 +32,7 @@ struct process_context {
 
 struct process {
     void (*start)();
+    bool is_started;
     enum process_state state;
     struct process_context context;
 };
@@ -56,6 +57,7 @@ void process_create(void (*start)()) {
 
     struct process *p = &processes[index];
     p->start = start;
+    p->is_started = false;
     p->state = PROCESS_STATE_RUNNABLE;
     p->context.eax = 0;
     p->context.ebx = 0;
