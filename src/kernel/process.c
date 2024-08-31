@@ -38,6 +38,7 @@ struct process {
 };
 
 static struct process processes[MAX_PROCESSES];
+static int current_process_index = -1;
 
 static int find_available_process_index() {
     int index;
@@ -50,6 +51,8 @@ static int find_available_process_index() {
 }
 
 void process_create(void (*start)()) {
+    __asm__("cli"); // TODO: Replace with locking mechanism
+
     int index = find_available_process_index();
     if (index == -1) {
         BUGCHECK("Maximum number of processes reached.");
@@ -72,4 +75,17 @@ void process_create(void (*start)()) {
     p->context.es = 0x10;
     p->context.fs = 0x10;
     p->context.gs = 0x10;
+
+    __asm__("sti"); // TODO: Replace with locking mechanism
+}
+
+void process_switch(void) {
+    __asm__("cli"); // TODO: Replace with locking mechanism
+
+    if (current_process_index != -1) {
+        // TODO: Store context of current process and update its state.
+    }
+    // TODO: Find next process to run, load its context, and update its state.
+
+    __asm__("sti"); // TODO: Replace with locking mechanism
 }
