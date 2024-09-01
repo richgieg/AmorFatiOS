@@ -63,6 +63,37 @@ void console_clear(void) {
     }
 }
 
+enum console_color console_get_bg_color() {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    return con->bg_color;
+}
+
+void console_set_bg_color(enum console_color bg_color) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    con->bg_color = bg_color;
+}
+
+enum console_color console_get_text_color() {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    return con->text_color;
+}
+
+void console_set_text_color(enum console_color text_color) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    con->text_color = text_color;
+}
+
+void console_set_pos(u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    con->col = col;
+    con->row = row;
+}
+
 static void scroll_one_line(void) {
     int current_process_index = process_get_current_index();
     struct console *con = &consoles[current_process_index];
