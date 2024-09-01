@@ -54,11 +54,11 @@ void process_create(void (*start)()) {
 void process_switch(void) {
     // __asm__("cli"); // TODO: Replace with locking mechanism
 
-    vga_puts("process_switch\n");
+    // vga_puts("process_switch\n");
 
-    vga_puts("current_process_index = ");
-    vga_putdw(current_process_index);
-    vga_putc('\n');
+    // vga_puts("current_process_index = ");
+    // vga_putdw(current_process_index);
+    // vga_putc('\n');
 
     struct process *curr_proc;
     struct process *next_proc;
@@ -68,9 +68,9 @@ void process_switch(void) {
     } else {
         curr_proc = 0;
     }
-    vga_puts("curr_proc = ");
-    vga_putdw(curr_proc);
-    vga_putc('\n');
+    // vga_puts("curr_proc = ");
+    // vga_putdw(curr_proc);
+    // vga_putc('\n');
 
     int count = MAX_PROCESSES;
     int next_process_index = -1;
@@ -91,11 +91,9 @@ void process_switch(void) {
     current_process_index = next_process_index;
     next_proc = &processes[current_process_index];
 
-    vga_puts("next_proc = ");
-    vga_putdw(next_proc);
-    vga_putc('\n');
-
-    // for (int i = 0; i < 1000000000; i++);
+    // vga_puts("next_proc = ");
+    // vga_putdw(next_proc);
+    // vga_putc('\n');
 
     if (curr_proc) {
         curr_proc->state = PROCESS_STATE_RUNNABLE;
@@ -103,10 +101,10 @@ void process_switch(void) {
     next_proc->state = PROCESS_STATE_RUNNING;
 
     if (!next_proc->is_started) {
-        u32 *esp = next_proc->esp;
+        u32 *esp = (u32 *)next_proc->esp;
 
         esp--; // eip
-        *esp = next_proc->start;
+        *esp = (u32)next_proc->start;
 
         u32 eflags;
         __asm__ volatile(
@@ -144,7 +142,7 @@ void process_switch(void) {
         esp--; // edi
         *esp = 0;
 
-        next_proc->esp = esp;
+        next_proc->esp = (u32)esp;
         next_proc->is_started = true;
 
         if (curr_proc) {
