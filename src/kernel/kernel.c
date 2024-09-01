@@ -101,8 +101,6 @@ void kernel_init(void) {
     // mm_show_mdump();
     // mm_show_mmap();
 
-    // __asm__("cli");
-
     process_init();
     process_create(process1_start);
     process_create(process2_start);
