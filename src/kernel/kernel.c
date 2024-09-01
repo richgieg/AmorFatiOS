@@ -33,22 +33,22 @@ static void process1_start() {
 
 void kernel_init(void) {
     vga_init();
-    // mm_init();
-    // scheduler_init();
-    // idt_init();
-    // pic_init();
-    // timer_init();
-    // ps2_init();
-    // keyboard_init();
-    // mouse_init();
-    // pci_init();
+    mm_init();
+    scheduler_init();
+    idt_init();
+    pic_init();
+    timer_init();
+    ps2_init();
+    keyboard_init();
+    mouse_init();
+    pci_init();
 
     // vga_puts("AmorFatiOS v0.0.1\n");
 
     // mm_show_mdump();
     // mm_show_mmap();
 
-    __asm__("cli");
+    // __asm__("cli");
 
     process_create(process0_start);
     process_create(process1_start);

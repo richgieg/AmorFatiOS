@@ -1,7 +1,6 @@
 #include "process.h"
 #include "types.h"
 #include "bugcheck.h"
-#include "vga.h"
 
 #define MAX_PROCESSES 8
 #define STACK_SIZE 4096
@@ -35,8 +34,6 @@ static int find_available_process_index() {
 }
 
 void process_create(void (*start)()) {
-    // __asm__("cli"); // TODO: Replace with locking mechanism
-
     int index = find_available_process_index();
     if (index == -1) {
         BUGCHECK("Maximum number of processes reached.");
@@ -47,19 +44,9 @@ void process_create(void (*start)()) {
     p->is_started = false;
     p->state = PROCESS_STATE_RUNNABLE;
     p->esp = STACK_AREA_BASE + (index + 1) * STACK_SIZE;
-
-    // __asm__("sti"); // TODO: Replace with locking mechanism
 }
 
 void process_switch(void) {
-    // __asm__("cli"); // TODO: Replace with locking mechanism
-
-    // vga_puts("process_switch\n");
-
-    // vga_puts("current_process_index = ");
-    // vga_putdw(current_process_index);
-    // vga_putc('\n');
-
     struct process *curr_proc;
     struct process *next_proc;
 
@@ -68,9 +55,6 @@ void process_switch(void) {
     } else {
         curr_proc = 0;
     }
-    // vga_puts("curr_proc = ");
-    // vga_putdw(curr_proc);
-    // vga_putc('\n');
 
     int count = MAX_PROCESSES;
     int next_process_index = -1;
@@ -90,10 +74,6 @@ void process_switch(void) {
 
     current_process_index = next_process_index;
     next_proc = &processes[current_process_index];
-
-    // vga_puts("next_proc = ");
-    // vga_putdw(next_proc);
-    // vga_putc('\n');
 
     if (curr_proc) {
         curr_proc->state = PROCESS_STATE_RUNNABLE;
@@ -169,7 +149,6 @@ void process_switch(void) {
                 : "memory"
             );
         }
-
     } else {
         __asm__ volatile(
             "pushfd;"
@@ -183,6 +162,4 @@ void process_switch(void) {
             : "memory"
         );
     }
-
-    // __asm__("sti"); // TODO: Replace with locking mechanism
 }
