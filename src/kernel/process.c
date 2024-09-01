@@ -95,7 +95,7 @@ void process_switch(void) {
     vga_putdw(next_proc);
     vga_putc('\n');
 
-    for (int i = 0; i < 1000000000; i++);
+    // for (int i = 0; i < 1000000000; i++);
 
     if (curr_proc) {
         curr_proc->state = PROCESS_STATE_RUNNABLE;
@@ -146,34 +146,45 @@ void process_switch(void) {
 
         next_proc->esp = esp;
         next_proc->is_started = true;
-    }
 
-    if (curr_proc) {
-        void *label_addr = &&label;
-        vga_puts("label_addr = ");
-        vga_putdw(label_addr);
-        vga_putc('\n');
+        if (curr_proc) {
+            __asm__ volatile(
+                "pushfd;"
+                "pushad;"
+                "mov %[old_esp], esp;"
+                "mov esp, %[new_esp];"
+                "popad;"
+                "popfd;"
+                "ret;"
+                : [old_esp] "=m" (curr_proc->esp)
+                : [new_esp] "m" (next_proc->esp)
+                : "memory"
+            );
+        } else {
+            __asm__(
+                "mov esp, %[new_esp];"
+                "popad;"
+                "popfd;"
+                "ret;"
+                :
+                : [new_esp] "m" (next_proc->esp)
+                : "memory"
+            );
+        }
+
+    } else {
         __asm__ volatile(
-            "push %0;"
             "pushfd;"
             "pushad;"
-            "mov %[old_esp], esp"
+            "mov %[old_esp], esp;"
+            "mov esp, %[new_esp];"
+            "popad;"
+            "popfd;"
             : [old_esp] "=m" (curr_proc->esp)
-            : "r" (label_addr)
+            : [new_esp] "m" (next_proc->esp)
             : "memory"
         );
     }
-
-    __asm__(
-        "mov esp, %[new_esp];"
-        "popad;"
-        "popfd;"
-        "ret;"
-        :
-        : [new_esp] "m" (next_proc->esp)
-        : "memory"
-    );
-label:
 
     // __asm__("sti"); // TODO: Replace with locking mechanism
 }

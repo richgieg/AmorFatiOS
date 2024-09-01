@@ -14,7 +14,7 @@
 static void process0_start() {
     vga_puts("Process 0 started\n");
     while (1) {
-        for (int i = 0; i < 1000000000; i++);
+        // for (int i = 0; i < 1000000000; i++);
         vga_puts("Process 0 switching\n");
         process_switch();
         // __asm__("hlt");
@@ -24,7 +24,7 @@ static void process0_start() {
 static void process1_start() {
     vga_puts("Process 1 started\n");
     while (1) {
-        for (int i = 0; i < 1000000000; i++);
+        // for (int i = 0; i < 1000000000; i++);
         vga_puts("Process 1 switching\n");
         process_switch();
         // __asm__("hlt");
