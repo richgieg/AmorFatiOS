@@ -33,7 +33,7 @@ void vga_init(void) {
     outb(0x3d4, 0x0a);
     outb(0x3d5, 0x20);
 
-    vga_clear();
+    // vga_clear();
 }
 
 static inline u16 vga_entry(

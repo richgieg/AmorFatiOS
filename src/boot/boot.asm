@@ -67,6 +67,16 @@ mov dh, 0
 mov dl, 0
 int 0x13
 
+; Copy the next 18 sectors of kernel image from floppy.
+mov bx, 0x6a00
+mov ah, 2
+mov al, 18
+mov ch, 1
+mov cl, 1
+mov dh, 1
+mov dl, 0
+int 0x13
+
 ; Disable interrupts.
 cli
 

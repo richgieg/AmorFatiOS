@@ -2,7 +2,6 @@
 #include "types.h"
 #include "bugcheck.h"
 
-#define MAX_PROCESSES 8
 #define STACK_SIZE 4096
 #define STACK_AREA_BASE 0x100000
 
@@ -115,4 +114,8 @@ void process_switch(void) {
     }
 
     __asm__("sti");
+}
+
+int process_get_current_index(void) {
+    return current_process_index;
 }
