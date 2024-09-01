@@ -4,6 +4,8 @@
 
 #define VGA_ADDRESS 0xb8000
 
+static const char hex_digits[] = "0123456789ABCDEF";
+
 struct console {
     u16 buffer[CONSOLE_COLUMNS * CONSOLE_ROWS];
     enum console_color bg_color;
@@ -91,6 +93,22 @@ static void go_to_next_line(void) {
     }
 }
 
+void console_writec(char c) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u16 entry = vga_entry(c, con->bg_color, con->text_color);
+    con->buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
+
+    if (current_process_index == current_console_index) {
+        vga_buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
+    }
+
+    con->col++;
+    if (con->col >= CONSOLE_COLUMNS) {
+        go_to_next_line();
+    }
+}
+
 void console_putc(char c) {
     if (c == '\n') {
         go_to_next_line();
@@ -102,6 +120,193 @@ void console_putc(char c) {
 
         if (current_process_index == current_console_index) {
             vga_buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
+        }
+
+        con->col++;
+        if (con->col >= CONSOLE_COLUMNS) {
+            go_to_next_line();
+        }
+    }
+}
+
+void console_puts(const char *str) {
+    while (*str) {
+        console_putc(*str);
+        str++;
+    }
+}
+
+void console_putb(u8 b) {
+    char str[3];
+    str[2] = '\0';
+    str[1] = hex_digits[b & 0xf];
+    b >>= 4;
+    str[0] = hex_digits[b & 0xf];
+    console_puts(str);
+}
+
+void console_putw(u16 w) {
+    char str[5];
+    str[4] = '\0';
+    str[3] = hex_digits[w & 0xf];
+    w >>= 4;
+    str[2] = hex_digits[w & 0xf];
+    w >>= 4;
+    str[1] = hex_digits[w & 0xf];
+    w >>= 4;
+    str[0] = hex_digits[w & 0xf];
+    console_puts(str);
+}
+
+void console_putdw(u32 dw) {
+    char str[9];
+    str[8] = '\0';
+    str[7] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[6] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[5] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[4] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[3] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[2] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[1] = hex_digits[dw & 0xf];
+    dw >>= 4;
+    str[0] = hex_digits[dw & 0xf];
+    console_puts(str);
+}
+
+void console_putqw(u64 qw) {
+    char str[17];
+    str[16] = '\0';
+    str[15] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[14] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[13] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[12] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[11] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[10] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[9] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[8] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[7] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[6] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[5] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[4] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[3] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[2] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[1] = hex_digits[qw & 0xf];
+    qw >>= 4;
+    str[0] = hex_digits[qw & 0xf];
+    console_puts(str);
+}
+
+void console_putp(void *p) {
+    console_putdw((u32)p);
+}
+
+void console_putc_at(char c, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_putc(c);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_puts_at(const char *str, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_puts(str);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_putb_at(u8 b, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_putb(b);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_putw_at(u16 w, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_putw(w);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_putdw_at(u32 dw, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_putdw(dw);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_putqw_at(u64 qw, u8 col, u8 row) {
+    int current_process_index = process_get_current_index();
+    struct console *con = &consoles[current_process_index];
+    u8 old_col = con->col;
+    u8 old_row = con->row;
+    con->col = col;
+    con->row = row;
+    console_putqw(qw);
+    con->col = old_col;
+    con->row = old_row;
+}
+
+void console_putp_at(void *p, u8 col, u8 row) {
+    console_putdw_at((u32)p, col, row);
+}
+
+void console_dump_chars(void) {
+    u8 x = 0;
+    u8 y = 0;
+    char c = 0;
+    for (int i = 0; i < 256; i++) {
+        console_putc_at(c, x, y);
+        c++;
+        x++;
+        if (x >= CONSOLE_COLUMNS) {
+            x = 0;
+            y++;
         }
     }
 }
