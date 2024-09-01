@@ -83,7 +83,7 @@ static void process7_start() {
 }
 
 void kernel_init(void) {
-    console_init();
+    vga_init();
     console_init();
     mm_init();
     scheduler_init();

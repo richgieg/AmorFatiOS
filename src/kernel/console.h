@@ -48,5 +48,7 @@ void console_putdw_at(u32 dw, u8 col, u8 row);
 void console_putqw_at(u64 dw, u8 col, u8 row);
 void console_putp_at(void *p, u8 col, u8 row);
 void console_dump_chars(void);
+void console_next(void);
+void console_prev(void);
 
 #endif

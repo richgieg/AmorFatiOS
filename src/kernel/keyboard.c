@@ -30,15 +30,15 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    // console_putw(scancodew);
-    // console_puts("P ");
 
     switch (scancodew) {
         case SC_RIGHT:
-            mm_mdump_next_byte();
+            // mm_mdump_next_byte();
+            console_next();
             break;
         case SC_LEFT:
-            mm_mdump_prev_byte();
+            // mm_mdump_prev_byte();
+            console_prev();
             break;
         case SC_DOWN:
             mm_mdump_next_line();
@@ -67,8 +67,6 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    // console_putw(scancodew);
-    // console_puts("R ");
 }
 
 static void interrupt_service_routine(void) {

@@ -341,3 +341,19 @@ void console_dump_chars(void) {
         }
     }
 }
+
+void console_next(void) {
+    current_console_index = (current_console_index + 1) % MAX_PROCESSES;
+    struct console *con = &consoles[current_console_index];
+    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
+        vga_buffer[i] = con->buffer[i];
+    }
+}
+
+void console_prev(void) {
+    current_console_index = (current_console_index + MAX_PROCESSES - 1) % MAX_PROCESSES;
+    struct console *con = &consoles[current_console_index];
+    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
+        vga_buffer[i] = con->buffer[i];
+    }
+}
