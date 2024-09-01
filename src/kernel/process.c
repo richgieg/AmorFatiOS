@@ -21,7 +21,14 @@ struct process {
 };
 
 static struct process processes[MAX_PROCESSES];
-static int current_process_index = -1;
+static int current_process_index;
+
+void process_init(void) {
+    current_process_index = 0;
+    struct process *p = &processes[current_process_index];
+    p->is_started = true;
+    p->state = PROCESS_STATE_RUNNING;
+}
 
 static int find_available_process_index() {
     int index;
@@ -49,15 +56,6 @@ void process_create(void (*start)()) {
 void process_switch(void) {
     __asm__("cli");
 
-    struct process *curr_proc;
-    struct process *next_proc;
-
-    if (current_process_index != -1) {
-        curr_proc = &processes[current_process_index];
-    } else {
-        curr_proc = 0;
-    }
-
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
@@ -74,19 +72,19 @@ void process_switch(void) {
         BUGCHECK("Could not find a runnable process.");
     }
 
+    struct process *current_process = &processes[current_process_index];
+    struct process *next_process = &processes[next_process_index];
+
     current_process_index = next_process_index;
-    next_proc = &processes[current_process_index];
 
-    if (curr_proc) {
-        curr_proc->state = PROCESS_STATE_RUNNABLE;
-    }
-    next_proc->state = PROCESS_STATE_RUNNING;
+    current_process->state = PROCESS_STATE_RUNNABLE;
+    next_process->state = PROCESS_STATE_RUNNING;
 
-    if (!next_proc->is_started) {
-        u32 *esp = (u32 *)next_proc->esp;
+    if (!next_process->is_started) {
+        u32 *esp = (u32 *)next_process->esp;
 
         esp--; // eip
-        *esp = (u32)next_proc->start;
+        *esp = (u32)next_process->start;
 
         u32 eflags;
         __asm__ volatile(
@@ -113,7 +111,7 @@ void process_switch(void) {
         *esp = 0;
 
         esp--; // esp
-        *esp = next_proc->esp;
+        *esp = next_process->esp;
 
         esp--; // ebp
         *esp = 0;
@@ -124,33 +122,21 @@ void process_switch(void) {
         esp--; // edi
         *esp = 0;
 
-        next_proc->esp = (u32)esp;
-        next_proc->is_started = true;
+        next_process->esp = (u32)esp;
+        next_process->is_started = true;
 
-        if (curr_proc) {
-            __asm__ volatile(
-                "pushfd;"
-                "pushad;"
-                "mov %[old_esp], esp;"
-                "mov esp, %[new_esp];"
-                "popad;"
-                "popfd;"
-                "ret;"
-                : [old_esp] "=m" (curr_proc->esp)
-                : [new_esp] "m" (next_proc->esp)
-                : "memory"
-            );
-        } else {
-            __asm__(
-                "mov esp, %[new_esp];"
-                "popad;"
-                "popfd;"
-                "ret;"
-                :
-                : [new_esp] "m" (next_proc->esp)
-                : "memory"
-            );
-        }
+        __asm__ volatile(
+            "pushfd;"
+            "pushad;"
+            "mov %[old_esp], esp;"
+            "mov esp, %[new_esp];"
+            "popad;"
+            "popfd;"
+            "ret;"
+            : [old_esp] "=m" (current_process->esp)
+            : [new_esp] "m" (next_process->esp)
+            : "memory"
+        );
     } else {
         __asm__ volatile(
             "pushfd;"
@@ -159,8 +145,8 @@ void process_switch(void) {
             "mov esp, %[new_esp];"
             "popad;"
             "popfd;"
-            : [old_esp] "=m" (curr_proc->esp)
-            : [new_esp] "m" (next_proc->esp)
+            : [old_esp] "=m" (current_process->esp)
+            : [new_esp] "m" (next_process->esp)
             : "memory"
         );
     }
