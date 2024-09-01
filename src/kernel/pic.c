@@ -1,9 +1,7 @@
 // Source: https://curtsinger.cs.grinnell.edu/teaching/2022S/CSC395/kernel/keyboard.html
 
 #include "pic.h"
-
 #include "types.h"
-
 #include "port.h"
 
 #define ICW1_ICW4 0x01

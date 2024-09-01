@@ -3,7 +3,7 @@
 #include "idt.h"
 #include "ps2.h"
 #include "pic.h"
-#include "vga.h"
+#include "console.h"
 #include "mm.h"
 
 #define EXTENDED_KEY_PREFIX 0xe0
@@ -30,8 +30,8 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    // vga_putw(scancodew);
-    // vga_puts("P ");
+    // console_putw(scancodew);
+    // console_puts("P ");
 
     switch (scancodew) {
         case SC_RIGHT:
@@ -67,8 +67,8 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    // vga_putw(scancodew);
-    // vga_puts("R ");
+    // console_putw(scancodew);
+    // console_puts("R ");
 }
 
 static void interrupt_service_routine(void) {

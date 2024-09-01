@@ -1,5 +1,4 @@
 #include "idt.h"
-#include "vga.h"
 #include "bugcheck.h"
 
 #define IDT_MAX_DESCRIPTORS 256

@@ -1,5 +1,5 @@
 #include "mm.h"
-#include "vga.h"
+#include "console.h"
 #include "types.h"
 
 #define MMAP_ADDRESS 0x10000
@@ -24,42 +24,42 @@ void mm_show_mmap(void) {
     struct mmap_entry *e = (struct mmap_entry *)MMAP_ADDRESS;
 
     while (e->base_address || e->length || e->type || e->extended_attributes) {
-        vga_putqw(e->base_address);
-        vga_putc(' ');
-        vga_putqw(e->length);
-        vga_putc(' ');
-        vga_putdw(e->type);
-        vga_putc(' ');
-        vga_putdw(e->extended_attributes);
-        vga_putc('\n');
+        console_putqw(e->base_address);
+        console_putc(' ');
+        console_putqw(e->length);
+        console_putc(' ');
+        console_putdw(e->type);
+        console_putc(' ');
+        console_putdw(e->extended_attributes);
+        console_putc('\n');
         e++;
     }
 }
 
 void mm_show_mdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)mdump_cur_addr;
-    vga_set_pos(0, 0);
+    console_set_pos(0, 0);
 
-    for (int k = 0; k < VGA_ROWS; k++) {
-        vga_putdw((u32)memory_ptr);
-        vga_puts("    ");
+    for (int k = 0; k < CONSOLE_ROWS; k++) {
+        console_putdw((u32)memory_ptr);
+        console_puts("    ");
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            vga_putb(*memory_ptr);
-            vga_putc(' ');
+            console_putb(*memory_ptr);
+            console_putc(' ');
             memory_ptr++;
         }
 
-        vga_puts("   ");
+        console_puts("   ");
         memory_ptr -= MDUMP_BYTES_PER_LINE;
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            vga_writec(*memory_ptr);
+            console_writec(*memory_ptr);
             memory_ptr++;
         }
 
-        if (k < VGA_ROWS - 1) {
-            vga_putc('\n');
+        if (k < CONSOLE_ROWS - 1) {
+            console_putc('\n');
         }
     }
 }

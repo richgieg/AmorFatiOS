@@ -1,5 +1,5 @@
 #include "pci.h"
-#include "vga.h"
+#include "console.h"
 #include "string.h"
 #include "i82545em.h"
 
@@ -129,16 +129,16 @@ void enumerate_pci_devices(u64 base_address, u8 start_bus, u8 end_bus) {
                 if (vendor_device_id != 0xffffffff) {
                     u16 vendor_id = vendor_device_id;
                     u16 device_id = vendor_device_id >> 16;
-                    vga_putw(vendor_id);
-                    vga_putc(' ');
-                    vga_putw(device_id);
-                    vga_putc(' ');
-                    vga_putb(bus);
-                    vga_putc(' ');
-                    vga_putb(device);
-                    vga_putc(' ');
-                    vga_putb(function);
-                    vga_puts(" | ");
+                    console_putw(vendor_id);
+                    console_putc(' ');
+                    console_putw(device_id);
+                    console_putc(' ');
+                    console_putb(bus);
+                    console_putc(' ');
+                    console_putb(device);
+                    console_putc(' ');
+                    console_putb(function);
+                    console_puts(" | ");
                 }
             }
         }
@@ -148,40 +148,40 @@ void enumerate_pci_devices(u64 base_address, u8 start_bus, u8 end_bus) {
 void pci_init(void) {
     struct xsdp *xsdp = find_xsdp();
     if (!xsdp) {
-        vga_puts("Could not find XSDP");
+        console_puts("Could not find XSDP");
         return;
     }
-    vga_puts("Found XSDP at 0x");
-    vga_putdw((u32)xsdp);
-    vga_putc('\n');
+    console_puts("Found XSDP at 0x");
+    console_putdw((u32)xsdp);
+    console_putc('\n');
 
-    vga_puts("XSDT is at 0x");
-    vga_putdw((u32)xsdp->xsdt_address);
-    vga_putc('\n');
+    console_puts("XSDT is at 0x");
+    console_putdw((u32)xsdp->xsdt_address);
+    console_putc('\n');
 
     struct mcfg *mcfg = find_mcfg_via_xsdp(xsdp);
     if (!mcfg) {
-        vga_puts("Could not find MCFG");
+        console_puts("Could not find MCFG");
         return;
     }
-    vga_puts("Found MCFG at 0x");
-    vga_putdw((u32)mcfg);
-    vga_putc('\n');
+    console_puts("Found MCFG at 0x");
+    console_putdw((u32)mcfg);
+    console_putc('\n');
 
     int num_entries = (mcfg->header.length - sizeof(mcfg->header)) / sizeof(struct mcfg_entry);
-    vga_puts("MCFG Entries: ");
-    vga_putdw(num_entries);
-    vga_putc('\n');
+    console_puts("MCFG Entries: ");
+    console_putdw(num_entries);
+    console_putc('\n');
 
     for (int i = 0; i < num_entries; i++) {
-        vga_putqw(mcfg->entries[i].base_address);
-        vga_putc(' ');
-        vga_putw(mcfg->entries[i].group);
-        vga_putc(' ');
-        vga_putb(mcfg->entries[i].start_bus);
-        vga_putc(' ');
-        vga_putb(mcfg->entries[i].end_bus);
-        vga_putc('\n');
+        console_putqw(mcfg->entries[i].base_address);
+        console_putc(' ');
+        console_putw(mcfg->entries[i].group);
+        console_putc(' ');
+        console_putb(mcfg->entries[i].start_bus);
+        console_putc(' ');
+        console_putb(mcfg->entries[i].end_bus);
+        console_putc('\n');
     }
 
     // for (int i = 0; i < num_entries; i++) {
