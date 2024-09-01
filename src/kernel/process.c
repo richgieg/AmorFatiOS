@@ -80,72 +80,35 @@ void process_switch(void) {
     current_process->state = PROCESS_STATE_RUNNABLE;
     next_process->state = PROCESS_STATE_RUNNING;
 
+    // Save the context of the current process.
+    __asm__ volatile(
+        "pushfd;"
+        "pushad;"
+        "mov %[old_esp], esp;"
+        : [old_esp] "=m" (current_process->esp)
+        :
+        : "memory"
+    );
+
     if (!next_process->is_started) {
-        u32 *esp = (u32 *)next_process->esp;
-
-        esp--; // eip
-        *esp = (u32)next_process->start;
-
-        u32 eflags;
-        __asm__ volatile(
-            "pushfd;"
-            "pop %0"
-            : "=r"(eflags)
-            :
-            : "memory"
-        );
-
-        esp--; // eflags
-        *esp = eflags;
-
-        esp--; // eax
-        *esp = 0;
-
-        esp--; // ecx
-        *esp = 0;
-
-        esp--; // edx
-        *esp = 0;
-
-        esp--; // ebx
-        *esp = 0;
-
-        esp--; // esp
-        *esp = next_process->esp;
-
-        esp--; // ebp
-        *esp = 0;
-
-        esp--; // esi
-        *esp = 0;
-
-        esp--; // edi
-        *esp = 0;
-
-        next_process->esp = (u32)esp;
         next_process->is_started = true;
 
-        __asm__ volatile(
-            "pushfd;"
-            "pushad;"
-            "mov %[old_esp], esp;"
+        // Start the next process.
+        __asm__(
             "mov esp, %[new_esp];"
-            "popad;"
-            "popfd;"
-            "ret;"
-            : [old_esp] "=m" (current_process->esp)
-            : [new_esp] "m" (next_process->esp)
+            "call %[start];"
+            :
+            : [new_esp] "m" (next_process->esp), [start] "m" (next_process->start)
             : "memory"
         );
     } else {
-        __asm__ volatile(
-            "pushfd;"
-            "pushad;"
-            "mov %[old_esp], esp;"
+
+        // Restore the context of the next process.
+        __asm__(
             "mov esp, %[new_esp];"
             "popad;"
             "popfd;"
-            : [old_esp] "=m" (current_process->esp)
+            :
             : [new_esp] "m" (next_process->esp)
             : "memory"
         );
