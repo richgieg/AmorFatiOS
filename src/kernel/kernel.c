@@ -15,7 +15,7 @@ static void process0_start() {
     vga_puts("Process 0 started\n");
     while (1) {
         // for (int i = 0; i < 1000000000; i++);
-        vga_puts("Process 0 switching\n");
+        // vga_puts("Process 0 switching\n");
         process_switch();
         // __asm__("hlt");
     }
@@ -25,7 +25,7 @@ static void process1_start() {
     vga_puts("Process 1 started\n");
     while (1) {
         // for (int i = 0; i < 1000000000; i++);
-        vga_puts("Process 1 switching\n");
+        // vga_puts("Process 1 switching\n");
         process_switch();
         // __asm__("hlt");
     }
@@ -43,6 +43,9 @@ void kernel_init(void) {
     mouse_init();
     pci_init();
 
+    // Enable interrupts
+    __asm__("sti");
+
     // vga_puts("AmorFatiOS v0.0.1\n");
 
     // mm_show_mdump();
@@ -53,10 +56,4 @@ void kernel_init(void) {
     process_create(process0_start);
     process_create(process1_start);
     process_switch();
-}
-
-void kernel_idle(void) {
-    while (1) {
-        __asm__("hlt");
-    }
 }

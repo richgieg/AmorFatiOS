@@ -212,5 +212,4 @@ void idt_init(void) {
     idt_set_descriptor(32 + 12, interrupt_handler_12, 0x8e);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
-    __asm__("sti"); // enable interrupts
 }

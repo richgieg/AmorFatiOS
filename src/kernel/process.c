@@ -47,6 +47,8 @@ void process_create(void (*start)()) {
 }
 
 void process_switch(void) {
+    __asm__("cli");
+
     struct process *curr_proc;
     struct process *next_proc;
 
@@ -162,4 +164,6 @@ void process_switch(void) {
             : "memory"
         );
     }
+
+    __asm__("sti");
 }
