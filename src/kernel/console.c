@@ -6,6 +6,7 @@
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
 #define VGA_ADDRESS 0xb8000
 #define MAX_CONSOLES (MAX_PROCESSES + 1)
+#define DBG_CONSOLE_INDEX (MAX_CONSOLES - 1)
 
 static const char hex_digits[] = "0123456789ABCDEF";
 
@@ -41,7 +42,7 @@ void console_init(void) {
     enum console_color text_color = CONSOLE_COLOR_BRIGHT_WHITE;
     u16 entry = vga_entry(0, bg_color, text_color);
 
-    for (int i = 0; i < MAX_CONSOLES - 1; i++) {
+    for (int i = 0; i < DBG_CONSOLE_INDEX; i++) {
         consoles[i].bg_color = bg_color;
         consoles[i].text_color = text_color;
         for (int j = 0; j < CONSOLE_ROWS * CONSOLE_COLUMNS; j++) {
@@ -56,10 +57,10 @@ void console_init(void) {
     bg_color = CONSOLE_COLOR_BLACK;
     text_color = CONSOLE_COLOR_BRIGHT_WHITE;
     entry = vga_entry(0, bg_color, text_color);
-    consoles[MAX_CONSOLES - 1].bg_color = bg_color;
-    consoles[MAX_CONSOLES - 1].text_color = text_color;
+    consoles[DBG_CONSOLE_INDEX].bg_color = bg_color;
+    consoles[DBG_CONSOLE_INDEX].text_color = text_color;
     for (int j = 0; j < CONSOLE_ROWS * CONSOLE_COLUMNS; j++) {
-        consoles[MAX_CONSOLES - 1].buffer[j] = entry;
+        consoles[DBG_CONSOLE_INDEX].buffer[j] = entry;
     }
 }
 
@@ -132,7 +133,7 @@ void console_set_pos(u8 col, u8 row) {
 }
 
 void console_dbg_set_pos(u8 col, u8 row) {
-    _console_set_pos(MAX_CONSOLES - 1, col, row);
+    _console_set_pos(DBG_CONSOLE_INDEX, col, row);
 }
 
 static void scroll_one_line(int index) {
@@ -183,7 +184,7 @@ void console_writec(char c) {
 }
 
 void console_dbg_writec(char c) {
-    _console_writec(MAX_CONSOLES - 1, c);
+    _console_writec(DBG_CONSOLE_INDEX, c);
 }
 
 static void _console_putc(int index, char c) {
@@ -210,7 +211,7 @@ void console_putc(char c) {
 }
 
 void console_dbg_putc(char c) {
-    _console_putc(MAX_CONSOLES - 1, c);
+    _console_putc(DBG_CONSOLE_INDEX, c);
 }
 
 static void _console_puts(int index, const char *str) {
@@ -225,7 +226,7 @@ void console_puts(const char *str) {
 }
 
 void console_dbg_puts(const char *str) {
-    _console_puts(MAX_CONSOLES - 1, str);
+    _console_puts(DBG_CONSOLE_INDEX, str);
 }
 
 static void _console_putb(int index, u8 b) {
@@ -242,7 +243,7 @@ void console_putb(u8 b) {
 }
 
 void console_dbg_putb(u8 b) {
-    _console_putb(MAX_CONSOLES - 1, b);
+    _console_putb(DBG_CONSOLE_INDEX, b);
 }
 
 static void _console_putw(int index, u16 w) {
@@ -263,7 +264,7 @@ void console_putw(u16 w) {
 }
 
 void console_dbg_putw(u16 w) {
-    _console_putw(MAX_CONSOLES - 1, w);
+    _console_putw(DBG_CONSOLE_INDEX, w);
 }
 
 static void _console_putdw(int index, u32 dw) {
@@ -292,7 +293,7 @@ void console_putdw(u32 dw) {
 }
 
 void console_dbg_putdw(u32 dw) {
-    _console_putdw(MAX_CONSOLES - 1, dw);
+    _console_putdw(DBG_CONSOLE_INDEX, dw);
 }
 
 static void _console_putqw(int index, u64 qw) {
@@ -337,7 +338,7 @@ void console_putqw(u64 qw) {
 }
 
 void console_dbg_putqw(u64 qw) {
-    _console_putqw(MAX_CONSOLES - 1, qw);
+    _console_putqw(DBG_CONSOLE_INDEX, qw);
 }
 
 static void _console_putp(int index, void *p) {
@@ -349,7 +350,7 @@ void console_putp(void *p) {
 }
 
 void console_dbg_putp(void *p) {
-    _console_putp(MAX_CONSOLES - 1, p);
+    _console_putp(DBG_CONSOLE_INDEX, p);
 }
 
 static void _console_putc_at(int index, char c, u8 col, u8 row) {
@@ -368,7 +369,7 @@ void console_putc_at(char c, u8 col, u8 row) {
 }
 
 void console_dbg_putc_at(char c, u8 col, u8 row) {
-    _console_putc_at(MAX_CONSOLES - 1, c, col, row);
+    _console_putc_at(DBG_CONSOLE_INDEX, c, col, row);
 }
 
 static void _console_puts_at(int index, const char *str, u8 col, u8 row) {
@@ -387,7 +388,7 @@ void console_puts_at(const char *str, u8 col, u8 row) {
 }
 
 void console_dbg_puts_at(const char *str, u8 col, u8 row) {
-    _console_puts_at(MAX_CONSOLES - 1, str, col, row);
+    _console_puts_at(DBG_CONSOLE_INDEX, str, col, row);
 }
 
 static void _console_putb_at(int index, u8 b, u8 col, u8 row) {
@@ -406,7 +407,7 @@ void console_putb_at(u8 b, u8 col, u8 row) {
 }
 
 void console_dbg_putb_at(u8 b, u8 col, u8 row) {
-    _console_putb_at(MAX_CONSOLES - 1, b, col, row);
+    _console_putb_at(DBG_CONSOLE_INDEX, b, col, row);
 }
 
 static void _console_putw_at(int index, u16 w, u8 col, u8 row) {
@@ -425,7 +426,7 @@ void console_putw_at(u16 w, u8 col, u8 row) {
 }
 
 void console_dbg_putw_at(u16 w, u8 col, u8 row) {
-    _console_putw_at(MAX_CONSOLES - 1, w, col, row);
+    _console_putw_at(DBG_CONSOLE_INDEX, w, col, row);
 }
 
 static void _console_putdw_at(int index, u32 dw, u8 col, u8 row) {
@@ -444,7 +445,7 @@ void console_putdw_at(u32 dw, u8 col, u8 row) {
 }
 
 void console_dbg_putdw_at(u32 dw, u8 col, u8 row) {
-    _console_putdw_at(MAX_CONSOLES - 1, dw, col, row);
+    _console_putdw_at(DBG_CONSOLE_INDEX, dw, col, row);
 }
 
 static void _console_putqw_at(int index, u64 qw, u8 col, u8 row) {
@@ -463,7 +464,7 @@ void console_putqw_at(u64 qw, u8 col, u8 row) {
 }
 
 void console_dbg_putqw_at(u64 qw, u8 col, u8 row) {
-    _console_putqw_at(MAX_CONSOLES - 1, qw, col, row);
+    _console_putqw_at(DBG_CONSOLE_INDEX, qw, col, row);
 }
 
 static void _console_putp_at(int index, void *p, u8 col, u8 row) {
@@ -475,7 +476,7 @@ void console_putp_at(void *p, u8 col, u8 row) {
 }
 
 void console_dbg_putp_at(void *p, u8 col, u8 row) {
-    _console_putp_at(MAX_CONSOLES - 1, p, col, row);
+    _console_putp_at(DBG_CONSOLE_INDEX, p, col, row);
 }
 
 void console_next(void) {
@@ -487,7 +488,7 @@ void console_next(void) {
 }
 
 void console_prev(void) {
-    current_console_index = (current_console_index + MAX_CONSOLES - 1) % MAX_CONSOLES;
+    current_console_index = (current_console_index + DBG_CONSOLE_INDEX) % MAX_CONSOLES;
     struct console *con = &consoles[current_console_index];
     for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
         vga_buffer[i] = con->buffer[i];
