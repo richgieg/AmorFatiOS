@@ -33,42 +33,42 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    console_key_press(scancodew);
+    // console_key_press(scancodew);
     // console_putw(scancodew);
     // console_putc('\n');
 
-    // switch (scancodew) {
-    //     case SC_F11:
-    //         console_prev();
-    //         break;
-    //     case SC_F12:
-    //         console_next();
-    //         break;
-    //     case SC_LEFT:
-    //         mm_mdump_prev_byte();
-    //         break;
-    //     case SC_RIGHT:
-    //         mm_mdump_next_byte();
-    //         break;
-    //     case SC_UP:
-    //         mm_mdump_prev_line();
-    //         break;
-    //     case SC_DOWN:
-    //         mm_mdump_next_line();
-    //         break;
-    //     case SC_PAGEUP:
-    //         mm_mdump_prev_page();
-    //         break;
-    //     case SC_PAGEDOWN:
-    //         mm_mdump_next_page();
-    //         break;
-    //     case SC_HOME:
-    //         mm_mdump_prev_mb();
-    //         break;
-    //     case SC_END:
-    //         mm_mdump_next_mb();
-    //         break;
-    // }
+    switch (scancodew) {
+        case SC_F11:
+            console_prev();
+            break;
+        case SC_F12:
+            console_next();
+            break;
+        // case SC_LEFT:
+        //     mm_mdump_prev_byte();
+        //     break;
+        // case SC_RIGHT:
+        //     mm_mdump_next_byte();
+        //     break;
+        // case SC_UP:
+        //     mm_mdump_prev_line();
+        //     break;
+        // case SC_DOWN:
+        //     mm_mdump_next_line();
+        //     break;
+        // case SC_PAGEUP:
+        //     mm_mdump_prev_page();
+        //     break;
+        // case SC_PAGEDOWN:
+        //     mm_mdump_next_page();
+        //     break;
+        // case SC_HOME:
+        //     mm_mdump_prev_mb();
+        //     break;
+        // case SC_END:
+        //     mm_mdump_next_mb();
+        //     break;
+    }
 }
 
 static void handle_key_release(u8 scancode, u8 is_extended) {
@@ -77,7 +77,7 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
-    console_key_release(scancodew);
+    // console_key_release(scancodew);
 }
 
 static void interrupt_service_routine(void) {
