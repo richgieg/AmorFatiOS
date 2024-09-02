@@ -12,8 +12,8 @@ void scheduler_update(void) {
     // TODO: Update accounting for current process/thread.
     ticks++;
     if (ticks % 0x100 == 0) {
-        console_puts("scheduler_update calls: ");
-        console_putdw(ticks);
-        console_putc('\n');
+        console_dbg_puts("scheduler_update calls: ");
+        console_dbg_putdw(ticks);
+        console_dbg_putc('\n');
     }
 }

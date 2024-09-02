@@ -34,8 +34,8 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
     }
     scancodew |= scancode;
     // console_key_press(scancodew);
-    // console_putw(scancodew);
-    // console_putc('\n');
+    // console_dbg_putw(scancodew);
+    // console_dbg_putc('\n');
 
     switch (scancodew) {
         case SC_F11:

@@ -129,16 +129,16 @@ void enumerate_pci_devices(u64 base_address, u8 start_bus, u8 end_bus) {
                 if (vendor_device_id != 0xffffffff) {
                     u16 vendor_id = vendor_device_id;
                     u16 device_id = vendor_device_id >> 16;
-                    console_putw(vendor_id);
-                    console_putc(' ');
-                    console_putw(device_id);
-                    console_putc(' ');
-                    console_putb(bus);
-                    console_putc(' ');
-                    console_putb(device);
-                    console_putc(' ');
-                    console_putb(function);
-                    console_puts(" | ");
+                    console_dbg_putw(vendor_id);
+                    console_dbg_putc(' ');
+                    console_dbg_putw(device_id);
+                    console_dbg_putc(' ');
+                    console_dbg_putb(bus);
+                    console_dbg_putc(' ');
+                    console_dbg_putb(device);
+                    console_dbg_putc(' ');
+                    console_dbg_putb(function);
+                    console_dbg_puts(" | ");
                 }
             }
         }
@@ -148,40 +148,40 @@ void enumerate_pci_devices(u64 base_address, u8 start_bus, u8 end_bus) {
 void pci_init(void) {
     struct xsdp *xsdp = find_xsdp();
     if (!xsdp) {
-        console_puts("Could not find XSDP");
+        console_dbg_puts("Could not find XSDP");
         return;
     }
-    console_puts("Found XSDP at 0x");
-    console_putdw((u32)xsdp);
-    console_putc('\n');
+    console_dbg_puts("Found XSDP at 0x");
+    console_dbg_putdw((u32)xsdp);
+    console_dbg_putc('\n');
 
-    console_puts("XSDT is at 0x");
-    console_putdw((u32)xsdp->xsdt_address);
-    console_putc('\n');
+    console_dbg_puts("XSDT is at 0x");
+    console_dbg_putdw((u32)xsdp->xsdt_address);
+    console_dbg_putc('\n');
 
     struct mcfg *mcfg = find_mcfg_via_xsdp(xsdp);
     if (!mcfg) {
-        console_puts("Could not find MCFG");
+        console_dbg_puts("Could not find MCFG");
         return;
     }
-    console_puts("Found MCFG at 0x");
-    console_putdw((u32)mcfg);
-    console_putc('\n');
+    console_dbg_puts("Found MCFG at 0x");
+    console_dbg_putdw((u32)mcfg);
+    console_dbg_putc('\n');
 
     int num_entries = (mcfg->header.length - sizeof(mcfg->header)) / sizeof(struct mcfg_entry);
-    console_puts("MCFG Entries: ");
-    console_putdw(num_entries);
-    console_putc('\n');
+    console_dbg_puts("MCFG Entries: ");
+    console_dbg_putdw(num_entries);
+    console_dbg_putc('\n');
 
     for (int i = 0; i < num_entries; i++) {
-        console_putqw(mcfg->entries[i].base_address);
-        console_putc(' ');
-        console_putw(mcfg->entries[i].group);
-        console_putc(' ');
-        console_putb(mcfg->entries[i].start_bus);
-        console_putc(' ');
-        console_putb(mcfg->entries[i].end_bus);
-        console_putc('\n');
+        console_dbg_putqw(mcfg->entries[i].base_address);
+        console_dbg_putc(' ');
+        console_dbg_putw(mcfg->entries[i].group);
+        console_dbg_putc(' ');
+        console_dbg_putb(mcfg->entries[i].start_bus);
+        console_dbg_putc(' ');
+        console_dbg_putb(mcfg->entries[i].end_bus);
+        console_dbg_putc('\n');
     }
 
     // for (int i = 0; i < num_entries; i++) {

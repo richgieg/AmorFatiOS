@@ -37,6 +37,7 @@ void console_set_bg_color(enum console_color bg_color);
 enum console_color console_get_text_color();
 void console_set_text_color(enum console_color text_color);
 void console_set_pos(u8 col, u8 row);
+void console_dbg_set_pos(u8 col, u8 row);
 void console_writec(char c);
 void console_dbg_writec(char c);
 void console_putc(char c);

@@ -110,24 +110,24 @@ void write_mmio(u32 mmio_base, u32 offset, u32 value) {
 
 static void interrupt_service_routine(void) {
     u32 icr = read_mmio(mmio_base, R_ICR);
-    console_puts("82525EM interrupt -- ICR: ");
-    console_putdw(icr);
-    console_putc('\n');
+    console_dbg_puts("82525EM interrupt -- ICR: ");
+    console_dbg_putdw(icr);
+    console_dbg_putc('\n');
 
     if (icr & ICR_TXDW) {
-        console_puts("TXDW: Transmit Descriptor Written Back\n");
+        console_dbg_puts("TXDW: Transmit Descriptor Written Back\n");
     }
 
     if (icr & ICR_TXQE) {
-        console_puts("TXQE: Transmit Queue Empty\n");
+        console_dbg_puts("TXQE: Transmit Queue Empty\n");
     }
 
     if (icr & ICR_RXDMT0) {
-        console_puts("RXDMT0: Receive Descriptor Minimum Threshold Reached\n");
+        console_dbg_puts("RXDMT0: Receive Descriptor Minimum Threshold Reached\n");
     }
 
     if (icr & ICR_RXT0) {
-        console_puts("RXT0: Receiver Timer Interrupt\n");
+        console_dbg_puts("RXT0: Receiver Timer Interrupt\n");
 
         while (rx_descriptors[rx_cur_idx].status & RX_DESC_STATUS_DD) {
 
@@ -136,17 +136,17 @@ static void interrupt_service_routine(void) {
                 BUGCHECK("Multi-descriptor packets not supported yet.");
             }
 
-            console_puts("Status=");
-            console_putb(rx_descriptors[rx_cur_idx].status);
-            console_puts(" Length=");
-            console_putw(rx_descriptors[rx_cur_idx].length);
-            console_putc('\n');
+            console_dbg_puts("Status=");
+            console_dbg_putb(rx_descriptors[rx_cur_idx].status);
+            console_dbg_puts(" Length=");
+            console_dbg_putw(rx_descriptors[rx_cur_idx].length);
+            console_dbg_putc('\n');
 
             for (u16 i = 0; i < rx_descriptors[rx_cur_idx].length; i++) {
-                console_putb(rx_buffers[rx_cur_idx][i]);
-                console_putc(' ');
+                console_dbg_putb(rx_buffers[rx_cur_idx][i]);
+                console_dbg_putc(' ');
             }
-            console_putc('\n');
+            console_dbg_putc('\n');
 
             rx_descriptors[rx_cur_idx].status = 0;
             rx_cur_idx = (rx_cur_idx + 1) % RX_BUFFER_COUNT;
@@ -163,36 +163,36 @@ void i82545em_init(u32 bar0) {
     // NOTE: If bit 0 in bar is 1 then I/O port should be used instead.
     // u32 mmio_base = bar0 & 0xfffffff0;
     mmio_base = bar0 & 0xfffffff0;
-    console_puts("mmio_base = ");
-    console_putdw(mmio_base);
-    console_putc('\n');
+    console_dbg_puts("mmio_base = ");
+    console_dbg_putdw(mmio_base);
+    console_dbg_putc('\n');
 
     u32 ctrl = read_mmio(mmio_base, R_CTRL);
-    console_puts("82525EM CTRL: ");
-    console_putdw(ctrl);
-    console_putc('\n');
+    console_dbg_puts("82525EM CTRL: ");
+    console_dbg_putdw(ctrl);
+    console_dbg_putc('\n');
 
     write_mmio(mmio_base, R_CTRL, ctrl | CTRL_SLU);
     for (volatile int i = 0; i < 100000000; i++);
     ctrl = read_mmio(mmio_base, R_CTRL);
-    console_puts("82525EM CTRL: ");
-    console_putdw(ctrl);
-    console_putc('\n');
+    console_dbg_puts("82525EM CTRL: ");
+    console_dbg_putdw(ctrl);
+    console_dbg_putc('\n');
 
     u32 status = read_mmio(mmio_base, R_STATUS);
-    console_puts("82525EM STATUS: ");
-    console_putdw(status);
-    console_putc('\n');
+    console_dbg_puts("82525EM STATUS: ");
+    console_dbg_putdw(status);
+    console_dbg_putc('\n');
 
     u32 rctl = read_mmio(mmio_base, R_RCTL);
-    console_puts("82525EM RCTL: ");
-    console_putdw(rctl);
-    console_putc('\n');
+    console_dbg_puts("82525EM RCTL: ");
+    console_dbg_putdw(rctl);
+    console_dbg_putc('\n');
 
     u32 tctl = read_mmio(mmio_base, R_TCTL);
-    console_puts("82525EM TCTL: ");
-    console_putdw(tctl);
-    console_putc('\n');
+    console_dbg_puts("82525EM TCTL: ");
+    console_dbg_putdw(tctl);
+    console_dbg_putc('\n');
 
     // Register ISR and unmask the interrupt in the PIC.
     idt_set_irq_handler(11, interrupt_service_routine);

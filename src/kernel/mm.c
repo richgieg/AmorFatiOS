@@ -24,42 +24,42 @@ void mm_show_mmap(void) {
     struct mmap_entry *e = (struct mmap_entry *)MMAP_ADDRESS;
 
     while (e->base_address || e->length || e->type || e->extended_attributes) {
-        console_putqw(e->base_address);
-        console_putc(' ');
-        console_putqw(e->length);
-        console_putc(' ');
-        console_putdw(e->type);
-        console_putc(' ');
-        console_putdw(e->extended_attributes);
-        console_putc('\n');
+        console_dbg_putqw(e->base_address);
+        console_dbg_putc(' ');
+        console_dbg_putqw(e->length);
+        console_dbg_putc(' ');
+        console_dbg_putdw(e->type);
+        console_dbg_putc(' ');
+        console_dbg_putdw(e->extended_attributes);
+        console_dbg_putc('\n');
         e++;
     }
 }
 
 void mm_show_mdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)mdump_cur_addr;
-    console_set_pos(0, 0);
+    console_dbg_set_pos(0, 0);
 
     for (int k = 0; k < CONSOLE_ROWS; k++) {
-        console_putdw((u32)memory_ptr);
-        console_puts("    ");
+        console_dbg_putdw((u32)memory_ptr);
+        console_dbg_puts("    ");
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            console_putb(*memory_ptr);
-            console_putc(' ');
+            console_dbg_putb(*memory_ptr);
+            console_dbg_putc(' ');
             memory_ptr++;
         }
 
-        console_puts("   ");
+        console_dbg_puts("   ");
         memory_ptr -= MDUMP_BYTES_PER_LINE;
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            console_writec(*memory_ptr);
+            console_dbg_writec(*memory_ptr);
             memory_ptr++;
         }
 
         if (k < CONSOLE_ROWS - 1) {
-            console_putc('\n');
+            console_dbg_putc('\n');
         }
     }
 }

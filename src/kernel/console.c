@@ -131,6 +131,10 @@ void console_set_pos(u8 col, u8 row) {
     _console_set_pos(process_get_current_index(), col, row);
 }
 
+void console_dbg_set_pos(u8 col, u8 row) {
+    _console_set_pos(MAX_CONSOLES - 1, col, row);
+}
+
 static void scroll_one_line(int index) {
     struct console *con = &consoles[index];
 
