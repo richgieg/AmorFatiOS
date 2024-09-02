@@ -86,6 +86,10 @@ void console_clear(void) {
     _console_clear(process_get_current_index());
 }
 
+void console_dbg_clear(void) {
+    _console_clear(DBG_CONSOLE_INDEX);
+}
+
 static enum console_color _console_get_bg_color(int index) {
     struct console *con = &consoles[index];
     return con->bg_color;
@@ -93,6 +97,10 @@ static enum console_color _console_get_bg_color(int index) {
 
 enum console_color console_get_bg_color() {
     return _console_get_bg_color(process_get_current_index());
+}
+
+enum console_color console_dbg_get_bg_color() {
+    return _console_get_bg_color(DBG_CONSOLE_INDEX);
 }
 
 static void _console_set_bg_color(int index, enum console_color bg_color) {
@@ -104,6 +112,10 @@ void console_set_bg_color(enum console_color bg_color) {
     _console_set_bg_color(process_get_current_index(), bg_color);
 }
 
+void console_dbg_set_bg_color(enum console_color bg_color) {
+    _console_set_bg_color(DBG_CONSOLE_INDEX, bg_color);
+}
+
 static enum console_color _console_get_text_color(int index) {
     struct console *con = &consoles[index];
     return con->text_color;
@@ -113,6 +125,10 @@ enum console_color console_get_text_color() {
     return _console_get_text_color(process_get_current_index());
 }
 
+enum console_color console_dbg_get_text_color() {
+    return _console_get_text_color(DBG_CONSOLE_INDEX);
+}
+
 static void _console_set_text_color(int index, enum console_color text_color) {
     struct console *con = &consoles[index];
     con->text_color = text_color;
@@ -120,6 +136,10 @@ static void _console_set_text_color(int index, enum console_color text_color) {
 
 void console_set_text_color(enum console_color text_color) {
     _console_set_text_color(process_get_current_index(), text_color);
+}
+
+void console_dbg_set_text_color(enum console_color text_color) {
+    _console_set_text_color(DBG_CONSOLE_INDEX, text_color);
 }
 
 static void _console_set_pos(int index, u8 col, u8 row) {
@@ -479,20 +499,26 @@ void console_dbg_putp_at(void *p, u8 col, u8 row) {
     _console_putp_at(DBG_CONSOLE_INDEX, p, col, row);
 }
 
-void console_next(void) {
-    current_console_index = (current_console_index + 1) % MAX_CONSOLES;
+static void paint_console(void) {
     struct console *con = &consoles[current_console_index];
     for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
         vga_buffer[i] = con->buffer[i];
     }
 }
 
+void console_next(void) {
+    current_console_index = (current_console_index + 1) % MAX_CONSOLES;
+    paint_console();
+}
+
 void console_prev(void) {
-    current_console_index = (current_console_index + DBG_CONSOLE_INDEX) % MAX_CONSOLES;
-    struct console *con = &consoles[current_console_index];
-    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
-        vga_buffer[i] = con->buffer[i];
-    }
+    current_console_index = (current_console_index + MAX_CONSOLES - 1) % MAX_CONSOLES;
+    paint_console();
+}
+
+void console_show_dbg(void) {
+    current_console_index = DBG_CONSOLE_INDEX;
+    paint_console();
 }
 
 void console_key_press(u16 scancode) {
