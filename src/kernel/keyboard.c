@@ -9,6 +9,9 @@
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
 
+#define SC_F11 0x0078
+#define SC_F12 0x0007
+
 #define SC_UP 0xe075
 #define SC_DOWN 0xe072
 #define SC_LEFT 0xe06b
@@ -30,33 +33,39 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
         scancodew = EXTENDED_KEY_PREFIX << 8;
     }
     scancodew |= scancode;
+    // console_putw(scancodew);
+    // console_putc('\n');
 
     switch (scancodew) {
-        case SC_RIGHT:
-            // mm_mdump_next_byte();
+        case SC_F11:
+            console_prev();
+            break;
+        case SC_F12:
             console_next();
             break;
         case SC_LEFT:
-            // mm_mdump_prev_byte();
-            console_prev();
+            mm_mdump_prev_byte();
             break;
-        case SC_DOWN:
-            mm_mdump_next_line();
+        case SC_RIGHT:
+            mm_mdump_next_byte();
             break;
         case SC_UP:
             mm_mdump_prev_line();
             break;
-        case SC_PAGEDOWN:
-            mm_mdump_next_page();
+        case SC_DOWN:
+            mm_mdump_next_line();
             break;
         case SC_PAGEUP:
             mm_mdump_prev_page();
             break;
-        case SC_END:
-            mm_mdump_next_mb();
+        case SC_PAGEDOWN:
+            mm_mdump_next_page();
             break;
         case SC_HOME:
             mm_mdump_prev_mb();
+            break;
+        case SC_END:
+            mm_mdump_next_mb();
             break;
     }
 }
