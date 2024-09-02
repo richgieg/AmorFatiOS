@@ -25,6 +25,11 @@ enum console_color {
     CONSOLE_COLOR_BRIGHT_WHITE,
 };
 
+struct key_event {
+    u16 scancode;
+    bool is_release;
+};
+
 void console_init(void);
 void console_clear(void);
 enum console_color console_get_bg_color();
@@ -50,5 +55,8 @@ void console_putp_at(void *p, u8 col, u8 row);
 void console_dump_chars(void);
 void console_next(void);
 void console_prev(void);
+void console_key_press(u16 scancode);
+void console_key_release(u16 scancode);
+// struct key_event console_read_key_event(void);
 
 #endif

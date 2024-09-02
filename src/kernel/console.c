@@ -1,10 +1,18 @@
 #include "console.h"
 #include "process.h"
 #include "types.h"
+#include "bugcheck.h"
 
+#define KEY_EVENT_BUFFER_MAX_EVENTS 256
 #define VGA_ADDRESS 0xb8000
 
 static const char hex_digits[] = "0123456789ABCDEF";
+
+struct key_event_buffer {
+    struct key_event events[KEY_EVENT_BUFFER_MAX_EVENTS];
+    u8 head;
+    u8 tail;
+};
 
 struct console {
     u16 buffer[CONSOLE_COLUMNS * CONSOLE_ROWS];
@@ -12,6 +20,7 @@ struct console {
     enum console_color text_color;
     u8 col;
     u8 row;
+    struct key_event_buffer keb;
 } __attribute__((aligned(4096)));
 
 static struct console consoles[MAX_PROCESSES];
@@ -357,3 +366,26 @@ void console_prev(void) {
         vga_buffer[i] = con->buffer[i];
     }
 }
+
+void console_key_press(u16 scancode) {
+    struct key_event_buffer *keb = &consoles[current_console_index].keb;
+    keb->events[keb->tail].scancode = scancode;
+    keb->events[keb->tail].is_release = false;
+    keb->tail = (keb->tail + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;
+    if (keb->tail == keb->head) {
+        BUGCHECK("Key event buffer is full.");
+    }
+}
+
+void console_key_release(u16 scancode) {
+    struct key_event_buffer *keb = &consoles[current_console_index].keb;
+    keb->events[keb->tail].scancode = scancode;
+    keb->events[keb->tail].is_release = true;
+    if (keb->tail == keb->head) {
+        BUGCHECK("Key event buffer is full.");
+    }
+}
+
+// struct key_event console_read_key_event(void) {
+
+// }
