@@ -496,6 +496,9 @@ void console_prev(void) {
 }
 
 void console_key_press(u16 scancode) {
+    if (current_console_index == DBG_CONSOLE_INDEX) {
+        return;
+    }
     struct key_event_buffer *keb = &consoles[current_console_index].keb;
     keb->events[keb->tail].scancode = scancode;
     keb->events[keb->tail].is_release = false;
@@ -506,6 +509,9 @@ void console_key_press(u16 scancode) {
 }
 
 void console_key_release(u16 scancode) {
+    if (current_console_index == DBG_CONSOLE_INDEX) {
+        return;
+    }
     struct key_event_buffer *keb = &consoles[current_console_index].keb;
     keb->events[keb->tail].scancode = scancode;
     keb->events[keb->tail].is_release = true;
