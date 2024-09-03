@@ -146,25 +146,33 @@ static void return_from_interrupt(void) {
 
 __attribute__((naked))
 static void interrupt_handler_00(void) {
+    __asm__("pushad");
     if (irq_handlers[0]) irq_handlers[0]();
+    __asm__("popad");
     __asm__("jmp return_from_interrupt");
 }
 
 __attribute__((naked))
 static void interrupt_handler_01(void) {
+    __asm__("pushad");
     if (irq_handlers[1]) irq_handlers[1]();
+    __asm__("popad");
     __asm__("jmp return_from_interrupt");
 }
 
 __attribute__((naked))
 static void interrupt_handler_11(void) {
+    __asm__("pushad");
     if (irq_handlers[11]) irq_handlers[11]();
+    __asm__("popad");
     __asm__("jmp return_from_interrupt");
 }
 
 __attribute__((naked))
 static void interrupt_handler_12(void) {
+    __asm__("pushad");
     if (irq_handlers[12]) irq_handlers[12]();
+    __asm__("popad");
     __asm__("jmp return_from_interrupt");
 }
 
