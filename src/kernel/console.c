@@ -461,7 +461,9 @@ static void _console_putdw_at(int index, u32 dw, u8 col, u8 row) {
 }
 
 void console_putdw_at(u32 dw, u8 col, u8 row) {
+    // __asm__("cli");
     _console_putdw_at(process_get_current_index(), dw, col, row);
+    // __asm__("sti");
 }
 
 void console_dbg_putdw_at(u32 dw, u8 col, u8 row) {

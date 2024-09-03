@@ -12,73 +12,94 @@
 #include "console.h"
 #include "process.h"
 
-// static void process1_start() {
-//     console_dbg_puts("Process 1 started\n");
-//     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 1 switching\n");
-//         process_switch();
-//         // __asm__("hlt");
-//     }
-// }
+static void process1_start() {
+    console_dbg_puts("Process 1 started\n");
+    u32 counter = 0;
+    console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 2);
+    while (1) {
+        // __asm__("cli");
+        console_putdw_at(counter, 0, 1);
+        // __asm__("sti");
+        counter++;
+        process_switch();
+    }
+}
 
 // static void process2_start() {
 //     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 3);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 2 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 2);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
 // static void process3_start() {
-//     console_dbg_puts("Process 3 started\n");
+//     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 4);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 3 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 3);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
 // static void process4_start() {
-//     console_dbg_puts("Process 4 started\n");
+//     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 5);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 4 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 4);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
 // static void process5_start() {
-//     console_dbg_puts("Process 5 started\n");
+//     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 6);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 5 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 5);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
 // static void process6_start() {
-//     console_dbg_puts("Process 6 started\n");
+//     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 7);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 6 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 6);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
 // static void process7_start() {
-//     console_dbg_puts("Process 7 started\n");
+//     console_dbg_puts("Process 2 started\n");
+//     u32 counter = 0;
+//     console_puts_at("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, 8);
 //     while (1) {
-//         // for (int i = 0; i < 1000000000; i++);
-//         // console_dbg_puts("Process 7 switching\n");
+//         __asm__("cli");
+//         console_putdw_at(counter, 0, 7);
+//         __asm__("sti");
+//         counter++;
 //         process_switch();
-//         // __asm__("hlt");
 //     }
 // }
 
@@ -93,7 +114,7 @@ void kernel_init(void) {
     ps2_init();
     keyboard_init();
     mouse_init();
-    pci_init();
+    // pci_init();
 
     // Enable interrupts
     __asm__("sti");
@@ -102,7 +123,7 @@ void kernel_init(void) {
     // mm_show_mmap();
 
     process_init();
-    // process_create(process1_start);
+    process_create(process1_start);
     // process_create(process2_start);
     // process_create(process3_start);
     // process_create(process4_start);
@@ -111,10 +132,11 @@ void kernel_init(void) {
     // process_create(process7_start);
     
     console_puts("AmorFatiOS v0.0.1\n");
+    console_dbg_puts("Process 0 started\n");
     while (1) {
         // for (int i = 0; i < 1000000000; i++);
         // console_dbg_puts("Process 0 switching\n");
-        // process_switch();
-        __asm__("hlt");
+        process_switch();
+        // __asm__("hlt");
     }
 }

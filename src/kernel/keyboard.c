@@ -38,10 +38,10 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
     console_dbg_putc('\n');
 
     switch (scancodew) {
-        case SC_F11:
+        case SC_LEFT:
             console_prev();
             break;
-        case SC_F12:
+        case SC_RIGHT:
             console_next();
             break;
         default:
@@ -85,9 +85,9 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
     console_dbg_putc('\n');
 
     switch (scancodew) {
-        case SC_F11:
+        case SC_LEFT:
             break;
-        case SC_F12:
+        case SC_RIGHT:
             break;
         default:
             console_key_release(scancodew);
