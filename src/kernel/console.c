@@ -480,9 +480,11 @@ void console_dbg_putp_at(void *p, u8 col, u8 row) {
 }
 
 void console_repaint(void) {
-    struct console *con = &consoles[current_console_index];
-    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
-        vga_buffer[i] = con->buffer[i];
+    u64 *src = (u64 *)consoles[current_console_index].buffer;
+    u64 *dst = (u64 *)vga_buffer;
+    int length = CONSOLE_ROWS * CONSOLE_COLUMNS * sizeof(u16) / sizeof(u64);
+    for (int i = 0; i < length; i++) {
+        dst[i] = src[i];
     }
 }
 

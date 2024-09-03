@@ -13,13 +13,14 @@ static u32 ticks;
 static void interrupt_service_routine(void) {
     outb(PIC1_COMMAND, PIC_EOI);
     ticks++;
-    if (ticks % 16 == 0) {
+
+    // Repaint console 30 times per second.
+    if (ticks % 33 == 0) {
         console_repaint();
     }
+
+    // Switch processes 200 times per second.
     if (ticks % 5 == 0) {
-        // console_dbg_puts("scheduler_update calls: ");
-        // console_dbg_putdw(ticks);
-        // console_dbg_putc('\n');
         process_switch();
     }
 }
