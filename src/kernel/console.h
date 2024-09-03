@@ -73,6 +73,7 @@ void console_putqw_at(u64 dw, u8 col, u8 row);
 void console_dbg_putqw_at(u64 dw, u8 col, u8 row);
 void console_putp_at(void *p, u8 col, u8 row);
 void console_dbg_putp_at(void *p, u8 col, u8 row);
+void console_repaint(void);
 void console_next(void);
 void console_prev(void);
 void console_show_dbg(void);

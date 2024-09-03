@@ -74,12 +74,6 @@ static void _console_clear(int index) {
 
     con->col = 0;
     con->row = 0;
-
-    if (index == current_console_index) {
-        for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
-            vga_buffer[i] = con->buffer[i];
-        }
-    }
 }
 
 void console_clear(void) {
@@ -166,12 +160,6 @@ static void scroll_one_line(int index) {
     for (int i = 0; i < CONSOLE_COLUMNS; i++) {
         con->buffer[(CONSOLE_ROWS - 1) * CONSOLE_COLUMNS + i] = vga_entry(0, con->bg_color, con->text_color);
     }
-
-    if (index == current_console_index) {
-        for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
-            vga_buffer[i] = con->buffer[i];
-        }
-    }
 }
 
 static void go_to_next_line(int index) {
@@ -188,10 +176,6 @@ static void _console_writec(int index, char c) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(c, con->bg_color, con->text_color);
     con->buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
-
-    if (index == current_console_index) {
-        vga_buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
-    }
 
     con->col++;
     if (con->col >= CONSOLE_COLUMNS) {
@@ -214,10 +198,6 @@ static void _console_putc(int index, char c) {
         struct console *con = &consoles[index];
         u16 entry = vga_entry(c, con->bg_color, con->text_color);
         con->buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
-
-        if (index == current_console_index) {
-            vga_buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
-        }
 
         con->col++;
         if (con->col >= CONSOLE_COLUMNS) {
@@ -461,9 +441,7 @@ static void _console_putdw_at(int index, u32 dw, u8 col, u8 row) {
 }
 
 void console_putdw_at(u32 dw, u8 col, u8 row) {
-    // __asm__("cli");
     _console_putdw_at(process_get_current_index(), dw, col, row);
-    // __asm__("sti");
 }
 
 void console_dbg_putdw_at(u32 dw, u8 col, u8 row) {
@@ -501,7 +479,7 @@ void console_dbg_putp_at(void *p, u8 col, u8 row) {
     _console_putp_at(DBG_CONSOLE_INDEX, p, col, row);
 }
 
-static void paint_console(void) {
+void console_repaint(void) {
     struct console *con = &consoles[current_console_index];
     for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
         vga_buffer[i] = con->buffer[i];
@@ -510,17 +488,14 @@ static void paint_console(void) {
 
 void console_next(void) {
     current_console_index = (current_console_index + 1) % MAX_CONSOLES;
-    paint_console();
 }
 
 void console_prev(void) {
     current_console_index = (current_console_index + MAX_CONSOLES - 1) % MAX_CONSOLES;
-    paint_console();
 }
 
 void console_show_dbg(void) {
     current_console_index = DBG_CONSOLE_INDEX;
-    paint_console();
 }
 
 void console_key_press(u16 scancode) {
