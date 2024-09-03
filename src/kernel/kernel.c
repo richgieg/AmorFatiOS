@@ -18,7 +18,6 @@ static void process1_start() {
     while (1) {
         console_putdw_at(counter, 0, 1);
         counter++;
-        process_switch();
     }
 }
 
@@ -28,7 +27,6 @@ static void process2_start() {
     while (1) {
         console_putdw_at(counter, 0, 2);
         counter++;
-        process_switch();
     }
 }
 
@@ -38,7 +36,6 @@ static void process3_start() {
     while (1) {
         console_putdw_at(counter, 0, 3);
         counter++;
-        process_switch();
     }
 }
 
@@ -48,7 +45,6 @@ static void process4_start() {
     while (1) {
         console_putdw_at(counter, 0, 4);
         counter++;
-        process_switch();
     }
 }
 
@@ -58,7 +54,6 @@ static void process5_start() {
     while (1) {
         console_putdw_at(counter, 0, 5);
         counter++;
-        process_switch();
     }
 }
 
@@ -68,7 +63,6 @@ static void process6_start() {
     while (1) {
         console_putdw_at(counter, 0, 6);
         counter++;
-        process_switch();
     }
 }
 
@@ -78,7 +72,6 @@ static void process7_start() {
     while (1) {
         console_putdw_at(counter, 0, 7);
         counter++;
-        process_switch();
     }
 }
 
@@ -89,7 +82,7 @@ void kernel_init(void) {
     scheduler_init();
     idt_init();
     pic_init();
-    timer_init();
+    // timer_init();
     ps2_init();
     keyboard_init();
     mouse_init();
@@ -110,10 +103,13 @@ void kernel_init(void) {
     process_create(process6_start);
     process_create(process7_start);
     
+    timer_init();
+
     console_puts("AmorFatiOS v0.0.1\n");
     console_dbg_puts("Process 0 started\n");
+
     while (1) {
-        process_switch();
-        // __asm__("hlt");
+        // TODO: Do work here as needed.
+        __asm__("hlt");
     }
 }

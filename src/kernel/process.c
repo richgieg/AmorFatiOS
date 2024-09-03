@@ -53,8 +53,6 @@ void process_create(void (*start)()) {
 }
 
 void process_switch(void) {
-    __asm__("cli");
-
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
@@ -95,6 +93,7 @@ void process_switch(void) {
         // Start the next process.
         __asm__(
             "mov esp, %[new_esp];"
+            "sti;"
             "call %[start];"
             :
             : [new_esp] "m" (next_process->esp), [start] "m" (next_process->start)
@@ -112,8 +111,6 @@ void process_switch(void) {
             : "memory"
         );
     }
-
-    __asm__("sti");
 }
 
 int process_get_current_index(void) {
