@@ -161,6 +161,51 @@ static void interrupt_handler_01(void) {
 }
 
 __attribute__((naked))
+static void interrupt_handler_02(void) {
+    BUGCHECK("Spurious IRQ 2.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_03(void) {
+    BUGCHECK("Spurious IRQ 3.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_04(void) {
+    BUGCHECK("Spurious IRQ 0x04.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_05(void) {
+    BUGCHECK("Spurious IRQ 5.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_06(void) {
+    BUGCHECK("Spurious IRQ 6.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_07(void) {
+    BUGCHECK("Spurious IRQ 7.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_08(void) {
+    BUGCHECK("Spurious IRQ 8.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_09(void) {
+    BUGCHECK("Spurious IRQ 9.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_10(void) {
+    BUGCHECK("Spurious IRQ 10.");
+}
+
+__attribute__((naked))
 static void interrupt_handler_11(void) {
     __asm__("pushad");
     if (irq_handlers[11]) irq_handlers[11]();
@@ -174,6 +219,21 @@ static void interrupt_handler_12(void) {
     if (irq_handlers[12]) irq_handlers[12]();
     __asm__("popad");
     __asm__("jmp return_from_interrupt");
+}
+
+__attribute__((naked))
+static void interrupt_handler_13(void) {
+    BUGCHECK("Spurious IRQ 13.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_14(void) {
+    BUGCHECK("Spurious IRQ 14.");
+}
+
+__attribute__((naked))
+static void interrupt_handler_15(void) {
+    BUGCHECK("Spurious IRQ 15.");
 }
 
 void idt_set_irq_handler(u8 irq, void (*handler)()) {
@@ -214,9 +274,21 @@ void idt_init(void) {
     idt_set_descriptor(19, exception_handler_19, 0x8e);
 
     idt_set_descriptor(32, interrupt_handler_00, 0x8e);
-    idt_set_descriptor(32 + 1, interrupt_handler_01, 0x8e);
-    idt_set_descriptor(32 + 11, interrupt_handler_11, 0x8e);
-    idt_set_descriptor(32 + 12, interrupt_handler_12, 0x8e);
+    idt_set_descriptor(33, interrupt_handler_01, 0x8e);
+    idt_set_descriptor(34, interrupt_handler_02, 0x8e);
+    idt_set_descriptor(35, interrupt_handler_03, 0x8e);
+    idt_set_descriptor(36, interrupt_handler_04, 0x8e);
+    idt_set_descriptor(37, interrupt_handler_05, 0x8e);
+    idt_set_descriptor(38, interrupt_handler_06, 0x8e);
+    idt_set_descriptor(39, interrupt_handler_07, 0x8e);
+    idt_set_descriptor(40, interrupt_handler_08, 0x8e);
+    idt_set_descriptor(41, interrupt_handler_09, 0x8e);
+    idt_set_descriptor(42, interrupt_handler_10, 0x8e);
+    idt_set_descriptor(43, interrupt_handler_11, 0x8e);
+    idt_set_descriptor(44, interrupt_handler_12, 0x8e);
+    idt_set_descriptor(45, interrupt_handler_13, 0x8e);
+    idt_set_descriptor(46, interrupt_handler_14, 0x8e);
+    idt_set_descriptor(47, interrupt_handler_15, 0x8e);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }
