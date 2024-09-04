@@ -13,7 +13,7 @@
 #define ICW4_8086 0x01
 #define ICW4_AUTO 0x02
 #define ICW4_BUF_PIC2 0x08
-#define ICW4_BUF_PIC1 0x0C
+#define ICW4_BUF_PIC1 0x0c
 #define ICW4_SFNM 0x10
 
 /**
@@ -50,8 +50,8 @@ void pic_init(void) {
     io_wait();
 
     // Mask all IRQs by default
-    outb(PIC1_DATA, 0xFF);
-    outb(PIC2_DATA, 0xFF);
+    outb(PIC1_DATA, 0xff);
+    outb(PIC2_DATA, 0xff);
 }
 
 // Mask an IRQ by number (0-15)

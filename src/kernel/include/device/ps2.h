@@ -22,30 +22,30 @@
 #define PS2_CFG_MUST_BE_ZERO (1 << 7)
 
 // Controller Commands
-#define PS2_DISABLE_FIRST 0xAD
-#define PS2_DISABLE_SECOND 0xA7
-#define PS2_ENABLE_FIRST 0xAE
-#define PS2_ENABLE_SECOND 0xA8
+#define PS2_DISABLE_FIRST 0xad
+#define PS2_DISABLE_SECOND 0xa7
+#define PS2_ENABLE_FIRST 0xae
+#define PS2_ENABLE_SECOND 0xa8
 #define PS2_READ_CONFIG 0x20
 #define PS2_WRITE_CONFIG 0x60
-#define PS2_SELF_TEST 0xAA
-#define PS2_TEST_FIRST 0xAB
-#define PS2_TEST_SECOND 0xA9
-#define PS2_WRITE_SECOND 0xD4
+#define PS2_SELF_TEST 0xaa
+#define PS2_TEST_FIRST 0xab
+#define PS2_TEST_SECOND 0xa9
+#define PS2_WRITE_SECOND 0xd4
 
 // Controller Responses
 #define PS2_CONTROLLER_TEST_OK 0x55
 #define PS2_PORT_TEST_OK 0x00
 
 // Device Commands
-#define PS2_DEV_RESET 0xFF
-#define PS2_DEV_IDENTIFY 0xF2
-#define PS2_DEV_ENABLE_SCAN 0xF4
-#define PS2_DEV_DISABLE_SCAN 0xF5
+#define PS2_DEV_RESET 0xff
+#define PS2_DEV_IDENTIFY 0xf2
+#define PS2_DEV_ENABLE_SCAN 0xf4
+#define PS2_DEV_DISABLE_SCAN 0xf5
 
 // Device Responses
-#define PS2_DEV_ACK 0xFA
-#define PS2_DEV_RESET_ACK 0xAA
+#define PS2_DEV_ACK 0xfa
+#define PS2_DEV_RESET_ACK 0xaa
 
 void ps2_init(void);
 
