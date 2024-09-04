@@ -1,7 +1,7 @@
-#include <pci.h>
+#include <device/pci.h>
 #include <console.h>
 #include <lib/string.h>
-#include <i82545em.h>
+#include <device/i82545em.h>
 
 struct rsdp {
     char signature[8];

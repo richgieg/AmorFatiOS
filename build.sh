@@ -15,18 +15,18 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     -I./src/kernel/include \
     src/kernel/_start.c \
     src/kernel/kernel.c \
-    src/kernel/vga.c \
+    src/kernel/device/vga.c \
     src/kernel/mm.c \
     src/kernel/console.c \
     src/kernel/process.c \
     src/kernel/idt.c \
-    src/kernel/pic.c \
-    src/kernel/ps2.c \
-    src/kernel/timer.c \
-    src/kernel/keyboard.c \
-    src/kernel/mouse.c \
-    src/kernel/pci.c \
-    src/kernel/i82545em.c \
+    src/kernel/device/pic.c \
+    src/kernel/device/ps2.c \
+    src/kernel/device/timer.c \
+    src/kernel/device/keyboard.c \
+    src/kernel/device/mouse.c \
+    src/kernel/device/pci.c \
+    src/kernel/device/i82545em.c \
     src/kernel/lib/string.c \
     src/kernel/bugcheck.c
 

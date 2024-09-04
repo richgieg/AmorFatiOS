@@ -1,6 +1,6 @@
 // Reference: https://en.wikipedia.org/wiki/VGA_text_mode
 
-#include <vga.h>
+#include <device/vga.h>
 #include <port.h>
 
 void vga_init(void) {

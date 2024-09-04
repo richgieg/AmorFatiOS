@@ -1,7 +1,7 @@
-#include <timer.h>
+#include <device/timer.h>
 #include <port.h>
 #include <idt.h>
-#include <pic.h>
+#include <device/pic.h>
 #include <console.h>
 #include <process.h>
 

@@ -1,13 +1,13 @@
 #include <kernel.h>
-#include <vga.h>
+#include <device/vga.h>
 #include <mm.h>
 #include <idt.h>
-#include <pic.h>
-#include <timer.h>
-#include <ps2.h>
-#include <keyboard.h>
-#include <mouse.h>
-#include <pci.h>
+#include <device/pic.h>
+#include <device/timer.h>
+#include <device/ps2.h>
+#include <device/keyboard.h>
+#include <device/mouse.h>
+#include <device/pci.h>
 #include <console.h>
 #include <process.h>
 

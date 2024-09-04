@@ -1,5 +1,5 @@
-#include <i82545em.h>
-#include <pic.h>
+#include <device/i82545em.h>
+#include <device/pic.h>
 #include <port.h>
 #include <idt.h>
 #include <lib/string.h>

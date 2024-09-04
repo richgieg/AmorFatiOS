@@ -1,8 +1,8 @@
-#include <keyboard.h>
+#include <device/keyboard.h>
 #include <port.h>
 #include <idt.h>
-#include <ps2.h>
-#include <pic.h>
+#include <device/ps2.h>
+#include <device/pic.h>
 #include <console.h>
 #include <mm.h>
 
