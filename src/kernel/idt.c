@@ -1,6 +1,6 @@
-#include "idt.h"
-#include "bugcheck.h"
-#include "process.h"
+#include <idt.h>
+#include <bugcheck.h>
+#include <process.h>
 
 #define IDT_MAX_DESCRIPTORS 256
 

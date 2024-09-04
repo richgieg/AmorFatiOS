@@ -1,15 +1,15 @@
-#include "kernel.h"
-#include "vga.h"
-#include "mm.h"
-#include "idt.h"
-#include "pic.h"
-#include "timer.h"
-#include "ps2.h"
-#include "keyboard.h"
-#include "mouse.h"
-#include "pci.h"
-#include "console.h"
-#include "process.h"
+#include <kernel.h>
+#include <vga.h>
+#include <mm.h>
+#include <idt.h>
+#include <pic.h>
+#include <timer.h>
+#include <ps2.h>
+#include <keyboard.h>
+#include <mouse.h>
+#include <pci.h>
+#include <console.h>
+#include <process.h>
 
 static void process1_start() {
     console_dbg_puts("Process 1 started\n");

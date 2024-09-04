@@ -1,7 +1,7 @@
 // Reference: https://en.wikipedia.org/wiki/VGA_text_mode
 
-#include "vga.h"
-#include "port.h"
+#include <vga.h>
+#include <port.h>
 
 void vga_init(void) {
     // Enable usage of all 16 background colors.

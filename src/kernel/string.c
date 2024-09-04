@@ -1,5 +1,5 @@
-#include "string.h"
-#include "types.h"
+#include <string.h>
+#include <types.h>
 
 void * memcpy(void *destination, const void *source, size_t num) {
     while (num--) {

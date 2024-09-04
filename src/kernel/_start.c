@@ -1,4 +1,4 @@
-#include "kernel.h"
+#include <kernel.h>
 
 extern char _bss_start[];
 extern char _bss_end[];

@@ -1,5 +1,5 @@
-#include "bugcheck.h"
-#include "console.h"
+#include <bugcheck.h>
+#include <console.h>
 
 void bugcheck(const char *file, int line, const char *message) {
     __asm__("cli");

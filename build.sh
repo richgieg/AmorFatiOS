@@ -12,6 +12,7 @@ nasm -f bin -o bin/boot src/boot/boot.asm
 # Compile the kernel.
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
     -Wl,--build-id=none -Wl,-T,kernel.ld -o bin/kernel \
+    -I./src/kernel/include \
     src/kernel/_start.c \
     src/kernel/kernel.c \
     src/kernel/vga.c \

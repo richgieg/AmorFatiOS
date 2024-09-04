@@ -1,6 +1,6 @@
-#include "mm.h"
-#include "console.h"
-#include "types.h"
+#include <mm.h>
+#include <console.h>
+#include <types.h>
 
 #define MMAP_ADDRESS 0x10000
 #define MDUMP_BYTES_PER_LINE 16

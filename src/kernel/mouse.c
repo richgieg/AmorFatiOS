@@ -1,9 +1,9 @@
-#include "mouse.h"
-#include "port.h"
-#include "idt.h"
-#include "ps2.h"
-#include "pic.h"
-#include "console.h"
+#include <mouse.h>
+#include <port.h>
+#include <idt.h>
+#include <ps2.h>
+#include <pic.h>
+#include <console.h>
 
 static void interrupt_service_routine(void) {
     u8 value = inb(PS2_DATA_PORT);

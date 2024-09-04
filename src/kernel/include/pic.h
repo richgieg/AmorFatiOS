@@ -3,7 +3,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include "types.h"
+#include <types.h>
 
 // Ports to talk to PICs
 #define PIC1 0x20

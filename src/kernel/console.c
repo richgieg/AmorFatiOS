@@ -1,7 +1,7 @@
-#include "console.h"
-#include "process.h"
-#include "types.h"
-#include "bugcheck.h"
+#include <console.h>
+#include <process.h>
+#include <types.h>
+#include <bugcheck.h>
 
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
 #define VGA_ADDRESS 0xb8000

@@ -1,10 +1,10 @@
-#include "i82545em.h"
-#include "pic.h"
-#include "port.h"
-#include "idt.h"
-#include "string.h"
-#include "console.h"
-#include "bugcheck.h"
+#include <i82545em.h>
+#include <pic.h>
+#include <port.h>
+#include <idt.h>
+#include <string.h>
+#include <console.h>
+#include <bugcheck.h>
 
 // General Registers
 #define R_CTRL      0x00000

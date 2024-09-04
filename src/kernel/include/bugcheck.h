@@ -1,7 +1,7 @@
 #ifndef BUGCHECK_H
 #define BUGCHECK_H
 
-#include "types.h"
+#include <types.h>
 
 void bugcheck(const char *file, int line, const char *message);
 void exception(u8 vector);

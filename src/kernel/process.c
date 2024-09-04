@@ -1,7 +1,7 @@
-#include "process.h"
-#include "types.h"
-#include "bugcheck.h"
-#include "console.h"
+#include <process.h>
+#include <types.h>
+#include <bugcheck.h>
+#include <console.h>
 
 #define STACK_SIZE 4096
 #define STACK_AREA_BASE 0x100000

@@ -1,9 +1,9 @@
-#include "timer.h"
-#include "port.h"
-#include "idt.h"
-#include "pic.h"
-#include "console.h"
-#include "process.h"
+#include <timer.h>
+#include <port.h>
+#include <idt.h>
+#include <pic.h>
+#include <console.h>
+#include <process.h>
 
 #define BASE_FREQ_HZ 1193182
 #define DESIRED_FREQ_HZ 1000

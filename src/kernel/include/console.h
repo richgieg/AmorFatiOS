@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "types.h"
+#include <types.h>
 
 #define CONSOLE_ROWS 25
 #define CONSOLE_COLUMNS 80

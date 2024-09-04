@@ -1,10 +1,10 @@
-#include "keyboard.h"
-#include "port.h"
-#include "idt.h"
-#include "ps2.h"
-#include "pic.h"
-#include "console.h"
-#include "mm.h"
+#include <keyboard.h>
+#include <port.h>
+#include <idt.h>
+#include <ps2.h>
+#include <pic.h>
+#include <console.h>
+#include <mm.h>
 
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
