@@ -66,6 +66,11 @@ void process_switch(enum process_state state) {
     }
 
     if (next_process_index == -1) {
+        // If currently running idle process, just stay on idle process.
+        if (current_process_index == 0) {
+            return;
+        }
+        // This should never happen, since the idle process never dies.
         BUGCHECK("Could not find a runnable process.");
     }
 

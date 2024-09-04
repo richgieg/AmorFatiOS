@@ -16,9 +16,10 @@
 void kernel_init(void) {
     vga_init();
     console_init();
+    process_init();
     idt_init();
     pic_init();
-    // timer_init();
+    timer_init();
     ps2_init();
     keyboard_init();
     mouse_init();
@@ -27,12 +28,9 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    process_init();
     process_create(memdump);
     process_create(memmap);
     process_create(counter);
-    
-    timer_init();
 
     console_puts("AmorFatiOS v0.0.1\n");
 
