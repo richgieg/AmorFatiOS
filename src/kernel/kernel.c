@@ -1,6 +1,5 @@
 #include <kernel.h>
 #include <device/vga.h>
-#include <mm.h>
 #include <idt.h>
 #include <device/pic.h>
 #include <device/timer.h>
@@ -61,7 +60,6 @@ static void process7_start() {
 void kernel_init(void) {
     vga_init();
     console_init();
-    mm_init();
     idt_init();
     pic_init();
     // timer_init();

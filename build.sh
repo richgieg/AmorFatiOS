@@ -16,7 +16,6 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     src/kernel/_start.c \
     src/kernel/kernel.c \
     src/kernel/device/vga.c \
-    src/kernel/mm.c \
     src/kernel/console.c \
     src/kernel/process.c \
     src/kernel/idt.c \

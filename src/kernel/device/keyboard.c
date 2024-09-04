@@ -4,7 +4,6 @@
 #include <device/ps2.h>
 #include <device/pic.h>
 #include <console.h>
-#include <mm.h>
 
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0

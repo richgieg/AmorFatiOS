@@ -1,39 +1,122 @@
 #include <program/memdump.h>
-#include <mm.h>
 #include <console.h>
 #include <device/keyboard.h>
 
+#define BYTES_PER_LINE 16
+#define BYTES_PER_PAGE 4096
+#define BYTES_PER_MB 1024 * 1024
+
+static u32 current_address = 0x00000000;
+
+static void show_memdump(void);
+static void next_byte(void);
+static void prev_byte(void);
+static void next_line(void);
+static void prev_line(void);
+static void next_page(void);
+static void prev_page(void);
+static void next_mb(void);
+static void prev_mb(void);
+
 void memdump(void) {
-    mm_show_mdump();
+    show_memdump();
     while (1) {
         struct key_event ke = console_read_key_event();
         if (!ke.is_release) {
             switch (ke.scancode) {
                 case SC_LEFT:
-                    mm_mdump_prev_byte();
+                    prev_byte();
                     break;
                 case SC_RIGHT:
-                    mm_mdump_next_byte();
+                    next_byte();
                     break;
                 case SC_UP:
-                    mm_mdump_prev_line();
+                    prev_line();
                     break;
                 case SC_DOWN:
-                    mm_mdump_next_line();
+                    next_line();
                     break;
                 case SC_PAGEUP:
-                    mm_mdump_prev_page();
+                    prev_page();
                     break;
                 case SC_PAGEDOWN:
-                    mm_mdump_next_page();
+                    next_page();
                     break;
                 case SC_HOME:
-                    mm_mdump_prev_mb();
+                    prev_mb();
                     break;
                 case SC_END:
-                    mm_mdump_next_mb();
+                    next_mb();
                     break;
             }
         }
     }
+}
+
+static void show_memdump(void) {
+    volatile u8 *memory_ptr = (volatile u8 *)current_address;
+    console_set_pos(0, 0);
+
+    for (int k = 0; k < CONSOLE_ROWS; k++) {
+        console_putdw((u32)memory_ptr);
+        console_puts("    ");
+
+        for (int i = 0; i < BYTES_PER_LINE; i++) {
+            console_putb(*memory_ptr);
+            console_putc(' ');
+            memory_ptr++;
+        }
+
+        console_puts("   ");
+        memory_ptr -= BYTES_PER_LINE;
+
+        for (int i = 0; i < BYTES_PER_LINE; i++) {
+            console_writec(*memory_ptr);
+            memory_ptr++;
+        }
+
+        if (k < CONSOLE_ROWS - 1) {
+            console_putc('\n');
+        }
+    }
+}
+
+static void next_byte(void) {
+    current_address += 1;
+    show_memdump();
+}
+
+static void prev_byte(void) {
+    current_address -= 1;
+    show_memdump();
+}
+
+static void next_line(void) {
+    current_address += BYTES_PER_LINE;
+    show_memdump();
+}
+
+static void prev_line(void) {
+    current_address -= BYTES_PER_LINE;
+    show_memdump();
+}
+
+static void next_page(void) {
+    current_address += BYTES_PER_PAGE;
+    show_memdump();
+}
+
+static void prev_page(void) {
+    current_address -= BYTES_PER_PAGE;
+    show_memdump();
+}
+
+static void next_mb(void) {
+    current_address += BYTES_PER_MB;
+    show_memdump();
+}
+
+static void prev_mb(void) {
+    current_address -= BYTES_PER_MB;
+    show_memdump();
 }
