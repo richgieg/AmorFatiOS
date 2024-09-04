@@ -498,6 +498,7 @@ void console_prev(void) {
 
 void console_show_dbg(void) {
     current_console_index = DBG_CONSOLE_INDEX;
+    console_repaint();
 }
 
 void console_key_press(u16 scancode) {
@@ -520,11 +521,23 @@ void console_key_release(u16 scancode) {
     struct key_event_buffer *keb = &consoles[current_console_index].keb;
     keb->events[keb->tail].scancode = scancode;
     keb->events[keb->tail].is_release = true;
+    keb->tail = (keb->tail + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;
     if (keb->tail == keb->head) {
         BUGCHECK("Key event buffer is full.");
     }
 }
 
-// struct key_event console_read_key_event(void) {
+struct key_event console_read_key_event(void) {
+    struct console *con = &consoles[process_get_current_index()];
+    if (con->keb.head == con->keb.tail) {
+        __asm__("int 128"); // wait for key event
+    }
+    struct key_event ke = con->keb.events[con->keb.head];
+    con->keb.head = (con->keb.head + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;
+    return ke;
+}
 
-// }
+bool console_has_key_event(int index) {
+    struct console *con = &consoles[index];
+    return con->keb.head != con->keb.tail;
+}

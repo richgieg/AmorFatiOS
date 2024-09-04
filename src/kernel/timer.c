@@ -21,7 +21,7 @@ static void interrupt_service_routine(void) {
 
     // Switch processes 200 times per second.
     if (ticks % 5 == 0) {
-        process_switch();
+        process_switch(PROCESS_STATE_RUNNABLE);
     }
 }
 

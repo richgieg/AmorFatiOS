@@ -1,16 +1,10 @@
 #include "process.h"
 #include "types.h"
 #include "bugcheck.h"
+#include "console.h"
 
 #define STACK_SIZE 4096
 #define STACK_AREA_BASE 0x100000
-
-enum process_state {
-    PROCESS_STATE_NULL,
-    PROCESS_STATE_RUNNING,
-    PROCESS_STATE_RUNNABLE,
-    PROCESS_STATE_WAITING,
-};
 
 struct process {
     void (*start)();
@@ -52,7 +46,7 @@ void process_create(void (*start)()) {
     p->esp = STACK_AREA_BASE + (index + 1) * STACK_SIZE;
 }
 
-void process_switch(void) {
+void process_switch(enum process_state state) {
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
@@ -61,6 +55,12 @@ void process_switch(void) {
         if (processes[index].state == PROCESS_STATE_RUNNABLE) {
             next_process_index = index;
             break;
+        }
+        if (processes[index].state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
+            if (console_has_key_event(index)) {
+                next_process_index = index;
+                break;
+            }
         }
         index = (index + 1) % MAX_PROCESSES;
     }
@@ -74,7 +74,7 @@ void process_switch(void) {
 
     current_process_index = next_process_index;
 
-    current_process->state = PROCESS_STATE_RUNNABLE;
+    current_process->state = state;
     next_process->state = PROCESS_STATE_RUNNING;
 
     // Save the context of the current process.

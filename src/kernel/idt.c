@@ -1,5 +1,6 @@
 #include "idt.h"
 #include "bugcheck.h"
+#include "process.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -236,6 +237,14 @@ static void interrupt_handler_15(void) {
     BUGCHECK("Spurious IRQ 15.");
 }
 
+__attribute__((naked))
+static void interrupt_handler_128(void) {
+    __asm__("pushad");
+    process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
+    __asm__("popad");
+    __asm__("jmp return_from_interrupt");
+}
+
 void idt_set_irq_handler(u8 irq, void (*handler)()) {
     irq_handlers[irq] = handler;
 }
@@ -289,6 +298,8 @@ void idt_init(void) {
     idt_set_descriptor(45, interrupt_handler_13, 0x8e);
     idt_set_descriptor(46, interrupt_handler_14, 0x8e);
     idt_set_descriptor(47, interrupt_handler_15, 0x8e);
+
+    idt_set_descriptor(128, interrupt_handler_128, 0x8e);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }

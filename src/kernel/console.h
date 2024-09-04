@@ -79,6 +79,7 @@ void console_prev(void);
 void console_show_dbg(void);
 void console_key_press(u16 scancode);
 void console_key_release(u16 scancode);
-// struct key_event console_read_key_event(void);
+struct key_event console_read_key_event(void);
+bool console_has_key_event(int index);
 
 #endif

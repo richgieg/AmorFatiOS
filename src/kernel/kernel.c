@@ -13,10 +13,12 @@
 
 static void process1_start() {
     console_dbg_puts("Process 1 started\n");
-    u32 counter = 0;
+    // u32 counter = 0;
     while (1) {
-        console_putdw_at(counter, 0, 1);
-        counter++;
+        // console_putdw_at(counter, 0, 1);
+        // counter++;
+        struct key_event ke = console_read_key_event();
+        console_putw(ke.scancode);
     }
 }
 
