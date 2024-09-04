@@ -1,26 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <types.h>
-
-enum console_color {
-    CONSOLE_COLOR_BLACK,
-    CONSOLE_COLOR_BLUE,
-    CONSOLE_COLOR_GREEN,
-    CONSOLE_COLOR_CYAN,
-    CONSOLE_COLOR_RED,
-    CONSOLE_COLOR_MAGENTA,
-    CONSOLE_COLOR_BROWN,
-    CONSOLE_COLOR_WHITE,
-    CONSOLE_COLOR_GRAY,
-    CONSOLE_COLOR_LIGHT_BLUE,
-    CONSOLE_COLOR_LIGHT_GREEN,
-    CONSOLE_COLOR_LIGHT_CYAN,
-    CONSOLE_COLOR_LIGHT_RED,
-    CONSOLE_COLOR_LIGHT_MAGENTA,
-    CONSOLE_COLOR_YELLOW,
-    CONSOLE_COLOR_BRIGHT_WHITE,
-};
+#include <device/vga.h>
 
 struct key_event {
     u16 scancode;
@@ -30,14 +11,14 @@ struct key_event {
 void console_init(void);
 void console_clear(void);
 void console_dbg_clear(void);
-enum console_color console_get_bg_color();
-enum console_color console_dbg_get_bg_color();
-void console_set_bg_color(enum console_color bg_color);
-void console_dbg_set_bg_color(enum console_color bg_color);
-enum console_color console_get_text_color();
-enum console_color console_dbg_get_text_color();
-void console_set_text_color(enum console_color text_color);
-void console_dbg_set_text_color(enum console_color text_color);
+enum vga_color console_get_bg_color();
+enum vga_color console_dbg_get_bg_color();
+void console_set_bg_color(enum vga_color bg_color);
+void console_dbg_set_bg_color(enum vga_color bg_color);
+enum vga_color console_get_text_color();
+enum vga_color console_dbg_get_text_color();
+void console_set_text_color(enum vga_color text_color);
+void console_dbg_set_text_color(enum vga_color text_color);
 void console_set_pos(u8 col, u8 row);
 void console_dbg_set_pos(u8 col, u8 row);
 void console_writec(char c);

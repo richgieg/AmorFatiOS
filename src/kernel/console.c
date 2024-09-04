@@ -18,8 +18,8 @@ struct key_event_buffer {
 
 struct console {
     u16 buffer[VGA_COLUMNS * VGA_ROWS];
-    enum console_color bg_color;
-    enum console_color text_color;
+    enum vga_color bg_color;
+    enum vga_color text_color;
     u8 col;
     u8 row;
     struct key_event_buffer keb;
@@ -28,16 +28,9 @@ struct console {
 static struct console consoles[MAX_CONSOLES];
 static int current_console_index;
 
-static inline u16 vga_entry(
-    char character, enum console_color bg_color, enum console_color text_color
-) {
-    u8 attributes = bg_color << 4 | text_color;
-    return (u8)character | (u16)attributes << 8;
-}
-
 void console_init(void) {
-    enum console_color bg_color = CONSOLE_COLOR_CYAN;
-    enum console_color text_color = CONSOLE_COLOR_BRIGHT_WHITE;
+    enum vga_color bg_color = VGA_COLOR_CYAN;
+    enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
     u16 entry = vga_entry(0, bg_color, text_color);
 
     for (int i = 0; i < DBG_CONSOLE_INDEX; i++) {
@@ -48,8 +41,8 @@ void console_init(void) {
         }
     }
 
-    bg_color = CONSOLE_COLOR_BLACK;
-    text_color = CONSOLE_COLOR_BRIGHT_WHITE;
+    bg_color = VGA_COLOR_BLACK;
+    text_color = VGA_COLOR_BRIGHT_WHITE;
     entry = vga_entry(0, bg_color, text_color);
     consoles[DBG_CONSOLE_INDEX].bg_color = bg_color;
     consoles[DBG_CONSOLE_INDEX].text_color = text_color;
@@ -78,55 +71,55 @@ void console_dbg_clear(void) {
     _console_clear(DBG_CONSOLE_INDEX);
 }
 
-static enum console_color _console_get_bg_color(int index) {
+static enum vga_color _console_get_bg_color(int index) {
     struct console *con = &consoles[index];
     return con->bg_color;
 }
 
-enum console_color console_get_bg_color() {
+enum vga_color console_get_bg_color() {
     return _console_get_bg_color(process_get_current_index());
 }
 
-enum console_color console_dbg_get_bg_color() {
+enum vga_color console_dbg_get_bg_color() {
     return _console_get_bg_color(DBG_CONSOLE_INDEX);
 }
 
-static void _console_set_bg_color(int index, enum console_color bg_color) {
+static void _console_set_bg_color(int index, enum vga_color bg_color) {
     struct console *con = &consoles[index];
     con->bg_color = bg_color;
 }
 
-void console_set_bg_color(enum console_color bg_color) {
+void console_set_bg_color(enum vga_color bg_color) {
     _console_set_bg_color(process_get_current_index(), bg_color);
 }
 
-void console_dbg_set_bg_color(enum console_color bg_color) {
+void console_dbg_set_bg_color(enum vga_color bg_color) {
     _console_set_bg_color(DBG_CONSOLE_INDEX, bg_color);
 }
 
-static enum console_color _console_get_text_color(int index) {
+static enum vga_color _console_get_text_color(int index) {
     struct console *con = &consoles[index];
     return con->text_color;
 }
 
-enum console_color console_get_text_color() {
+enum vga_color console_get_text_color() {
     return _console_get_text_color(process_get_current_index());
 }
 
-enum console_color console_dbg_get_text_color() {
+enum vga_color console_dbg_get_text_color() {
     return _console_get_text_color(DBG_CONSOLE_INDEX);
 }
 
-static void _console_set_text_color(int index, enum console_color text_color) {
+static void _console_set_text_color(int index, enum vga_color text_color) {
     struct console *con = &consoles[index];
     con->text_color = text_color;
 }
 
-void console_set_text_color(enum console_color text_color) {
+void console_set_text_color(enum vga_color text_color) {
     _console_set_text_color(process_get_current_index(), text_color);
 }
 
-void console_dbg_set_text_color(enum console_color text_color) {
+void console_dbg_set_text_color(enum vga_color text_color) {
     _console_set_text_color(DBG_CONSOLE_INDEX, text_color);
 }
 

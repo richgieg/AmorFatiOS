@@ -3,8 +3,8 @@
 
 void bugcheck(const char *file, int line, const char *message) {
     __asm__("cli");
-    console_dbg_set_bg_color(CONSOLE_COLOR_RED);
-    console_dbg_set_text_color(CONSOLE_COLOR_BRIGHT_WHITE);
+    console_dbg_set_bg_color(VGA_COLOR_RED);
+    console_dbg_set_text_color(VGA_COLOR_BRIGHT_WHITE);
     console_dbg_clear();
     console_dbg_puts("*** BUGCHECK ***\n\n");
     console_dbg_puts(message);
@@ -18,8 +18,8 @@ void bugcheck(const char *file, int line, const char *message) {
 
 void exception(u8 vector) {
     __asm__("cli");
-    console_dbg_set_bg_color(CONSOLE_COLOR_RED);
-    console_dbg_set_text_color(CONSOLE_COLOR_BRIGHT_WHITE);
+    console_dbg_set_bg_color(VGA_COLOR_RED);
+    console_dbg_set_text_color(VGA_COLOR_BRIGHT_WHITE);
     console_dbg_clear();
     console_dbg_puts("*** EXCEPTION ***\n\n");
     console_dbg_puts("Vector: 0x");
@@ -30,8 +30,8 @@ void exception(u8 vector) {
 
 void exception_with_code(u8 vector, u32 code) {
     __asm__("cli");
-    console_dbg_set_bg_color(CONSOLE_COLOR_RED);
-    console_dbg_set_text_color(CONSOLE_COLOR_BRIGHT_WHITE);
+    console_dbg_set_bg_color(VGA_COLOR_RED);
+    console_dbg_set_text_color(VGA_COLOR_BRIGHT_WHITE);
     console_dbg_clear();
     console_dbg_puts("*** EXCEPTION ***\n\n");
     console_dbg_puts("Vector: 0x");
