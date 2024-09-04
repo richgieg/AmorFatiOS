@@ -3,6 +3,10 @@
 #include <device/vga.h>
 #include <port.h>
 
+#define VGA_ADDRESS 0xb8000
+
+static volatile u16 *vga_buffer = (volatile u16 *)VGA_ADDRESS;
+
 void vga_init(void) {
     // Enable usage of all 16 background colors.
     // This ensures that attribute bit 7 is used for color instead of blink.
@@ -22,4 +26,12 @@ void vga_init(void) {
     // Disable the cursor.
     outb(0x3d4, 0x0a);
     outb(0x3d5, 0x20);
+}
+
+void vga_copy(void *src) {
+    u64 *dst = (u64 *)vga_buffer;
+    int length = VGA_ROWS * VGA_COLUMNS * sizeof(u16) / sizeof(u64);
+    for (int i = 0; i < length; i++) {
+        dst[i] = ((u64 *)src)[i];
+    }
 }

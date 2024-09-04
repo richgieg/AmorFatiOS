@@ -3,9 +3,6 @@
 
 #include <types.h>
 
-#define CONSOLE_ROWS 25
-#define CONSOLE_COLUMNS 80
-
 enum console_color {
     CONSOLE_COLOR_BLACK,
     CONSOLE_COLOR_BLUE,
@@ -81,5 +78,7 @@ void console_key_press(u16 scancode);
 void console_key_release(u16 scancode);
 struct key_event console_read_key_event(void);
 bool console_has_key_event(int index);
+int console_get_num_columns(void);
+int console_get_num_rows(void);
 
 #endif

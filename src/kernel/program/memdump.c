@@ -56,8 +56,9 @@ void memdump(void) {
 static void show_memdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)current_address;
     console_set_pos(0, 0);
+    const int num_rows = console_get_num_rows();
 
-    for (int k = 0; k < CONSOLE_ROWS; k++) {
+    for (int k = 0; k < num_rows; k++) {
         console_putdw((u32)memory_ptr);
         console_puts("    ");
 
@@ -75,7 +76,7 @@ static void show_memdump(void) {
             memory_ptr++;
         }
 
-        if (k < CONSOLE_ROWS - 1) {
+        if (k < num_rows - 1) {
             console_putc('\n');
         }
     }

@@ -2,9 +2,9 @@
 #include <process.h>
 #include <types.h>
 #include <bugcheck.h>
+#include <device/vga.h>
 
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
-#define VGA_ADDRESS 0xb8000
 #define MAX_CONSOLES (MAX_PROCESSES + 1)
 #define DBG_CONSOLE_INDEX (MAX_CONSOLES - 1)
 
@@ -17,7 +17,7 @@ struct key_event_buffer {
 };
 
 struct console {
-    u16 buffer[CONSOLE_COLUMNS * CONSOLE_ROWS];
+    u16 buffer[VGA_COLUMNS * VGA_ROWS];
     enum console_color bg_color;
     enum console_color text_color;
     u8 col;
@@ -27,8 +27,6 @@ struct console {
 
 static struct console consoles[MAX_CONSOLES];
 static int current_console_index;
-
-static volatile u16 *vga_buffer = (volatile u16 *)VGA_ADDRESS;
 
 static inline u16 vga_entry(
     char character, enum console_color bg_color, enum console_color text_color
@@ -45,13 +43,9 @@ void console_init(void) {
     for (int i = 0; i < DBG_CONSOLE_INDEX; i++) {
         consoles[i].bg_color = bg_color;
         consoles[i].text_color = text_color;
-        for (int j = 0; j < CONSOLE_ROWS * CONSOLE_COLUMNS; j++) {
+        for (int j = 0; j < VGA_ROWS * VGA_COLUMNS; j++) {
             consoles[i].buffer[j] = entry;
         }
-    }
-
-    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
-        vga_buffer[i] = entry;
     }
 
     bg_color = CONSOLE_COLOR_BLACK;
@@ -59,7 +53,7 @@ void console_init(void) {
     entry = vga_entry(0, bg_color, text_color);
     consoles[DBG_CONSOLE_INDEX].bg_color = bg_color;
     consoles[DBG_CONSOLE_INDEX].text_color = text_color;
-    for (int j = 0; j < CONSOLE_ROWS * CONSOLE_COLUMNS; j++) {
+    for (int j = 0; j < VGA_ROWS * VGA_COLUMNS; j++) {
         consoles[DBG_CONSOLE_INDEX].buffer[j] = entry;
     }
 }
@@ -68,7 +62,7 @@ static void _console_clear(int index) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(0, con->bg_color, con->text_color);
     
-    for (int i = 0; i < CONSOLE_ROWS * CONSOLE_COLUMNS; i++) {
+    for (int i = 0; i < VGA_ROWS * VGA_COLUMNS; i++) {
         con->buffer[i] = entry;
     }
 
@@ -153,12 +147,12 @@ void console_dbg_set_pos(u8 col, u8 row) {
 static void scroll_one_line(int index) {
     struct console *con = &consoles[index];
 
-    for (int i = 0; i < (CONSOLE_ROWS - 1) * CONSOLE_COLUMNS; i++) {
-        con->buffer[i] = con->buffer[i + CONSOLE_COLUMNS];
+    for (int i = 0; i < (VGA_ROWS - 1) * VGA_COLUMNS; i++) {
+        con->buffer[i] = con->buffer[i + VGA_COLUMNS];
     }
 
-    for (int i = 0; i < CONSOLE_COLUMNS; i++) {
-        con->buffer[(CONSOLE_ROWS - 1) * CONSOLE_COLUMNS + i] = vga_entry(0, con->bg_color, con->text_color);
+    for (int i = 0; i < VGA_COLUMNS; i++) {
+        con->buffer[(VGA_ROWS - 1) * VGA_COLUMNS + i] = vga_entry(0, con->bg_color, con->text_color);
     }
 }
 
@@ -166,8 +160,8 @@ static void go_to_next_line(int index) {
     struct console *con = &consoles[index];
     con->col = 0;
     con->row++;
-    if (con->row >= CONSOLE_ROWS) {
-        con->row = CONSOLE_ROWS - 1;
+    if (con->row >= VGA_ROWS) {
+        con->row = VGA_ROWS - 1;
         scroll_one_line(index);
     }
 }
@@ -175,10 +169,10 @@ static void go_to_next_line(int index) {
 static void _console_writec(int index, char c) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(c, con->bg_color, con->text_color);
-    con->buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
+    con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
 
     con->col++;
-    if (con->col >= CONSOLE_COLUMNS) {
+    if (con->col >= VGA_COLUMNS) {
         go_to_next_line(index);
     }
 }
@@ -197,10 +191,10 @@ static void _console_putc(int index, char c) {
     } else {
         struct console *con = &consoles[index];
         u16 entry = vga_entry(c, con->bg_color, con->text_color);
-        con->buffer[con->row * CONSOLE_COLUMNS + con->col] = entry;
+        con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
 
         con->col++;
-        if (con->col >= CONSOLE_COLUMNS) {
+        if (con->col >= VGA_COLUMNS) {
             go_to_next_line(index);
         }
     }
@@ -480,12 +474,7 @@ void console_dbg_putp_at(void *p, u8 col, u8 row) {
 }
 
 void console_repaint(void) {
-    u64 *src = (u64 *)consoles[current_console_index].buffer;
-    u64 *dst = (u64 *)vga_buffer;
-    int length = CONSOLE_ROWS * CONSOLE_COLUMNS * sizeof(u16) / sizeof(u64);
-    for (int i = 0; i < length; i++) {
-        dst[i] = src[i];
-    }
+    vga_copy(consoles[current_console_index].buffer);
 }
 
 void console_next(void) {
@@ -540,4 +529,12 @@ struct key_event console_read_key_event(void) {
 bool console_has_key_event(int index) {
     struct console *con = &consoles[index];
     return con->keb.head != con->keb.tail;
+}
+
+int console_get_num_columns(void) {
+    return VGA_COLUMNS;
+}
+
+int console_get_num_rows(void) {
+    return VGA_ROWS;
 }
