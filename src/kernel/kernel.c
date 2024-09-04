@@ -13,12 +13,37 @@
 
 static void process1_start() {
     console_dbg_puts("Process 1 started\n");
-    // u32 counter = 0;
+    mm_show_mdump();
     while (1) {
-        // console_putdw_at(counter, 0, 1);
-        // counter++;
         struct key_event ke = console_read_key_event();
-        console_putw(ke.scancode);
+        if (!ke.is_release) {
+            switch (ke.scancode) {
+                case SC_LEFT:
+                    mm_mdump_prev_byte();
+                    break;
+                case SC_RIGHT:
+                    mm_mdump_next_byte();
+                    break;
+                case SC_UP:
+                    mm_mdump_prev_line();
+                    break;
+                case SC_DOWN:
+                    mm_mdump_next_line();
+                    break;
+                case SC_PAGEUP:
+                    mm_mdump_prev_page();
+                    break;
+                case SC_PAGEDOWN:
+                    mm_mdump_next_page();
+                    break;
+                case SC_HOME:
+                    mm_mdump_prev_mb();
+                    break;
+                case SC_END:
+                    mm_mdump_next_mb();
+                    break;
+            }
+        }
     }
 }
 

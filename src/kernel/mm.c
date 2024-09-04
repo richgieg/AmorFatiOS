@@ -38,28 +38,28 @@ void mm_show_mmap(void) {
 
 void mm_show_mdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)mdump_cur_addr;
-    console_dbg_set_pos(0, 0);
+    console_set_pos(0, 0);
 
     for (int k = 0; k < CONSOLE_ROWS; k++) {
-        console_dbg_putdw((u32)memory_ptr);
-        console_dbg_puts("    ");
+        console_putdw((u32)memory_ptr);
+        console_puts("    ");
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            console_dbg_putb(*memory_ptr);
-            console_dbg_putc(' ');
+            console_putb(*memory_ptr);
+            console_putc(' ');
             memory_ptr++;
         }
 
-        console_dbg_puts("   ");
+        console_puts("   ");
         memory_ptr -= MDUMP_BYTES_PER_LINE;
 
         for (int i = 0; i < MDUMP_BYTES_PER_LINE; i++) {
-            console_dbg_writec(*memory_ptr);
+            console_writec(*memory_ptr);
             memory_ptr++;
         }
 
         if (k < CONSOLE_ROWS - 1) {
-            console_dbg_putc('\n');
+            console_putc('\n');
         }
     }
 }

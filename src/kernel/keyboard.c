@@ -9,21 +9,6 @@
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
 
-#define SC_F11 0x0078
-#define SC_F12 0x0007
-
-#define SC_UP 0xe075
-#define SC_DOWN 0xe072
-#define SC_LEFT 0xe06b
-#define SC_RIGHT 0xe074
-
-#define SC_HOME 0xe06c
-#define SC_END 0xe069
-#define SC_PAGEUP 0xe07d
-#define SC_PAGEDOWN 0xe07a
-#define SC_INSERT 0xe070
-#define SC_DELETE 0xe071
-
 static u8 is_break;
 static u8 is_extended;
 
@@ -47,30 +32,6 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
         default:
             console_key_press(scancodew);
             break;
-        // case SC_LEFT:
-        //     mm_mdump_prev_byte();
-        //     break;
-        // case SC_RIGHT:
-        //     mm_mdump_next_byte();
-        //     break;
-        // case SC_UP:
-        //     mm_mdump_prev_line();
-        //     break;
-        // case SC_DOWN:
-        //     mm_mdump_next_line();
-        //     break;
-        // case SC_PAGEUP:
-        //     mm_mdump_prev_page();
-        //     break;
-        // case SC_PAGEDOWN:
-        //     mm_mdump_next_page();
-        //     break;
-        // case SC_HOME:
-        //     mm_mdump_prev_mb();
-        //     break;
-        // case SC_END:
-        //     mm_mdump_next_mb();
-        //     break;
     }
 }
 
