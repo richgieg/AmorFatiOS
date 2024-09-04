@@ -2,7 +2,7 @@
 #include <pic.h>
 #include <port.h>
 #include <idt.h>
-#include <string.h>
+#include <lib/string.h>
 #include <console.h>
 #include <bugcheck.h>
 

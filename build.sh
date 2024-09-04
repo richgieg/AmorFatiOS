@@ -27,7 +27,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     src/kernel/mouse.c \
     src/kernel/pci.c \
     src/kernel/i82545em.c \
-    src/kernel/string.c \
+    src/kernel/lib/string.c \
     src/kernel/bugcheck.c
 
 # Write boot sector and kernel to virtual floppy disk file.

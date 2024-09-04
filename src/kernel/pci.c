@@ -1,6 +1,6 @@
 #include <pci.h>
 #include <console.h>
-#include <string.h>
+#include <lib/string.h>
 #include <i82545em.h>
 
 struct rsdp {
