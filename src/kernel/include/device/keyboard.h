@@ -1,6 +1,13 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
+#define SC_LEFT_ALT 0x0011
+#define SC_RIGHT_ALT 0xe011
+#define SC_LEFT_SHIFT 0x0012
+#define SC_RIGHT_SHIFT 0x0059
+
+#define SC_TAB 0x000d
+
 #define SC_F11 0x0078
 #define SC_F12 0x0007
 
