@@ -11,15 +11,7 @@
 #include <console.h>
 #include <process.h>
 #include <program/memdump.h>
-
-static void process2_start() {
-    console_dbg_puts("Process 2 started\n");
-    u32 counter = 0;
-    while (1) {
-        console_putdw_at(counter, 0, 2);
-        counter++;
-    }
-}
+#include <program/memmap.h>
 
 static void process3_start() {
     console_dbg_puts("Process 3 started\n");
@@ -85,7 +77,7 @@ void kernel_init(void) {
 
     process_init();
     process_create(memdump);
-    process_create(process2_start);
+    process_create(memmap);
     process_create(process3_start);
     process_create(process4_start);
     process_create(process5_start);

@@ -24,14 +24,14 @@ void mm_show_mmap(void) {
     struct mmap_entry *e = (struct mmap_entry *)MMAP_ADDRESS;
 
     while (e->base_address || e->length || e->type || e->extended_attributes) {
-        console_dbg_putqw(e->base_address);
-        console_dbg_putc(' ');
-        console_dbg_putqw(e->length);
-        console_dbg_putc(' ');
-        console_dbg_putdw(e->type);
-        console_dbg_putc(' ');
-        console_dbg_putdw(e->extended_attributes);
-        console_dbg_putc('\n');
+        console_putqw(e->base_address);
+        console_putc(' ');
+        console_putqw(e->length);
+        console_putc(' ');
+        console_putdw(e->type);
+        console_putc(' ');
+        console_putdw(e->extended_attributes);
+        console_putc('\n');
         e++;
     }
 }
