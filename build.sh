@@ -28,7 +28,8 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     src/kernel/device/pci.c \
     src/kernel/device/i82545em.c \
     src/kernel/lib/string.c \
-    src/kernel/bugcheck.c
+    src/kernel/bugcheck.c \
+    src/kernel/program/memdump.c
 
 # Write boot sector and kernel to virtual floppy disk file.
 sudo dd if=/dev/zero of=bin/os.flp bs=512 count=2880

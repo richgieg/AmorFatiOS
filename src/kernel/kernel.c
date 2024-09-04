@@ -10,42 +10,7 @@
 #include <device/pci.h>
 #include <console.h>
 #include <process.h>
-
-static void process1_start() {
-    console_dbg_puts("Process 1 started\n");
-    mm_show_mdump();
-    while (1) {
-        struct key_event ke = console_read_key_event();
-        if (!ke.is_release) {
-            switch (ke.scancode) {
-                case SC_LEFT:
-                    mm_mdump_prev_byte();
-                    break;
-                case SC_RIGHT:
-                    mm_mdump_next_byte();
-                    break;
-                case SC_UP:
-                    mm_mdump_prev_line();
-                    break;
-                case SC_DOWN:
-                    mm_mdump_next_line();
-                    break;
-                case SC_PAGEUP:
-                    mm_mdump_prev_page();
-                    break;
-                case SC_PAGEDOWN:
-                    mm_mdump_next_page();
-                    break;
-                case SC_HOME:
-                    mm_mdump_prev_mb();
-                    break;
-                case SC_END:
-                    mm_mdump_next_mb();
-                    break;
-            }
-        }
-    }
-}
+#include <program/memdump.h>
 
 static void process2_start() {
     console_dbg_puts("Process 2 started\n");
@@ -116,11 +81,10 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    // mm_show_mdump();
     // mm_show_mmap();
 
     process_init();
-    process_create(process1_start);
+    process_create(memdump);
     process_create(process2_start);
     process_create(process3_start);
     process_create(process4_start);
