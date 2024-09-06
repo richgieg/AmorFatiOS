@@ -35,47 +35,59 @@ int 0x10
 ; mov bl, 0
 ; int 0x10
 
-; Copy the first 17 sectors of kernel image from floppy to 0x20000.
+; Copy the first 18 sectors of kernel image from floppy to 0x20000.
 mov bx, 0x2000      ; segment location to read into
 mov es, bx
 mov bx, 0           ; offset to read into
 mov ah, 2           ; BIOS read sector function
-mov al, 17          ; number of sectors to read (18 max)
-mov ch, 0           ; track to read
-mov cl, 2           ; sector to read (starts at 1, skipping boot sector)
+mov al, 18          ; number of sectors to read (18 max)
+mov ch, 1           ; track to read (1 = start at 36 sectors in)
+mov cl, 1           ; sector to read (starts at 1)
 mov dh, 0           ; head to read
 mov dl, 0           ; drive to read
 int 0x13            ; make the BIOS call
 
 ; Copy the next 18 sectors of kernel image from floppy.
-mov bx, 0x2200
+mov bx, 0x2400
 mov ah, 2
 mov al, 18
-mov ch, 0
+mov ch, 1
 mov cl, 1
 mov dh, 1
 mov dl, 0
 int 0x13
 
 ; Copy the next 18 sectors of kernel image from floppy.
-mov bx, 0x4600
+mov bx, 0x4800
 mov ah, 2
 mov al, 18
-mov ch, 1
+mov ch, 2
 mov cl, 1
 mov dh, 0
 mov dl, 0
 int 0x13
 
 ; Copy the next 18 sectors of kernel image from floppy.
-mov bx, 0x6a00
+mov bx, 0x6c00
 mov ah, 2
 mov al, 18
-mov ch, 1
+mov ch, 2
 mov cl, 1
 mov dh, 1
 mov dl, 0
 int 0x13
+
+; Copy the first 18 sectors of userspace image from floppy to 0x90000.
+mov bx, 0x9000      ; segment location to read into
+mov es, bx
+mov bx, 0           ; offset to read into
+mov ah, 2           ; BIOS read sector function
+mov al, 18          ; number of sectors to read (18 max)
+mov ch, 16          ; track to read (16 = start at 576 sectors in)
+mov cl, 1           ; sector to read (starts at 1)
+mov dh, 0           ; head to read
+mov dl, 0           ; drive to read
+int 0x13            ; make the BIOS call
 
 ; Disable interrupts.
 cli

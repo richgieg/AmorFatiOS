@@ -40,5 +40,5 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
 # Write bootloader, kernel, and userspace images to virtual floppy disk file.
 sudo dd if=/dev/zero of=bin/os.flp bs=512 count=2880
 sudo dd if=bin/boot of=bin/os.flp conv=notrunc
-sudo dd if=bin/kernel of=bin/os.flp bs=512 seek=1 conv=notrunc
-sudo dd if=bin/userspace of=bin/os.flp bs=512 seek=512 conv=notrunc
+sudo dd if=bin/kernel of=bin/os.flp bs=512 seek=36 conv=notrunc
+sudo dd if=bin/userspace of=bin/os.flp bs=512 seek=576 conv=notrunc
