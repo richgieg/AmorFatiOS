@@ -10,7 +10,8 @@ struct process {
     void (*start)();
     bool is_started;
     enum process_state state;
-    u32 esp;
+    u32 kernel_esp;
+    u32 user_esp;
 };
 
 static struct process processes[MAX_PROCESSES];
@@ -43,7 +44,8 @@ void process_create(void (*start)()) {
     p->start = start;
     p->is_started = false;
     p->state = PROCESS_STATE_RUNNABLE;
-    p->esp = STACK_AREA_BASE + (index + 1) * STACK_SIZE;
+    p->kernel_esp = STACK_AREA_BASE + (index + 1) * STACK_SIZE * 2;
+    p->user_esp = p->kernel_esp + STACK_SIZE;
 }
 
 void process_switch(enum process_state state) {
@@ -87,7 +89,7 @@ void process_switch(enum process_state state) {
         "pushfd;"
         "pushad;"
         "mov %[old_esp], esp;"
-        : [old_esp] "=m" (current_process->esp)
+        : [old_esp] "=m" (current_process->kernel_esp)
         :
         : "memory"
     );
@@ -101,7 +103,7 @@ void process_switch(enum process_state state) {
             "sti;"
             "call %[start];"
             :
-            : [new_esp] "m" (next_process->esp), [start] "m" (next_process->start)
+            : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
             : "memory"
         );
     } else {
@@ -112,7 +114,7 @@ void process_switch(enum process_state state) {
             "popad;"
             "popfd;"
             :
-            : [new_esp] "m" (next_process->esp)
+            : [new_esp] "m" (next_process->kernel_esp)
             : "memory"
         );
     }
