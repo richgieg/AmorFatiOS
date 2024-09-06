@@ -6,10 +6,10 @@ set -e
 # Ensure bin directory exists.
 mkdir -p bin
 
-# Assemble the boot sector.
+# Build the bootloader image.
 nasm -f bin -o bin/boot boot/boot.asm
 
-# Compile the kernel.
+# Build the kernel image.
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
     -I./kernel/include -Wl,--build-id=none -Wl,-T,kernel.ld -o bin/kernel \
     kernel/_start.c \
@@ -31,7 +31,14 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/kernel.c \
     kernel/process.c
 
-# Write boot sector and kernel to virtual floppy disk file.
+# Build the userspace image.
+gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
+    -I./userspace/include -Wl,--build-id=none -Wl,-T,kernel.ld -o bin/userspace \
+    userspace/_start.c \
+    userspace/userspace.c
+
+# Write bootloader, kernel, and userspace images to virtual floppy disk file.
 sudo dd if=/dev/zero of=bin/os.flp bs=512 count=2880
 sudo dd if=bin/boot of=bin/os.flp conv=notrunc
-sudo dd if=bin/kernel of=bin/os.flp seek=1 conv=notrunc
+sudo dd if=bin/kernel of=bin/os.flp bs=512 seek=1 conv=notrunc
+sudo dd if=bin/userspace of=bin/os.flp bs=512 seek=512 conv=notrunc
