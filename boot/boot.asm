@@ -125,18 +125,32 @@ finish_setup:
 gdt:
 gdt_null:
     dq 0
-gdt_code:
+gdt_kernel_code:
     dw 0xffff
     dw 0
     db 0
     db 0b10011010
     db 0b11001111
     db 0
-gdt_data:
+gdt_kernel_data:
     dw 0xffff
     dw 0
     db 0
     db 0b10010010
+    db 0b11001111
+    db 0
+gdt_user_code:
+    dw 0xffff
+    dw 0
+    db 0
+    db 0b11111010
+    db 0b11001111
+    db 0
+gdt_user_data:
+    dw 0xffff
+    dw 0
+    db 0
+    db 0b11110010
     db 0b11001111
     db 0
 gdt_end:
