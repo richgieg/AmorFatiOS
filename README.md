@@ -10,6 +10,39 @@ This quote encapsulates the essence of amor fati—the love of one's fate—by
 emphasizing the importance of embracing whatever comes your way and responding
 with wisdom and resilience.
 
+## Goals
+
+- [x] Floppy Disk Bootloader
+- [x] Protected Mode
+- [x] Interrupt Handling
+- [ ] Preemptive Task Switching
+  - [x] Round Robin
+  - [ ] Priority Based
+- [x] Keyboard Support
+- [x] Text-Mode VGA
+- [x] Virtual Consoles
+- [ ] PCI Device Enumeration (started)
+- [ ] System Call Interface
+- [ ] Userspace
+- [ ] Virtual Memory
+- [ ] Dynamic Memory Allocation
+- [ ] TCP/IP Stack
+  - [ ] Intel 82545EM Driver (started)
+  - [ ] Ethernet Send/Receive
+  - [ ] IP Send/Receive
+  - [ ] TCP/UDP Send/Receive
+  - [ ] DHCP Client
+  - [ ] DNS Client
+- [ ] Machine Support
+  - [ ] Virtual Machines / Emulators
+    - [x] VMware Workstation
+    - [ ] Oracle VirtualBox
+    - [ ] Bochs
+    - [ ] QEMU
+  - [ ] Real Hardware
+    - [ ] ?
+- [ ] Documentation
+
 ## Build
 
 I build the project on Ubuntu 22.04. To ensure you have what you need, run the
