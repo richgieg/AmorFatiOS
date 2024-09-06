@@ -36,9 +36,10 @@ with wisdom and resilience.
 - [ ] Machine Support
   - [ ] Virtual Machines / Emulators
     - [x] VMware Workstation
+    - [ ] Microsoft Hyper-V
     - [ ] Oracle VirtualBox
-    - [ ] Bochs
     - [ ] QEMU
+    - [ ] Bochs
   - [ ] Real Hardware
     - [ ] ?
 - [ ] Documentation
