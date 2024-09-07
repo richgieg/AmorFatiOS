@@ -49,7 +49,14 @@ void process_create(void (*start)()) {
     p->user_esp = p->kernel_esp + STACK_SIZE;
 }
 
+static u32 process_switch_count;
+
 void process_switch(enum process_state state) {
+    console_dbg_puts("process_switch ");
+    console_dbg_putdw(process_switch_count);
+    console_dbg_putc('\n');
+    process_switch_count++;
+
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
