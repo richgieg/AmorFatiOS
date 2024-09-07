@@ -102,6 +102,13 @@ void process_switch(enum process_state state) {
 
         // Start the next process.
         __asm__(
+            "push ax;"
+            "mov ax, 0x23;"
+            "mov ds, ax;"
+            "mov es, ax;"
+            "mov fs, ax;"
+            "mov gs, ax;"
+            "pop ax;"
             "push 0x23;"
             "push %[new_esp];"
             "pushfd;"
