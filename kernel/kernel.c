@@ -35,7 +35,7 @@ void kernel_init(void) {
     // process_create(memdump);
     // process_create(memmap);
     // process_create(counter);
-    // process_create((void *)0x91000);
+    process_create((void *)0x91000);
 
     console_puts("AmorFatiOS v0.0.1\n");
 
