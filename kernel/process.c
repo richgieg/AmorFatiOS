@@ -2,6 +2,7 @@
 #include <types.h>
 #include <bugcheck.h>
 #include <console.h>
+#include <tss.h>
 
 #define STACK_SIZE 4096
 #define STACK_AREA_BASE 0x100000
@@ -94,6 +95,8 @@ void process_switch(enum process_state state) {
         : "memory"
     );
 
+    tss_set_kernel_stack(next_process->kernel_esp);
+
     if (!next_process->is_started) {
         next_process->is_started = true;
 
@@ -110,18 +113,7 @@ void process_switch(enum process_state state) {
             : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
             : "memory"
         );
-
-        // // Start the next process.
-        // __asm__(
-        //     "mov esp, %[new_esp];"
-        //     "sti;"
-        //     "call %[start];"
-        //     :
-        //     : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
-        //     : "memory"
-        // );
     } else {
-
         // Restore the context of the next process.
         __asm__(
             "mov esp, %[new_esp];"

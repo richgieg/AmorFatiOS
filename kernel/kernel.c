@@ -1,6 +1,7 @@
 #include <kernel.h>
 #include <device/vga.h>
 #include <idt.h>
+#include <tss.h>
 #include <device/pic.h>
 #include <device/timer.h>
 #include <device/ps2.h>
@@ -18,6 +19,7 @@ void kernel_init(void) {
     console_init();
     process_init();
     idt_init();
+    tss_init();
     pic_init();
     timer_init();
     ps2_init();

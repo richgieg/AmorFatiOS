@@ -29,7 +29,8 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/console.c \
     kernel/idt.c \
     kernel/kernel.c \
-    kernel/process.c
+    kernel/process.c \
+    kernel/tss.c
 
 # Build the userspace image.
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
