@@ -49,13 +49,13 @@ void process_create(void (*start)()) {
     p->user_esp = p->kernel_esp + STACK_SIZE;
 }
 
-static u32 process_switch_count;
+// static u32 process_switch_count;
 
 void process_switch(enum process_state state) {
-    console_dbg_puts("process_switch ");
-    console_dbg_putdw(process_switch_count);
-    console_dbg_putc('\n');
-    process_switch_count++;
+    // console_dbg_puts("process_switch ");
+    // console_dbg_putdw(process_switch_count);
+    // console_dbg_putc('\n');
+    // process_switch_count++;
 
     int count = MAX_PROCESSES;
     int next_process_index = -1;
@@ -101,6 +101,12 @@ void process_switch(enum process_state state) {
         :
         : "memory"
     );
+
+    console_dbg_puts("next proc id = ");
+    console_dbg_putdw(next_process_index);
+    console_dbg_puts(", kernel_esp = ");
+    console_dbg_putdw(next_process->kernel_esp);
+    console_dbg_putc('\n');
 
     tss_set_kernel_stack(next_process->kernel_esp);
 
