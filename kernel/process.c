@@ -110,7 +110,7 @@ void process_switch(enum process_state state) {
             "push %[start];"
             "iret;"
             :
-            : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
+            : [new_esp] "m" (next_process->user_esp), [start] "m" (next_process->start)
             : "memory"
         );
     } else {
