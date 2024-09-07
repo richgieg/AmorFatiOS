@@ -45,7 +45,7 @@ void process_create(void (*start)()) {
     p->start = start;
     p->is_started = false;
     p->state = PROCESS_STATE_RUNNABLE;
-    p->kernel_esp = STACK_AREA_BASE + (index + 1) * STACK_SIZE * 2;
+    p->kernel_esp = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);
     p->user_esp = p->kernel_esp + STACK_SIZE;
 }
 
