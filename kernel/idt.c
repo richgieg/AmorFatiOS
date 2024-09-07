@@ -148,8 +148,33 @@ static void return_from_interrupt(void) {
 __attribute__((naked))
 static void interrupt_handler_00(void) {
     __asm__("pushad");
+
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne exit;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "exit:"
+    );
+
     if (irq_handlers[0]) irq_handlers[0]();
+
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne exit2;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "exit2:"
+    );
+
     __asm__("popad");
+
     __asm__("jmp return_from_interrupt");
 }
 

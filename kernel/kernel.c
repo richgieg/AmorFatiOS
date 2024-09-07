@@ -24,10 +24,10 @@ void kernel_init(void) {
     tss_init();
     pic_init();
     timer_init();
-    ps2_init();
-    keyboard_init();
-    mouse_init();
-    pci_init();
+    // ps2_init();
+    // keyboard_init();
+    // mouse_init();
+    // pci_init();
 
     // Enable interrupts
     __asm__("sti");
