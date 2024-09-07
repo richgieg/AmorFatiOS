@@ -56,6 +56,12 @@ void tss_init(void) {
     gdt_tss_entry->base_high = base >> 24;
 
     tss_entry.ss0 = 0x10;
+
+    // Load the task register.
+    __asm__(
+        "mov ax, (5 * 8) | 0;"
+        "ltr ax;"
+    );
 }
 
 void tss_set_kernel_stack(u32 esp) {
