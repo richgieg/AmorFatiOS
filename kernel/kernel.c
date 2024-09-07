@@ -1,5 +1,6 @@
 #include <kernel.h>
 #include <device/vga.h>
+#include <gdt.h>
 #include <idt.h>
 #include <tss.h>
 #include <device/pic.h>
@@ -18,6 +19,7 @@ void kernel_init(void) {
     vga_init();
     console_init();
     process_init();
+    gdt_init();
     idt_init();
     tss_init();
     pic_init();

@@ -27,6 +27,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/program/memmap.c \
     kernel/bugcheck.c \
     kernel/console.c \
+    kernel/gdt.c \
     kernel/idt.c \
     kernel/kernel.c \
     kernel/process.c \
