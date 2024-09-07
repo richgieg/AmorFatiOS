@@ -99,13 +99,27 @@ void process_switch(enum process_state state) {
 
         // Start the next process.
         __asm__(
-            "mov esp, %[new_esp];"
-            "sti;"
-            "call %[start];"
+            "push 0x23;"
+            "push %[new_esp];"
+            "pushfd;"
+            "ord [esp], 0x200;"
+            "push 0x1b;"
+            "push %[start];"
+            "iret;"
             :
             : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
             : "memory"
         );
+
+        // // Start the next process.
+        // __asm__(
+        //     "mov esp, %[new_esp];"
+        //     "sti;"
+        //     "call %[start];"
+        //     :
+        //     : [new_esp] "m" (next_process->kernel_esp), [start] "m" (next_process->start)
+        //     : "memory"
+        // );
     } else {
 
         // Restore the context of the next process.

@@ -77,6 +77,16 @@ mov dh, 1
 mov dl, 0
 int 0x13
 
+; Copy the next 18 sectors of kernel image from floppy.
+mov bx, 0x9000
+mov ah, 2
+mov al, 18
+mov ch, 3
+mov cl, 1
+mov dh, 0
+mov dl, 0
+int 0x13
+
 ; Copy the first 18 sectors of userspace image from floppy to 0x90000.
 mov bx, 0x9000      ; segment location to read into
 mov es, bx

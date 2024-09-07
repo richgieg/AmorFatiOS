@@ -2,6 +2,6 @@
 
 void userspace_init(void) {
     while (1) {
-        __asm__("hlt");
+        // TODO: Do some userspace stuff here.
     }
 }
