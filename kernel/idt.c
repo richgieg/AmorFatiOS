@@ -140,50 +140,60 @@ static void exception_handler_19(void) {
     exception(19);
 }
 
-__attribute__((naked, used))
-static void return_from_interrupt(void) {
-    __asm__("iret");
-}
-
 __attribute__((naked))
 static void interrupt_handler_00(void) {
-    __asm__("pushad");
-
     __asm__(
+        "pushad;"
         "cmpd [esp + 36], 0x1b;"
-        "jne exit;"
+        "jne interrupt_handler_00__skip_segment_init;"
         "mov ax, 0x10;"
         "mov ds, ax;"
         "mov es, ax;"
         "mov fs, ax;"
         "mov gs, ax;"
-        "exit:"
+        "interrupt_handler_00__skip_segment_init:"
     );
-
     if (irq_handlers[0]) irq_handlers[0]();
-
     __asm__(
         "cmpd [esp + 36], 0x1b;"
-        "jne exit2;"
+        "jne interrupt_handler_00__skip_segment_restore;"
         "mov ax, 0x23;"
         "mov ds, ax;"
         "mov es, ax;"
         "mov fs, ax;"
         "mov gs, ax;"
-        "exit2:"
+        "interrupt_handler_00__skip_segment_restore:"
+        "popad;"
+        "iret;"
     );
-
-    __asm__("popad");
-
-    __asm__("jmp return_from_interrupt");
 }
 
 __attribute__((naked))
 static void interrupt_handler_01(void) {
-    __asm__("pushad");
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_01__skip_segment_init;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_01__skip_segment_init:"
+    );
     if (irq_handlers[1]) irq_handlers[1]();
-    __asm__("popad");
-    __asm__("jmp return_from_interrupt");
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_01__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_01__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
 }
 
 __attribute__((naked))
@@ -233,18 +243,58 @@ static void interrupt_handler_10(void) {
 
 __attribute__((naked))
 static void interrupt_handler_11(void) {
-    __asm__("pushad");
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_11__skip_segment_init;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_11__skip_segment_init:"
+    );
     if (irq_handlers[11]) irq_handlers[11]();
-    __asm__("popad");
-    __asm__("jmp return_from_interrupt");
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_11__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_11__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
 }
 
 __attribute__((naked))
 static void interrupt_handler_12(void) {
-    __asm__("pushad");
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_12__skip_segment_init;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_12__skip_segment_init:"
+    );
     if (irq_handlers[12]) irq_handlers[12]();
-    __asm__("popad");
-    __asm__("jmp return_from_interrupt");
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_12__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_12__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
 }
 
 __attribute__((naked))
@@ -264,10 +314,30 @@ static void interrupt_handler_15(void) {
 
 __attribute__((naked))
 static void interrupt_handler_128(void) {
-    __asm__("pushad");
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_128__skip_segment_init;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_128__skip_segment_init:"
+    );
     process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
-    __asm__("popad");
-    __asm__("jmp return_from_interrupt");
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_128__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_128__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
 }
 
 void idt_set_irq_handler(u8 irq, void (*handler)()) {
