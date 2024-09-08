@@ -35,7 +35,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
 
 # Build the userspace image.
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
-    -I./userspace/include -Wl,--build-id=none -Wl,-T,kernel.ld -o bin/userspace \
+    -I./userspace/include -Wl,--build-id=none -Wl,-T,userspace.ld -o bin/userspace \
     userspace/_start.c \
     userspace/userspace.c
 
