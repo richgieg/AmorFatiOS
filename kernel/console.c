@@ -26,7 +26,7 @@ struct console {
 } __attribute__((aligned(4096)));
 
 static struct console consoles[MAX_CONSOLES];
-static int current_console_index = MAX_CONSOLES - 1;
+static int current_console_index;
 
 void console_init(void) {
     enum vga_color bg_color = VGA_COLOR_CYAN;
