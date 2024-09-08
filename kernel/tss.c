@@ -2,11 +2,10 @@
 #include <gdt.h>
 
 struct tss_entry {
-	u32 prev_tss; // The previous TSS - with hardware task switching these form a kind of backward linked list.
-	u32 esp0;     // The stack pointer to load when changing to kernel mode.
-	u32 ss0;      // The stack segment to load when changing to kernel mode.
-	// Everything below here is unused.
-	u32 esp1; // esp and ss 1 and 2 would be used when switching to rings 1 or 2.
+	u32 prev_tss;
+	u32 esp0;
+	u32 ss0;
+	u32 esp1;
 	u32 ss1;
 	u32 esp2;
 	u32 ss2;
