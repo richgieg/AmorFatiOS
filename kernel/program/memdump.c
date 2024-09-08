@@ -20,7 +20,7 @@ static void prev_mb(void);
 
 void memdump(void) {
     show_memdump();
-    while (1) {
+    while (true) {
         struct key_event ke = console_read_key_event();
         if (!ke.is_release) {
             switch (ke.scancode) {

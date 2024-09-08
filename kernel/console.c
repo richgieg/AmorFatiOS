@@ -512,7 +512,7 @@ void console_key_release(u16 scancode) {
 struct key_event console_read_key_event(void) {
     struct console *con = &consoles[process_get_current_index()];
     if (con->keb.head == con->keb.tail) {
-        __asm__("int 128"); // wait for key event
+        __asm__("int 0x80"); // wait for key event
     }
     struct key_event ke = con->keb.events[con->keb.head];
     con->keb.head = (con->keb.head + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;

@@ -394,7 +394,7 @@ void idt_init(void) {
     idt_set_descriptor(46, interrupt_handler_14, 0x8e);
     idt_set_descriptor(47, interrupt_handler_15, 0x8e);
 
-    idt_set_descriptor(128, interrupt_handler_128, 0x8e);
+    idt_set_descriptor(128, interrupt_handler_128, 0xee);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }

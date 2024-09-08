@@ -32,7 +32,7 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    // process_create(memdump);
+    process_create(memdump);
     process_create(memmap);
     process_create(counter);
     process_create((void *)0x91000);
