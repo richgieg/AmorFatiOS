@@ -16,9 +16,7 @@ static void show_memmap(void);
 
 void memmap(void) {
     show_memmap();
-    while (1) {
-        __asm__("hlt");
-    }
+    while (true);
 }
 
 static void show_memmap(void) {
