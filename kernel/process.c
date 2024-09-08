@@ -11,6 +11,7 @@ struct process {
     void (*start)();
     bool is_started;
     enum process_state state;
+    u32 kernel_esp_bottom;
     u32 kernel_esp;
     u32 user_esp;
 };
@@ -45,7 +46,8 @@ void process_create(void (*start)()) {
     p->start = start;
     p->is_started = false;
     p->state = PROCESS_STATE_RUNNABLE;
-    p->kernel_esp = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);
+    p->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);;
+    p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
 }
 
@@ -122,7 +124,7 @@ void process_switch(enum process_state state) {
     console_dbg_putdw(next_process->kernel_esp);
     console_dbg_putc('\n');
 
-    tss_set_kernel_stack(next_process->kernel_esp);
+    tss_set_kernel_stack(next_process->kernel_esp_bottom);
 
     if (!next_process->is_started) {
         next_process->is_started = true;
