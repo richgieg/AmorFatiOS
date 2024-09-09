@@ -20,7 +20,7 @@ struct idt_entry {
 static struct idtr idtr;
 
 __attribute__((aligned(0x10)))
-static struct idt_entry idt[256]; // array of IDT entries aligned for performance
+static struct idt_entry idt[IDT_MAX_DESCRIPTORS]; // array of IDT entries aligned for performance
 
 static void (*irq_handlers[16])();
 
@@ -347,8 +347,8 @@ static void idt_set_descriptor(u8 vector, void *isr, u8 flags) {
 }
 
 void idt_init(void) {
-    idtr.base = (uintptr_t)&idt[0];
-    idtr.limit = (u16)sizeof(struct idt_entry) * IDT_MAX_DESCRIPTORS - 1;
+    idtr.base = (u32)idt;
+    idtr.limit = sizeof(idt) - 1;
 
     idt_set_descriptor(0x00, exception_handler_0x00, 0x8e);
     idt_set_descriptor(0x01, exception_handler_0x01, 0x8e);
