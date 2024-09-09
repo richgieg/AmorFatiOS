@@ -1,5 +1,5 @@
-#ifndef SYSCALL_H
-#define SYSCALL_H
+#ifndef SYS_H
+#define SYS_H
 
 #include <console.h>
 

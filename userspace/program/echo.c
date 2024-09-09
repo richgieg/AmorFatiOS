@@ -1,6 +1,6 @@
 #include <program/echo.h>
 #include <console.h>
-#include <syscall.h>
+#include <sys.h>
 
 void echo(void) {
     struct key_event ke;

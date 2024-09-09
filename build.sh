@@ -39,7 +39,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     userspace/_start.c \
     userspace/program/counter.c \
     userspace/program/echo.c \
-    userspace/syscall.c \
+    userspace/sys.c \
     userspace/userspace.c
 
 # Write bootloader, kernel, and userspace images to virtual floppy disk file.

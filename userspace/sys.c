@@ -1,5 +1,4 @@
-#include <syscall.h>
-#include <types.h>
+#include <sys.h>
 
 void sys_console_putdw_at(u32 dw, u8 col, u8 row) {
     __asm__(

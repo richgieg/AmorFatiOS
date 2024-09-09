@@ -1,5 +1,5 @@
 #include <program/counter.h>
-#include <syscall.h>
+#include <sys.h>
 
 void counter(void) {
     int count = 0;

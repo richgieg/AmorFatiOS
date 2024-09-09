@@ -1,5 +1,5 @@
 #include <userspace.h>
-#include <syscall.h>
+#include <sys.h>
 #include <program/counter.h>
 #include <program/echo.h>
 
