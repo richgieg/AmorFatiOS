@@ -11,7 +11,6 @@
 #include <device/pci.h>
 #include <console.h>
 #include <process.h>
-#include <program/memmap.h>
 
 void kernel_init(void) {
     vga_init();
@@ -30,10 +29,10 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    process_create(memmap);
+    // Create the initial userspace process.
     process_create((void *)0x91000);
 
-    console_puts("AmorFatiOS v0.0.1\n");
+    console_puts("AmorFatiOS v0.0.1 - Kernel\n");
 
     while (1) {
         // TODO: Do work here as needed.
