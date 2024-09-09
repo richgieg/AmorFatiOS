@@ -33,7 +33,7 @@ void sys_process_create(void (*start)()) {
         :
         : "a" (PROCESS_CREATE),
           "b" (start)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -42,7 +42,7 @@ void sys_console_clear(void) {
         "int 0x80"
         :
         : "a" (CONSOLE_CLEAR)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -52,7 +52,7 @@ enum vga_color sys_console_get_bg_color(void) {
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_BG_COLOR)
-        : "memory", "cc"
+        :
     );
     return result;
 }
@@ -63,7 +63,7 @@ void sys_console_set_bg_color(enum vga_color bg_color) {
         :
         : "a" (CONSOLE_SET_BG_COLOR),
           "b" (bg_color)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -73,7 +73,7 @@ enum vga_color sys_console_get_text_color(void) {
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_TEXT_COLOR)
-        : "memory", "cc"
+        :
     );
     return result;
 }
@@ -84,7 +84,7 @@ void sys_console_set_text_color(enum vga_color text_color) {
         :
         : "a" (CONSOLE_SET_TEXT_COLOR),
           "b" (text_color)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -95,7 +95,7 @@ void sys_console_set_pos(u8 col, u8 row) {
         : "a" (CONSOLE_SET_POS),
           "b" (col),
           "c" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -105,7 +105,7 @@ void sys_console_writec(char c) {
         :
         : "a" (CONSOLE_WRITEC),
           "b" (c)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -115,7 +115,7 @@ void sys_console_putc(char c) {
         :
         : "a" (CONSOLE_PUTC),
           "b" (c)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -125,7 +125,7 @@ void sys_console_puts(const char *str) {
         :
         : "a" (CONSOLE_PUTS),
           "b" (str)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -135,7 +135,7 @@ void sys_console_putb(u8 b) {
         :
         : "a" (CONSOLE_PUTB),
           "b" (b)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -145,7 +145,7 @@ void sys_console_putw(u16 w) {
         :
         : "a" (CONSOLE_PUTW),
           "b" (w)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -155,7 +155,7 @@ void sys_console_putdw(u32 dw) {
         :
         : "a" (CONSOLE_PUTDW),
           "b" (dw)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -166,7 +166,7 @@ void sys_console_putqw(u64 qw) {
         : "a" (CONSOLE_PUTQW),
           "b" ((u32)(qw >> 32)),
           "c" ((u32)qw)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -176,7 +176,7 @@ void sys_console_putp(void *p) {
         :
         : "a" (CONSOLE_PUTP),
           "b" (p)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -188,7 +188,7 @@ void sys_console_putc_at(char c, u8 col, u8 row) {
           "b" (c),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -200,7 +200,7 @@ void sys_console_puts_at(const char *str, u8 col, u8 row) {
           "b" (str),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -212,7 +212,7 @@ void sys_console_putb_at(u8 b, u8 col, u8 row) {
           "b" (b),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -224,7 +224,7 @@ void sys_console_putw_at(u16 w, u8 col, u8 row) {
           "b" (w),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -236,7 +236,7 @@ void sys_console_putdw_at(u32 dw, u8 col, u8 row) {
           "b" (dw),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -249,7 +249,7 @@ void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
           "c" ((u32)qw),
           "d" ((u32)col),
           "S" ((u32)row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -261,7 +261,7 @@ void sys_console_putp_at(void *p, u8 col, u8 row) {
           "b" (p),
           "c" (col),
           "d" (row)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -271,7 +271,7 @@ void sys_console_read_key_event(struct key_event *ke) {
         :
         : "a" (CONSOLE_READ_KEY_EVENT),
           "b" (ke)
-        : "memory", "cc"
+        :
     );
 }
 
@@ -281,7 +281,7 @@ int sys_console_get_num_columns(void) {
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_NUM_COLUMNS)
-        : "memory", "cc"
+        :
     );
     return result;
 }
@@ -292,7 +292,7 @@ int sys_console_get_num_rows(void) {
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_NUM_ROWS)
-        : "memory", "cc"
+        :
     );
     return result;
 }
