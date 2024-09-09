@@ -31,27 +31,26 @@
 #define CONSOLE_GET_NUM_ROWS        0x0018
 
 u32 sys_dispatch(void) {
-    u32 result;
-    u32 eax;
-    u32 ebx;
-    u32 ecx;
-    u32 edx;
-    u32 esi;
+    u32 result = 0;
+    u32 syscall_num;
+    u32 arg0;
+    u32 arg1;
+    u32 arg2;
+    u32 arg3;
 
-    __asm__ volatile(
-        "mov %0, eax;"
-        "mov %1, ebx;"
-        "mov %2, ecx;"
-        "mov %3, edx;"
-        "mov %4, esi;"
-        : "=m" (eax), "=m" (ebx), "=m" (ecx), "=m" (edx), "=m" (esi)
-        :
-        : "memory"
+    __asm__(
+        ""
+        : "=a" (syscall_num),
+          "=b" (arg0),
+          "=c" (arg1),
+          "=d" (arg2),
+          "=S" (arg3)
+        : :
     );
 
-    switch (eax) {
+    switch (syscall_num) {
         case PROCESS_CREATE:
-            process_create((void (*)(void))ebx);
+            process_create((void (*)(void))arg0);
             break;
         case CONSOLE_CLEAR:
             console_clear();
@@ -60,64 +59,64 @@ u32 sys_dispatch(void) {
             result = console_get_bg_color();
             break;
         case CONSOLE_SET_BG_COLOR:
-            console_set_bg_color(ebx);
+            console_set_bg_color(arg0);
             break;
         case CONSOLE_GET_TEXT_COLOR:
             result = console_get_text_color();
             break;
         case CONSOLE_SET_TEXT_COLOR:
-            console_set_text_color(ebx);
+            console_set_text_color(arg0);
             break;
         case CONSOLE_SET_POS:
-            console_set_pos(ebx, ecx);
+            console_set_pos(arg0, arg1);
             break;
         case CONSOLE_WRITEC:
-            console_writec(ebx);
+            console_writec(arg0);
             break;
         case CONSOLE_PUTC:
-            console_putc(ebx);
+            console_putc(arg0);
             break;
         case CONSOLE_PUTS:
-            console_puts((const char *)ebx);
+            console_puts((const char *)arg0);
             break;
         case CONSOLE_PUTB:
-            console_putb(ebx);
+            console_putb(arg0);
             break;
         case CONSOLE_PUTW:
-            console_putw(ebx);
+            console_putw(arg0);
             break;
         case CONSOLE_PUTDW:
-            console_putdw(ebx);
+            console_putdw(arg0);
             break;
         case CONSOLE_PUTQW:
-            console_putqw((u64)ebx << 32 | ecx);
+            console_putqw((u64)arg0 << 32 | arg1);
             break;
         case CONSOLE_PUTP:
-            console_putp((void *)ebx);
+            console_putp((void *)arg0);
             break;
         case CONSOLE_PUTC_AT:
-            console_putc_at(ebx, ecx, edx);
+            console_putc_at(arg0, arg1, arg2);
             break;
         case CONSOLE_PUTS_AT:
-            console_puts_at((const char *)ebx, ecx, edx);
+            console_puts_at((const char *)arg0, arg1, arg2);
             break;
         case CONSOLE_PUTB_AT:
-            console_putb_at(ebx, ecx, edx);
+            console_putb_at(arg0, arg1, arg2);
             break;
         case CONSOLE_PUTW_AT:
-            console_putw_at(ebx, ecx, edx);
+            console_putw_at(arg0, arg1, arg2);
             break;
         case CONSOLE_PUTDW_AT:
-            console_putdw_at(ebx, ecx, edx);
+            console_putdw_at(arg0, arg1, arg2);
             break;
         case CONSOLE_PUTQW_AT:
-            console_putqw_at((u64)ebx << 32 | ecx, edx, esi);
+            console_putqw_at((u64)arg0 << 32 | arg1, arg2, arg3);
             break;
         case CONSOLE_PUTP_AT:
-            console_putp_at((void *)ebx, ecx, edx);
+            console_putp_at((void *)arg0, arg1, arg2);
             break;
         case CONSOLE_READ_KEY_EVENT:
-            console_read_key_event((struct key_event *)ebx);
+            console_read_key_event((struct key_event *)arg0);
             break;
         case CONSOLE_GET_NUM_COLUMNS:
             result = console_get_num_columns();
