@@ -24,8 +24,9 @@ void memdump(void) {
         struct key_event ke;
         __asm__(
             "mov eax, %0;"
-            "int 0x83;"
-            : : "r" (&ke)
+            "mov ebx, %1;"
+            "int 0x80;"
+            : : "r" (2), "r" (&ke)
         );
         if (!ke.is_release) {
             switch (ke.scancode) {

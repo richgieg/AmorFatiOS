@@ -1,6 +1,7 @@
 #include <idt.h>
 #include <bugcheck.h>
 #include <process.h>
+#include <console.h>
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -290,48 +291,41 @@ static void interrupt_handler_0x2f(void) {
     BUGCHECK("Spurious IRQ 15.");
 }
 
-// INT 0x81
-__attribute__((naked))
-static void interrupt_handler_0x81(void) {
-    set_segment_regs_if_needed();
-    __asm__("pushad");
-    __asm__(
-        "push eax;"
-        "call process_create;"
-        "add esp, 4;"
+static void sys_dispatch(void) {
+    u32 eax;
+    u32 ebx;
+    u32 ecx;
+    u32 edx;
+
+    __asm__ volatile(
+        "mov %0, eax;"
+        "mov %1, ebx;"
+        "mov %2, ecx;"
+        "mov %3, edx;"
+        : "=m" (eax), "=m" (ebx), "=m" (ecx), "=m" (edx)
+        :
+        : "memory"
     );
-    __asm__("popad");
-    restore_segment_regs_if_needed();
-    __asm__("iret");
+
+    switch (eax) {
+        case 0:
+            process_create((void (*)(void))ebx);
+            break;
+        case 1:
+            console_putdw_at(ebx, 0, 0);
+            break;
+        case 2:
+            console_read_key_event((struct key_event *)ebx);
+            break;
+    }
 }
 
-// INT 0x82
+// INT 0x80
 __attribute__((naked))
-static void interrupt_handler_0x82(void) {
+static void interrupt_handler_0x80(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
-    __asm__(
-        "push 0;"
-        "push 0;"
-        "push eax;"
-        "call console_putdw_at;"
-        "add esp, 12;"
-    );
-    __asm__("popad");
-    restore_segment_regs_if_needed();
-    __asm__("iret");
-}
-
-// INT 0x83
-__attribute__((naked))
-static void interrupt_handler_0x83(void) {
-    set_segment_regs_if_needed();
-    __asm__("pushad");
-    __asm__(
-        "push eax;"
-        "call console_read_key_event;"
-        "add esp, 4;"
-    );
+    sys_dispatch();
     __asm__("popad");
     restore_segment_regs_if_needed();
     __asm__("iret");
@@ -391,9 +385,7 @@ void idt_init(void) {
     idt_set_descriptor(0x2e, interrupt_handler_0x2e, 0x8e);
     idt_set_descriptor(0x2f, interrupt_handler_0x2f, 0x8e);
 
-    idt_set_descriptor(0x81, interrupt_handler_0x81, 0xee);
-    idt_set_descriptor(0x82, interrupt_handler_0x82, 0xee);
-    idt_set_descriptor(0x83, interrupt_handler_0x83, 0xee);
+    idt_set_descriptor(0x80, interrupt_handler_0x80, 0xee);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }
