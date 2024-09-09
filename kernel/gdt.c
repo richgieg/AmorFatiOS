@@ -12,7 +12,7 @@ static struct gdtr gdtr;
 static struct gdt_entry gdt[6];
 
 void gdt_init(void) {
-    gdtr.base = (u32)&gdt[0];
+    gdtr.base = (u32)gdt;
     gdtr.limit = sizeof(gdt) - 1;
 
     struct gdt_entry *kernel_code = &gdt[1];
