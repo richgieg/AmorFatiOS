@@ -25,119 +25,119 @@ static struct idt_entry idt[256]; // array of IDT entries aligned for performanc
 static void (*irq_handlers[16])();
 
 __attribute__((naked))
-static void exception_handler_00(void) {
-    exception(0);
+static void exception_handler_0x00(void) {
+    exception(0x00);
 }
 
 __attribute__((naked))
-static void exception_handler_01(void) {
-    exception(1);
+static void exception_handler_0x01(void) {
+    exception(0x01);
 }
 
 __attribute__((naked))
-static void exception_handler_02(void) {
-    exception(2);
+static void exception_handler_0x02(void) {
+    exception(0x02);
 }
 
 __attribute__((naked))
-static void exception_handler_03(void) {
-    exception(3);
+static void exception_handler_0x03(void) {
+    exception(0x03);
 }
 
 __attribute__((naked))
-static void exception_handler_04(void) {
-    exception(4);
+static void exception_handler_0x04(void) {
+    exception(0x04);
 }
 
 __attribute__((naked))
-static void exception_handler_05(void) {
-    exception(5);
+static void exception_handler_0x05(void) {
+    exception(0x05);
 }
 
 __attribute__((naked))
-static void exception_handler_06(void) {
-    exception(6);
+static void exception_handler_0x06(void) {
+    exception(0x06);
 }
 
 __attribute__((naked))
-static void exception_handler_07(void) {
-    exception(7);
+static void exception_handler_0x07(void) {
+    exception(0x07);
 }
 
 __attribute__((naked))
-static void exception_handler_08(void) {
+static void exception_handler_0x08(void) {
     __asm__(
-        "push 8\n"
+        "push 0x08\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_09(void) {
-    exception(9);
+static void exception_handler_0x09(void) {
+    exception(0x09);
 }
 
 __attribute__((naked))
-static void exception_handler_10(void) {
+static void exception_handler_0x0a(void) {
     __asm__(
-        "push 10\n"
+        "push 0x0a\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_11(void) {
+static void exception_handler_0x0b(void) {
     __asm__(
-        "push 11\n"
+        "push 0x0b\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_12(void) {
+static void exception_handler_0x0c(void) {
     __asm__(
-        "push 12\n"
+        "push 0x0c\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_13(void) {
+static void exception_handler_0x0d(void) {
     __asm__(
-        "push 13\n"
+        "push 0x0d\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_14(void) {
+static void exception_handler_0x0e(void) {
     __asm__(
-        "push 14\n"
+        "push 0x0e\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_16(void) {
-    exception(16);
+static void exception_handler_0x10(void) {
+    exception(0x10);
 }
 
 __attribute__((naked))
-static void exception_handler_17(void) {
+static void exception_handler_0x11(void) {
     __asm__(
-        "push 17\n"
+        "push 0x11\n"
         "call exception_with_code"
     );
 }
 
 __attribute__((naked))
-static void exception_handler_18(void) {
-    exception(18);
+static void exception_handler_0x12(void) {
+    exception(0x12);
 }
 
 __attribute__((naked))
-static void exception_handler_19(void) {
-    exception(19);
+static void exception_handler_0x13(void) {
+    exception(0x13);
 }
 
 __attribute__((naked))
@@ -174,8 +174,9 @@ static void restore_segment_regs_if_needed(void) {
     );
 }
 
+// IRQ 0
 __attribute__((naked))
-static void interrupt_handler_00(void) {
+static void interrupt_handler_0x20(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     if (irq_handlers[0]) irq_handlers[0]();
@@ -184,8 +185,9 @@ static void interrupt_handler_00(void) {
     __asm__("iret");
 }
 
+// IRQ 1
 __attribute__((naked))
-static void interrupt_handler_01(void) {
+static void interrupt_handler_0x21(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     if (irq_handlers[1]) irq_handlers[1]();
@@ -194,53 +196,63 @@ static void interrupt_handler_01(void) {
     __asm__("iret");
 }
 
+// IRQ 2
 __attribute__((naked))
-static void interrupt_handler_02(void) {
+static void interrupt_handler_0x22(void) {
     BUGCHECK("Spurious IRQ 2.");
 }
 
+// IRQ 3
 __attribute__((naked))
-static void interrupt_handler_03(void) {
+static void interrupt_handler_0x23(void) {
     BUGCHECK("Spurious IRQ 3.");
 }
 
+// IRQ 4
 __attribute__((naked))
-static void interrupt_handler_04(void) {
+static void interrupt_handler_0x24(void) {
     BUGCHECK("Spurious IRQ 0x04.");
 }
 
+// IRQ 5
 __attribute__((naked))
-static void interrupt_handler_05(void) {
+static void interrupt_handler_0x25(void) {
     BUGCHECK("Spurious IRQ 5.");
 }
 
+// IRQ 6
 __attribute__((naked))
-static void interrupt_handler_06(void) {
+static void interrupt_handler_0x26(void) {
     BUGCHECK("Spurious IRQ 6.");
 }
 
+// IRQ 7
 __attribute__((naked))
-static void interrupt_handler_07(void) {
+static void interrupt_handler_0x27(void) {
     BUGCHECK("Spurious IRQ 7.");
 }
 
+// IRQ 8
 __attribute__((naked))
-static void interrupt_handler_08(void) {
+static void interrupt_handler_0x28(void) {
     BUGCHECK("Spurious IRQ 8.");
 }
 
+// IRQ 9
 __attribute__((naked))
-static void interrupt_handler_09(void) {
+static void interrupt_handler_0x29(void) {
     BUGCHECK("Spurious IRQ 9.");
 }
 
+// IRQ 10
 __attribute__((naked))
-static void interrupt_handler_10(void) {
+static void interrupt_handler_0x2a(void) {
     BUGCHECK("Spurious IRQ 10.");
 }
 
+// IRQ 11
 __attribute__((naked))
-static void interrupt_handler_11(void) {
+static void interrupt_handler_0x2b(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     if (irq_handlers[11]) irq_handlers[11]();
@@ -249,8 +261,9 @@ static void interrupt_handler_11(void) {
     __asm__("iret");
 }
 
+// IRQ 12
 __attribute__((naked))
-static void interrupt_handler_12(void) {
+static void interrupt_handler_0x2c(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     if (irq_handlers[12]) irq_handlers[12]();
@@ -259,23 +272,27 @@ static void interrupt_handler_12(void) {
     __asm__("iret");
 }
 
+// IRQ 13
 __attribute__((naked))
-static void interrupt_handler_13(void) {
+static void interrupt_handler_0x2d(void) {
     BUGCHECK("Spurious IRQ 13.");
 }
 
+// IRQ 14
 __attribute__((naked))
-static void interrupt_handler_14(void) {
+static void interrupt_handler_0x2e(void) {
     BUGCHECK("Spurious IRQ 14.");
 }
 
+// IRQ 15
 __attribute__((naked))
-static void interrupt_handler_15(void) {
+static void interrupt_handler_0x2f(void) {
     BUGCHECK("Spurious IRQ 15.");
 }
 
+// INT 0x80
 __attribute__((naked))
-static void interrupt_handler_128(void) {
+static void interrupt_handler_0x80(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
@@ -284,8 +301,9 @@ static void interrupt_handler_128(void) {
     __asm__("iret");
 }
 
+// INT 0x81
 __attribute__((naked))
-static void interrupt_handler_129(void) {
+static void interrupt_handler_0x81(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     __asm__(
@@ -298,8 +316,9 @@ static void interrupt_handler_129(void) {
     __asm__("iret");
 }
 
+// INT 0x82
 __attribute__((naked))
-static void interrupt_handler_130(void) {
+static void interrupt_handler_0x82(void) {
     set_segment_regs_if_needed();
     __asm__("pushad");
     __asm__(
@@ -331,46 +350,46 @@ void idt_init(void) {
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (u16)sizeof(struct idt_entry) * IDT_MAX_DESCRIPTORS - 1;
 
-    idt_set_descriptor(0, exception_handler_00, 0x8e);
-    idt_set_descriptor(1, exception_handler_01, 0x8e);
-    idt_set_descriptor(2, exception_handler_02, 0x8e);
-    idt_set_descriptor(3, exception_handler_03, 0x8e);
-    idt_set_descriptor(4, exception_handler_04, 0x8e);
-    idt_set_descriptor(5, exception_handler_05, 0x8e);
-    idt_set_descriptor(6, exception_handler_06, 0x8e);
-    idt_set_descriptor(7, exception_handler_07, 0x8e);
-    idt_set_descriptor(8, exception_handler_08, 0x8e);
-    idt_set_descriptor(9, exception_handler_09, 0x8e);
-    idt_set_descriptor(10, exception_handler_10, 0x8e);
-    idt_set_descriptor(11, exception_handler_11, 0x8e);
-    idt_set_descriptor(12, exception_handler_12, 0x8e);
-    idt_set_descriptor(13, exception_handler_13, 0x8e);
-    idt_set_descriptor(14, exception_handler_14, 0x8e);
-    idt_set_descriptor(16, exception_handler_16, 0x8e);
-    idt_set_descriptor(17, exception_handler_17, 0x8e);
-    idt_set_descriptor(18, exception_handler_18, 0x8e);
-    idt_set_descriptor(19, exception_handler_19, 0x8e);
+    idt_set_descriptor(0x00, exception_handler_0x00, 0x8e);
+    idt_set_descriptor(0x01, exception_handler_0x01, 0x8e);
+    idt_set_descriptor(0x02, exception_handler_0x02, 0x8e);
+    idt_set_descriptor(0x03, exception_handler_0x03, 0x8e);
+    idt_set_descriptor(0x04, exception_handler_0x04, 0x8e);
+    idt_set_descriptor(0x05, exception_handler_0x05, 0x8e);
+    idt_set_descriptor(0x06, exception_handler_0x06, 0x8e);
+    idt_set_descriptor(0x07, exception_handler_0x07, 0x8e);
+    idt_set_descriptor(0x08, exception_handler_0x08, 0x8e);
+    idt_set_descriptor(0x09, exception_handler_0x09, 0x8e);
+    idt_set_descriptor(0x0a, exception_handler_0x0a, 0x8e);
+    idt_set_descriptor(0x0b, exception_handler_0x0b, 0x8e);
+    idt_set_descriptor(0x0c, exception_handler_0x0c, 0x8e);
+    idt_set_descriptor(0x0d, exception_handler_0x0d, 0x8e);
+    idt_set_descriptor(0x0e, exception_handler_0x0e, 0x8e);
+    idt_set_descriptor(0x10, exception_handler_0x10, 0x8e);
+    idt_set_descriptor(0x11, exception_handler_0x11, 0x8e);
+    idt_set_descriptor(0x12, exception_handler_0x12, 0x8e);
+    idt_set_descriptor(0x13, exception_handler_0x13, 0x8e);
 
-    idt_set_descriptor(32, interrupt_handler_00, 0x8e);
-    idt_set_descriptor(33, interrupt_handler_01, 0x8e);
-    idt_set_descriptor(34, interrupt_handler_02, 0x8e);
-    idt_set_descriptor(35, interrupt_handler_03, 0x8e);
-    idt_set_descriptor(36, interrupt_handler_04, 0x8e);
-    idt_set_descriptor(37, interrupt_handler_05, 0x8e);
-    idt_set_descriptor(38, interrupt_handler_06, 0x8e);
-    idt_set_descriptor(39, interrupt_handler_07, 0x8e);
-    idt_set_descriptor(40, interrupt_handler_08, 0x8e);
-    idt_set_descriptor(41, interrupt_handler_09, 0x8e);
-    idt_set_descriptor(42, interrupt_handler_10, 0x8e);
-    idt_set_descriptor(43, interrupt_handler_11, 0x8e);
-    idt_set_descriptor(44, interrupt_handler_12, 0x8e);
-    idt_set_descriptor(45, interrupt_handler_13, 0x8e);
-    idt_set_descriptor(46, interrupt_handler_14, 0x8e);
-    idt_set_descriptor(47, interrupt_handler_15, 0x8e);
+    idt_set_descriptor(0x20, interrupt_handler_0x20, 0x8e);
+    idt_set_descriptor(0x21, interrupt_handler_0x21, 0x8e);
+    idt_set_descriptor(0x22, interrupt_handler_0x22, 0x8e);
+    idt_set_descriptor(0x23, interrupt_handler_0x23, 0x8e);
+    idt_set_descriptor(0x24, interrupt_handler_0x24, 0x8e);
+    idt_set_descriptor(0x25, interrupt_handler_0x25, 0x8e);
+    idt_set_descriptor(0x26, interrupt_handler_0x26, 0x8e);
+    idt_set_descriptor(0x27, interrupt_handler_0x27, 0x8e);
+    idt_set_descriptor(0x28, interrupt_handler_0x28, 0x8e);
+    idt_set_descriptor(0x29, interrupt_handler_0x29, 0x8e);
+    idt_set_descriptor(0x2a, interrupt_handler_0x2a, 0x8e);
+    idt_set_descriptor(0x2b, interrupt_handler_0x2b, 0x8e);
+    idt_set_descriptor(0x2c, interrupt_handler_0x2c, 0x8e);
+    idt_set_descriptor(0x2d, interrupt_handler_0x2d, 0x8e);
+    idt_set_descriptor(0x2e, interrupt_handler_0x2e, 0x8e);
+    idt_set_descriptor(0x2f, interrupt_handler_0x2f, 0x8e);
 
-    idt_set_descriptor(128, interrupt_handler_128, 0xee);
-    idt_set_descriptor(129, interrupt_handler_129, 0xee);
-    idt_set_descriptor(130, interrupt_handler_130, 0xee);
+    idt_set_descriptor(0x80, interrupt_handler_0x80, 0xee);
+    idt_set_descriptor(0x81, interrupt_handler_0x81, 0xee);
+    idt_set_descriptor(0x82, interrupt_handler_0x82, 0xee);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }
