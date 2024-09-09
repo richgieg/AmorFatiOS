@@ -22,12 +22,15 @@ void memdump(void) {
     show_memdump();
     while (true) {
         struct key_event ke;
+
         __asm__(
             "mov eax, %0;"
             "mov ebx, %1;"
             "int 0x80;"
-            : : "r" (2), "r" (&ke)
+            :
+            : "eax" (0x0016), "ebx" (&ke)
         );
+
         if (!ke.is_release) {
             switch (ke.scancode) {
                 case SC_LEFT:
