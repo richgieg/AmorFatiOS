@@ -333,6 +333,21 @@ static void interrupt_handler_0x82(void) {
     __asm__("iret");
 }
 
+// INT 0x83
+__attribute__((naked))
+static void interrupt_handler_0x83(void) {
+    set_segment_regs_if_needed();
+    __asm__("pushad");
+    __asm__(
+        "push eax;"
+        "call console_read_key_event;"
+        "add esp, 4;"
+    );
+    __asm__("popad");
+    restore_segment_regs_if_needed();
+    __asm__("iret");
+}
+
 void idt_set_irq_handler(u8 irq, void (*handler)()) {
     irq_handlers[irq] = handler;
 }
@@ -390,6 +405,7 @@ void idt_init(void) {
     idt_set_descriptor(0x80, interrupt_handler_0x80, 0xee);
     idt_set_descriptor(0x81, interrupt_handler_0x81, 0xee);
     idt_set_descriptor(0x82, interrupt_handler_0x82, 0xee);
+    idt_set_descriptor(0x83, interrupt_handler_0x83, 0xee);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }

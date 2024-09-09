@@ -21,7 +21,12 @@ static void prev_mb(void);
 void memdump(void) {
     show_memdump();
     while (true) {
-        struct key_event ke = console_read_key_event();
+        struct key_event ke;
+        __asm__(
+            "mov eax, %0;"
+            "int 0x83;"
+            : : "r" (&ke)
+        );
         if (!ke.is_release) {
             switch (ke.scancode) {
                 case SC_LEFT:

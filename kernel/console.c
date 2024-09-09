@@ -509,14 +509,13 @@ void console_key_release(u16 scancode) {
     }
 }
 
-struct key_event console_read_key_event(void) {
+void console_read_key_event(struct key_event *ke) {
     struct console *con = &consoles[process_get_current_index()];
     if (con->keb.head == con->keb.tail) {
-        __asm__("int 0x80"); // wait for key event
+        process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
     }
-    struct key_event ke = con->keb.events[con->keb.head];
+    *ke = con->keb.events[con->keb.head];
     con->keb.head = (con->keb.head + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;
-    return ke;
 }
 
 bool console_has_key_event(int index) {
