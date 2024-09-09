@@ -57,13 +57,13 @@ u32 sys_dispatch(void) {
             console_clear();
             break;
         case CONSOLE_GET_BG_COLOR:
-            console_get_bg_color((enum vga_color *)ebx);
+            result = console_get_bg_color();
             break;
         case CONSOLE_SET_BG_COLOR:
             console_set_bg_color(ebx);
             break;
         case CONSOLE_GET_TEXT_COLOR:
-            console_get_text_color((enum vga_color *)ebx);
+            result = console_get_text_color();
             break;
         case CONSOLE_SET_TEXT_COLOR:
             console_set_text_color(ebx);

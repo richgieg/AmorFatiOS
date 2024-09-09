@@ -46,14 +46,15 @@ void sys_console_clear(void) {
     );
 }
 
-void sys_console_get_bg_color(enum vga_color *bg_color) {
-    __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
-        :
-        : "eax" (CONSOLE_GET_BG_COLOR), "ebx" (bg_color)
+enum vga_color sys_console_get_bg_color(void) {
+    int result;
+    __asm__ volatile(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_BG_COLOR)
+        : "memory", "cc"
     );
+    return result;
 }
 
 void sys_console_set_bg_color(enum vga_color bg_color) {
@@ -66,14 +67,15 @@ void sys_console_set_bg_color(enum vga_color bg_color) {
     );
 }
 
-void sys_console_get_text_color(enum vga_color *text_color) {
-    __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
-        :
-        : "eax" (CONSOLE_GET_TEXT_COLOR), "ebx" (text_color)
+enum vga_color sys_console_get_text_color(void) {
+    int result;
+    __asm__ volatile(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_TEXT_COLOR)
+        : "memory", "cc"
     );
+    return result;
 }
 
 void sys_console_set_text_color(enum vga_color text_color) {

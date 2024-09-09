@@ -11,12 +11,12 @@ struct key_event {
 void console_init(void);
 void console_clear(void);
 void console_dbg_clear(void);
-void console_get_bg_color(enum vga_color *bg_color);
-enum vga_color console_dbg_get_bg_color();
+enum vga_color console_get_bg_color(void);
+enum vga_color console_dbg_get_bg_color(void);
 void console_set_bg_color(enum vga_color bg_color);
 void console_dbg_set_bg_color(enum vga_color bg_color);
-void console_get_text_color(enum vga_color *text_color);
-enum vga_color console_dbg_get_text_color();
+enum vga_color console_get_text_color(void);
+enum vga_color console_dbg_get_text_color(void);
 void console_set_text_color(enum vga_color text_color);
 void console_dbg_set_text_color(enum vga_color text_color);
 void console_set_pos(u8 col, u8 row);
