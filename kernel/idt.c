@@ -340,6 +340,76 @@ static void interrupt_handler_128(void) {
     );
 }
 
+__attribute__((naked))
+static void interrupt_handler_129(void) {
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_129__skip_segment_init;"
+        "push eax;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "pop eax;"
+        "interrupt_handler_129__skip_segment_init:"
+    );
+    __asm__(
+        "push eax;"
+        "call process_create;"
+        "add esp, 4;"
+    );
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_129__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_129__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
+}
+
+__attribute__((naked))
+static void interrupt_handler_130(void) {
+    __asm__(
+        "pushad;"
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_130__skip_segment_init;"
+        "push eax;"
+        "mov ax, 0x10;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "pop eax;"
+        "interrupt_handler_130__skip_segment_init:"
+    );
+    __asm__(
+        "push 0;"
+        "push 0;"
+        "push eax;"
+        "call console_putdw_at;"
+        "add esp, 12;"
+    );
+    __asm__(
+        "cmpd [esp + 36], 0x1b;"
+        "jne interrupt_handler_130__skip_segment_restore;"
+        "mov ax, 0x23;"
+        "mov ds, ax;"
+        "mov es, ax;"
+        "mov fs, ax;"
+        "mov gs, ax;"
+        "interrupt_handler_130__skip_segment_restore:"
+        "popad;"
+        "iret;"
+    );
+}
+
 void idt_set_irq_handler(u8 irq, void (*handler)()) {
     irq_handlers[irq] = handler;
 }
@@ -395,6 +465,8 @@ void idt_init(void) {
     idt_set_descriptor(47, interrupt_handler_15, 0x8e);
 
     idt_set_descriptor(128, interrupt_handler_128, 0xee);
+    idt_set_descriptor(129, interrupt_handler_129, 0xee);
+    idt_set_descriptor(130, interrupt_handler_130, 0xee);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }
