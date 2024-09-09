@@ -23,7 +23,6 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/device/vga.c \
     kernel/lib/string.c \
     kernel/program/counter.c \
-    kernel/program/memdump.c \
     kernel/program/memmap.c \
     kernel/bugcheck.c \
     kernel/console.c \
@@ -40,6 +39,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     userspace/_start.c \
     userspace/program/counter.c \
     userspace/program/echo.c \
+    userspace/program/memdump.c \
     userspace/sys.c \
     userspace/userspace.c
 

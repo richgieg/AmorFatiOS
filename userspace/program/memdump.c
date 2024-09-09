@@ -1,6 +1,6 @@
 #include <program/memdump.h>
 #include <console.h>
-#include <device/keyboard.h>
+#include <sys.h>
 
 #define BYTES_PER_LINE 16
 #define BYTES_PER_PAGE 4096
@@ -22,14 +22,7 @@ void memdump(void) {
     show_memdump();
     while (true) {
         struct key_event ke;
-
-        __asm__(
-            "mov eax, %0;"
-            "mov ebx, %1;"
-            "int 0x80;"
-            :
-            : "eax" (0x0016), "ebx" (&ke)
-        );
+        sys_console_read_key_event(&ke);
 
         if (!ke.is_release) {
             switch (ke.scancode) {
@@ -64,30 +57,30 @@ void memdump(void) {
 
 static void show_memdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)current_address;
-    console_set_pos(0, 0);
+    sys_console_set_pos(0, 0);
     int num_rows;
-    console_get_num_rows(&num_rows);
+    sys_console_get_num_rows(&num_rows);
 
     for (int k = 0; k < num_rows; k++) {
-        console_putdw((u32)memory_ptr);
-        console_puts("    ");
+        sys_console_putdw((u32)memory_ptr);
+        sys_console_puts("    ");
 
         for (int i = 0; i < BYTES_PER_LINE; i++) {
-            console_putb(*memory_ptr);
-            console_putc(' ');
+            sys_console_putb(*memory_ptr);
+            sys_console_putc(' ');
             memory_ptr++;
         }
 
-        console_puts("   ");
+        sys_console_puts("   ");
         memory_ptr -= BYTES_PER_LINE;
 
         for (int i = 0; i < BYTES_PER_LINE; i++) {
-            console_writec(*memory_ptr);
+            sys_console_writec(*memory_ptr);
             memory_ptr++;
         }
 
         if (k < num_rows - 1) {
-            console_putc('\n');
+            sys_console_putc('\n');
         }
     }
 }

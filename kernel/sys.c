@@ -54,16 +54,19 @@ void sys_dispatch(void) {
             console_clear();
             break;
         case CONSOLE_GET_BG_COLOR:
+            console_get_bg_color((enum vga_color *)ebx);
             break;
         case CONSOLE_SET_BG_COLOR:
             console_set_bg_color(ebx);
             break;
         case CONSOLE_GET_TEXT_COLOR:
+            console_get_text_color((enum vga_color *)ebx);
             break;
         case CONSOLE_SET_TEXT_COLOR:
             console_set_text_color(ebx);
             break;
         case CONSOLE_SET_POS:
+            console_set_pos(ebx, ecx);
             break;
         case CONSOLE_WRITEC:
             console_writec(ebx);
@@ -107,13 +110,16 @@ void sys_dispatch(void) {
         // case CONSOLE_PUTQW_AT:
         //     break;
         case CONSOLE_PUTP_AT:
+            console_putp_at((void *)ebx, ecx, edx);
             break;
         case CONSOLE_READ_KEY_EVENT:
             console_read_key_event((struct key_event *)ebx);
             break;
         case CONSOLE_GET_NUM_COLUMNS:
+            console_get_num_columns((int *)ebx);
             break;
         case CONSOLE_GET_NUM_ROWS:
+            console_get_num_rows((int *)ebx);
             break;
     }
 }

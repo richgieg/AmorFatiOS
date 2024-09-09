@@ -11,7 +11,6 @@
 #include <device/pci.h>
 #include <console.h>
 #include <process.h>
-#include <program/memdump.h>
 #include <program/memmap.h>
 #include <program/counter.h>
 
@@ -32,7 +31,6 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    process_create(memdump);
     process_create(memmap);
     process_create(counter);
     process_create((void *)0x91000);
