@@ -290,17 +290,6 @@ static void interrupt_handler_0x2f(void) {
     BUGCHECK("Spurious IRQ 15.");
 }
 
-// INT 0x80
-__attribute__((naked))
-static void interrupt_handler_0x80(void) {
-    set_segment_regs_if_needed();
-    __asm__("pushad");
-    process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
-    __asm__("popad");
-    restore_segment_regs_if_needed();
-    __asm__("iret");
-}
-
 // INT 0x81
 __attribute__((naked))
 static void interrupt_handler_0x81(void) {
@@ -402,7 +391,6 @@ void idt_init(void) {
     idt_set_descriptor(0x2e, interrupt_handler_0x2e, 0x8e);
     idt_set_descriptor(0x2f, interrupt_handler_0x2f, 0x8e);
 
-    idt_set_descriptor(0x80, interrupt_handler_0x80, 0xee);
     idt_set_descriptor(0x81, interrupt_handler_0x81, 0xee);
     idt_set_descriptor(0x82, interrupt_handler_0x82, 0xee);
     idt_set_descriptor(0x83, interrupt_handler_0x83, 0xee);

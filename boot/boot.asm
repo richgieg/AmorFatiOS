@@ -99,6 +99,16 @@ mov dh, 0           ; head to read
 mov dl, 0           ; drive to read
 int 0x13            ; make the BIOS call
 
+; Copy the next 18 sectors of userspace image from floppy.
+mov bx, 0xb400
+mov ah, 2
+mov al, 18
+mov ch, 16
+mov cl, 1
+mov dh, 1
+mov dl, 0
+int 0x13
+
 ; Disable interrupts.
 cli
 

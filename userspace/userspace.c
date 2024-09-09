@@ -1,18 +1,13 @@
 #include <userspace.h>
+#include <syscall.h>
 #include <program/counter.h>
+#include <program/echo.h>
 
 void userspace_init(void) {
-    __asm__(
-        "mov eax, 0xdeadbeef;"
-        "int 0x82;"
-    );
-    __asm__(
-        "mov eax, %0;"
-        "int 0x81;"
-        :
-        :
-        "r" (counter)
-    );
+    sys_console_putdw_at(0xdeadbeef, 0, 0);
+    sys_process_create(counter);
+    sys_process_create(echo);
+
     while (1) {
         // TODO: Do some userspace stuff here.
     }
