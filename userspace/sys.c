@@ -239,10 +239,9 @@ void sys_console_putdw_at(u32 dw, u8 col, u8 row) {
 }
 
 void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
-    int result;
     __asm__ volatile(
         "int 0x80"
-        : "=a" (result)
+        :
         : "a" (CONSOLE_PUTQW_AT),
           "b" ((u32)(qw >> 32)),
           "c" ((u32)qw),
@@ -274,22 +273,24 @@ void sys_console_read_key_event(struct key_event *ke) {
     );
 }
 
-void sys_console_get_num_columns(int *columns) {
-    __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
-        :
-        : "eax" (CONSOLE_GET_NUM_COLUMNS), "ebx" (columns)
+int sys_console_get_num_columns(void) {
+    int result;
+    __asm__ volatile(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_NUM_COLUMNS)
+        : "memory", "cc"
     );
+    return result;
 }
 
-void sys_console_get_num_rows(int *rows) {
-    __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
-        :
-        : "eax" (CONSOLE_GET_NUM_ROWS), "ebx" (rows)
+int sys_console_get_num_rows(void) {
+    int result;
+    __asm__ volatile(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_NUM_ROWS)
+        : "memory", "cc"
     );
+    return result;
 }

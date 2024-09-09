@@ -30,7 +30,7 @@
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
 #define CONSOLE_GET_NUM_ROWS        0x0018
 
-void sys_dispatch(void) {
+u32 sys_dispatch(void) {
     u32 eax;
     u32 ebx;
     u32 ecx;
@@ -119,10 +119,11 @@ void sys_dispatch(void) {
             console_read_key_event((struct key_event *)ebx);
             break;
         case CONSOLE_GET_NUM_COLUMNS:
-            console_get_num_columns((int *)ebx);
+            return console_get_num_columns();
             break;
         case CONSOLE_GET_NUM_ROWS:
-            console_get_num_rows((int *)ebx);
+            return console_get_num_rows();
             break;
     }
+    return 0;
 }

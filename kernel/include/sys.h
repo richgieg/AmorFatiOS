@@ -1,6 +1,8 @@
 #ifndef SYS_H
 #define SYS_H
 
-void sys_dispatch(void);
+#include <types.h>
+
+u32 sys_dispatch(void);
 
 #endif

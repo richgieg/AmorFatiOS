@@ -295,9 +295,12 @@ static void interrupt_handler_0x2f(void) {
 __attribute__((naked))
 static void interrupt_handler_0x80(void) {
     set_segment_regs_if_needed();
+    __asm__("sub esp, 4");
     __asm__("pushad");
     sys_dispatch();
+    __asm__("mov [esp + 32], eax");
     __asm__("popad");
+    __asm__("pop eax");
     restore_segment_regs_if_needed();
     __asm__("iret");
 }

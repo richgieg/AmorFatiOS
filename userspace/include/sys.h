@@ -27,7 +27,7 @@ void sys_console_putdw_at(u32 dw, u8 col, u8 row);
 void sys_console_putqw_at(u64 qw, u8 col, u8 row);
 void sys_console_putp_at(void *p, u8 col, u8 row);
 void sys_console_read_key_event(struct key_event *ke);
-void sys_console_get_num_columns(int *columns);
-void sys_console_get_num_rows(int *rows);
+int sys_console_get_num_columns(void);
+int sys_console_get_num_rows(void);
 
 #endif

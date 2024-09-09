@@ -58,8 +58,7 @@ void memdump(void) {
 static void show_memdump(void) {
     volatile u8 *memory_ptr = (volatile u8 *)current_address;
     sys_console_set_pos(0, 0);
-    int num_rows;
-    sys_console_get_num_rows(&num_rows);
+    int num_rows = sys_console_get_num_rows();
 
     for (int k = 0; k < num_rows; k++) {
         sys_console_putdw((u32)memory_ptr);

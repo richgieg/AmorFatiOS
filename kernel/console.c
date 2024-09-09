@@ -523,10 +523,10 @@ bool console_has_key_event(int index) {
     return con->keb.head != con->keb.tail;
 }
 
-void console_get_num_columns(int *columns) {
-    *columns = VGA_COLUMNS;
+int console_get_num_columns(void) {
+    return VGA_COLUMNS;
 }
 
-void console_get_num_rows(int *rows) {
-    *rows = VGA_ROWS;
+int console_get_num_rows(void) {
+    return VGA_ROWS;
 }
