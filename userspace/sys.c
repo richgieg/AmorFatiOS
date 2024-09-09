@@ -14,14 +14,14 @@
 #define CONSOLE_PUTB                0x000a
 #define CONSOLE_PUTW                0x000b
 #define CONSOLE_PUTDW               0x000c
-// #define CONSOLE_PUTQW               0x000d
+#define CONSOLE_PUTQW               0x000d
 #define CONSOLE_PUTP                0x000e
 #define CONSOLE_PUTC_AT             0x000f
 #define CONSOLE_PUTS_AT             0x0010
 #define CONSOLE_PUTB_AT             0x0011
 #define CONSOLE_PUTW_AT             0x0012
 #define CONSOLE_PUTDW_AT            0x0013
-// #define CONSOLE_PUTQW_AT            0x0014
+#define CONSOLE_PUTQW_AT            0x0014
 #define CONSOLE_PUTP_AT             0x0015
 #define CONSOLE_READ_KEY_EVENT      0x0016
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
@@ -157,15 +157,16 @@ void sys_console_putdw(u32 dw) {
     );
 }
 
-// void sys_console_putqw(u64 qw) {
-//     __asm__(
-//         "mov eax, %0;"
-//         "mov ebx, %1;"
-//         "int 0x80;"
-//         :
-//         : "eax" (CONSOLE_PUTQW), "ebx" (qw)
-//     );
-// }
+void sys_console_putqw(u64 qw) {
+    __asm__(
+        "mov eax, %0;"
+        "mov ebx, %1;"
+        "mov ecx, %2;"
+        "int 0x80;"
+        :
+        : "eax" (CONSOLE_PUTQW), "ebx" ((u32)(qw >> 32)), "ecx" ((u32)qw)
+    );
+}
 
 void sys_console_putp(void *p) {
     __asm__(
@@ -237,17 +238,19 @@ void sys_console_putdw_at(u32 dw, u8 col, u8 row) {
     );
 }
 
-// void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
-//     __asm__(
-//         "mov eax, %0;"
-//         "mov ebx, %1;"
-//         "mov ecx, %2;"
-//         "mov edx, %3;"
-//         "int 0x80;"
-//         :
-//         : "eax" (CONSOLE_PUTQW_AT), "ebx" (qw), "ecx" ((u32)col), "edx" ((u32)row)
-//     );
-// }
+void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
+    int result;
+    __asm__ volatile(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_PUTQW_AT),
+          "b" ((u32)(qw >> 32)),
+          "c" ((u32)qw),
+          "d" ((u32)col),
+          "S" ((u32)row)
+        : "memory", "cc"
+    );
+}
 
 void sys_console_putp_at(void *p, u8 col, u8 row) {
     __asm__(

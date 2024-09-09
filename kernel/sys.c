@@ -17,14 +17,14 @@
 #define CONSOLE_PUTB                0x000a
 #define CONSOLE_PUTW                0x000b
 #define CONSOLE_PUTDW               0x000c
-// #define CONSOLE_PUTQW               0x000d
+#define CONSOLE_PUTQW               0x000d
 #define CONSOLE_PUTP                0x000e
 #define CONSOLE_PUTC_AT             0x000f
 #define CONSOLE_PUTS_AT             0x0010
 #define CONSOLE_PUTB_AT             0x0011
 #define CONSOLE_PUTW_AT             0x0012
 #define CONSOLE_PUTDW_AT            0x0013
-// #define CONSOLE_PUTQW_AT            0x0014
+#define CONSOLE_PUTQW_AT            0x0014
 #define CONSOLE_PUTP_AT             0x0015
 #define CONSOLE_READ_KEY_EVENT      0x0016
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
@@ -35,13 +35,15 @@ void sys_dispatch(void) {
     u32 ebx;
     u32 ecx;
     u32 edx;
+    u32 esi;
 
     __asm__ volatile(
         "mov %0, eax;"
         "mov %1, ebx;"
         "mov %2, ecx;"
         "mov %3, edx;"
-        : "=m" (eax), "=m" (ebx), "=m" (ecx), "=m" (edx)
+        "mov %4, esi;"
+        : "=m" (eax), "=m" (ebx), "=m" (ecx), "=m" (edx), "=m" (esi)
         :
         : "memory"
     );
@@ -86,9 +88,9 @@ void sys_dispatch(void) {
         case CONSOLE_PUTDW:
             console_putdw(ebx);
             break;
-        // case CONSOLE_PUTQW:
-        //     console_putqw(ebx);
-        //     break;
+        case CONSOLE_PUTQW:
+            console_putqw((u64)ebx << 32 | ecx);
+            break;
         case CONSOLE_PUTP:
             console_putp((void *)ebx);
             break;
@@ -107,8 +109,9 @@ void sys_dispatch(void) {
         case CONSOLE_PUTDW_AT:
             console_putdw_at(ebx, ecx, edx);
             break;
-        // case CONSOLE_PUTQW_AT:
-        //     break;
+        case CONSOLE_PUTQW_AT:
+            console_putqw_at((u64)ebx << 32 | ecx, edx, esi);
+            break;
         case CONSOLE_PUTP_AT:
             console_putp_at((void *)ebx, ecx, edx);
             break;
