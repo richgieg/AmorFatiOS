@@ -29,26 +29,26 @@
 
 void sys_process_create(void (*start)()) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (PROCESS_CREATE), "ebx" (start)
+        : "a" (PROCESS_CREATE),
+          "b" (start)
+        : "memory", "cc"
     );
 }
 
 void sys_console_clear(void) {
     __asm__(
-        "mov eax, %0;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_CLEAR)
+        : "a" (CONSOLE_CLEAR)
+        : "memory", "cc"
     );
 }
 
 enum vga_color sys_console_get_bg_color(void) {
     int result;
-    __asm__ volatile(
+    __asm__(
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_BG_COLOR)
@@ -59,17 +59,17 @@ enum vga_color sys_console_get_bg_color(void) {
 
 void sys_console_set_bg_color(enum vga_color bg_color) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_SET_BG_COLOR), "ebx" (bg_color)
+        : "a" (CONSOLE_SET_BG_COLOR),
+          "b" (bg_color)
+        : "memory", "cc"
     );
 }
 
 enum vga_color sys_console_get_text_color(void) {
     int result;
-    __asm__ volatile(
+    __asm__(
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_TEXT_COLOR)
@@ -80,168 +80,168 @@ enum vga_color sys_console_get_text_color(void) {
 
 void sys_console_set_text_color(enum vga_color text_color) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_SET_TEXT_COLOR), "ebx" (text_color)
+        : "a" (CONSOLE_SET_TEXT_COLOR),
+          "b" (text_color)
+        : "memory", "cc"
     );
 }
 
 void sys_console_set_pos(u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_SET_POS), "ebx" ((u32)col), "ecx" ((u32)row)
+        : "a" (CONSOLE_SET_POS),
+          "b" (col),
+          "c" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_writec(char c) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_WRITEC), "ebx" ((u32)c)
+        : "a" (CONSOLE_WRITEC),
+          "b" (c)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putc(char c) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTC), "ebx" ((u32)c)
+        : "a" (CONSOLE_PUTC),
+          "b" (c)
+        : "memory", "cc"
     );
 }
 
 void sys_console_puts(const char *str) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTS), "ebx" (str)
+        : "a" (CONSOLE_PUTS),
+          "b" (str)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putb(u8 b) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTB), "ebx" ((u32)b)
+        : "a" (CONSOLE_PUTB),
+          "b" (b)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putw(u16 w) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTW), "ebx" ((u32)w)
+        : "a" (CONSOLE_PUTW),
+          "b" (w)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putdw(u32 dw) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTDW), "ebx" (dw)
+        : "a" (CONSOLE_PUTDW),
+          "b" (dw)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putqw(u64 qw) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTQW), "ebx" ((u32)(qw >> 32)), "ecx" ((u32)qw)
+        : "a" (CONSOLE_PUTQW),
+          "b" ((u32)(qw >> 32)),
+          "c" ((u32)qw)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putp(void *p) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTP), "ebx" (p)
+        : "a" (CONSOLE_PUTP),
+          "b" (p)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putc_at(char c, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTC_AT), "ebx" ((u32)c), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTC_AT),
+          "b" (c),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_puts_at(const char *str, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTS_AT), "ebx" (str), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTS_AT),
+          "b" (str),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putb_at(u8 b, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTB_AT), "ebx" ((u32)b), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTB_AT),
+          "b" (b),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putw_at(u16 w, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTB_AT), "ebx" ((u32)w), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTW_AT),
+          "b" (w),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putdw_at(u32 dw, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTDW_AT), "ebx" (dw), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTDW_AT),
+          "b" (dw),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
-    __asm__ volatile(
+    __asm__(
         "int 0x80"
         :
         : "a" (CONSOLE_PUTQW_AT),
@@ -255,29 +255,29 @@ void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
 
 void sys_console_putp_at(void *p, u8 col, u8 row) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "mov ecx, %2;"
-        "mov edx, %3;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_PUTP_AT), "ebx" (p), "ecx" ((u32)col), "edx" ((u32)row)
+        : "a" (CONSOLE_PUTP_AT),
+          "b" (p),
+          "c" (col),
+          "d" (row)
+        : "memory", "cc"
     );
 }
 
 void sys_console_read_key_event(struct key_event *ke) {
     __asm__(
-        "mov eax, %0;"
-        "mov ebx, %1;"
-        "int 0x80;"
+        "int 0x80"
         :
-        : "eax" (CONSOLE_READ_KEY_EVENT), "ebx" (ke)
+        : "a" (CONSOLE_READ_KEY_EVENT),
+          "b" (ke)
+        : "memory", "cc"
     );
 }
 
 int sys_console_get_num_columns(void) {
     int result;
-    __asm__ volatile(
+    __asm__(
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_NUM_COLUMNS)
@@ -288,7 +288,7 @@ int sys_console_get_num_columns(void) {
 
 int sys_console_get_num_rows(void) {
     int result;
-    __asm__ volatile(
+    __asm__(
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_NUM_ROWS)
