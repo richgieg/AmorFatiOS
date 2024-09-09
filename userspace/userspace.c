@@ -6,8 +6,8 @@
 
 void userspace_init(void) {
     sys_console_putdw_at(0xdeadbeef, 0, 0);
-    // sys_process_create(counter);
-    // sys_process_create(echo);
+    sys_process_create(counter);
+    sys_process_create(echo);
     sys_process_create(memdump);
 
     while (1) {

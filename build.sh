@@ -22,7 +22,6 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/device/timer.c \
     kernel/device/vga.c \
     kernel/lib/string.c \
-    kernel/program/counter.c \
     kernel/program/memmap.c \
     kernel/bugcheck.c \
     kernel/console.c \

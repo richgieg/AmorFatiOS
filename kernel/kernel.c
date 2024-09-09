@@ -12,7 +12,6 @@
 #include <console.h>
 #include <process.h>
 #include <program/memmap.h>
-#include <program/counter.h>
 
 void kernel_init(void) {
     vga_init();
@@ -32,7 +31,6 @@ void kernel_init(void) {
     __asm__("sti");
 
     process_create(memmap);
-    process_create(counter);
     process_create((void *)0x91000);
 
     console_puts("AmorFatiOS v0.0.1\n");
