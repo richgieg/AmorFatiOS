@@ -76,8 +76,8 @@ static enum vga_color _console_get_bg_color(int index) {
     return con->bg_color;
 }
 
-enum vga_color console_get_bg_color() {
-    return _console_get_bg_color(process_get_current_index());
+void console_get_bg_color(enum vga_color *bg_color) {
+    *bg_color = _console_get_bg_color(process_get_current_index());
 }
 
 enum vga_color console_dbg_get_bg_color() {
@@ -102,8 +102,8 @@ static enum vga_color _console_get_text_color(int index) {
     return con->text_color;
 }
 
-enum vga_color console_get_text_color() {
-    return _console_get_text_color(process_get_current_index());
+void console_get_text_color(enum vga_color *text_color) {
+    *text_color = _console_get_text_color(process_get_current_index());
 }
 
 enum vga_color console_dbg_get_text_color() {
@@ -523,10 +523,10 @@ bool console_has_key_event(int index) {
     return con->keb.head != con->keb.tail;
 }
 
-int console_get_num_columns(void) {
-    return VGA_COLUMNS;
+void console_get_num_columns(int *columns) {
+    *columns = VGA_COLUMNS;
 }
 
-int console_get_num_rows(void) {
-    return VGA_ROWS;
+void console_get_num_rows(int *rows) {
+    *rows = VGA_ROWS;
 }

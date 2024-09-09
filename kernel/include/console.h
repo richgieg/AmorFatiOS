@@ -11,11 +11,11 @@ struct key_event {
 void console_init(void);
 void console_clear(void);
 void console_dbg_clear(void);
-enum vga_color console_get_bg_color();
+void console_get_bg_color(enum vga_color *bg_color);
 enum vga_color console_dbg_get_bg_color();
 void console_set_bg_color(enum vga_color bg_color);
 void console_dbg_set_bg_color(enum vga_color bg_color);
-enum vga_color console_get_text_color();
+void console_get_text_color(enum vga_color *text_color);
 enum vga_color console_dbg_get_text_color();
 void console_set_text_color(enum vga_color text_color);
 void console_dbg_set_text_color(enum vga_color text_color);
@@ -59,7 +59,7 @@ void console_key_press(u16 scancode);
 void console_key_release(u16 scancode);
 void console_read_key_event(struct key_event *ke);
 bool console_has_key_event(int index);
-int console_get_num_columns(void);
-int console_get_num_rows(void);
+void console_get_num_columns(int *columns);
+void console_get_num_rows(int *rows);
 
 #endif
