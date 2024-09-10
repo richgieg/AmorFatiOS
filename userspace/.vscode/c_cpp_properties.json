@@ -3,7 +3,8 @@
         {
             "name": "AmorFatiOS Userspace",
             "includePath": [
-                "${workspaceFolder}/include"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/libc"
             ],
             "cStandard": "c11",
             "intelliSenseMode": "${default}"
