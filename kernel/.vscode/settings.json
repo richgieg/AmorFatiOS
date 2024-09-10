@@ -1,6 +1,10 @@
 {
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
     "files.associations": {
         "*.h": "c",
         "*.c": "c"
-    }
+    },
+    "files.trimTrailingWhitespace": true
 }

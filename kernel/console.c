@@ -54,7 +54,7 @@ void console_init(void) {
 static void _console_clear(int index) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(0, con->bg_color, con->text_color);
-    
+
     for (int i = 0; i < VGA_ROWS * VGA_COLUMNS; i++) {
         con->buffer[i] = entry;
     }

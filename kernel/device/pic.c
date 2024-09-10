@@ -9,7 +9,7 @@
 #define ICW1_INTERVAL4 0x04
 #define ICW1_LEVEL 0x08
 #define ICW1_INIT 0x10
- 
+
 #define ICW4_8086 0x01
 #define ICW4_AUTO 0x02
 #define ICW4_BUF_PIC2 0x08
@@ -42,7 +42,7 @@ void pic_init(void) {
     // Tell secondary PIC its identity
     outb(PIC2_DATA, 0x02);
     io_wait();
- 
+
     // Finish initialization
     outb(PIC1_DATA, ICW4_8086);
     io_wait();
