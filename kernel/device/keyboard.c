@@ -30,15 +30,19 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
     switch (scancodew) {
         case SC_LEFT_ALT:
             is_left_alt_down = true;
+            console_key_press(scancodew);
             break;
         case SC_RIGHT_ALT:
             is_right_alt_down = true;
+            console_key_press(scancodew);
             break;
         case SC_LEFT_SHIFT:
             is_left_shift_down = true;
+            console_key_press(scancodew);
             break;
         case SC_RIGHT_SHIFT:
             is_right_shift_down = true;
+            console_key_press(scancodew);
             break;
         case SC_TAB:
             if (is_left_alt_down || is_right_alt_down) {
@@ -47,6 +51,8 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
                 } else {
                     console_next();
                 }
+            } else {
+                console_key_press(scancodew);
             }
             break;
         default:
@@ -68,15 +74,19 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
     switch (scancodew) {
         case SC_LEFT_ALT:
             is_left_alt_down = false;
+            console_key_press(scancodew);
             break;
         case SC_RIGHT_ALT:
             is_right_alt_down = false;
+            console_key_press(scancodew);
             break;
         case SC_LEFT_SHIFT:
             is_left_shift_down = false;
+            console_key_press(scancodew);
             break;
         case SC_RIGHT_SHIFT:
             is_right_shift_down = false;
+            console_key_press(scancodew);
             break;
         default:
             console_key_release(scancodew);
