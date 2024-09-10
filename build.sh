@@ -10,7 +10,7 @@ mkdir -p bin
 nasm -f bin -o bin/boot boot/boot.asm
 
 # Build the kernel image.
-gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
+gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
     -I./kernel/include -Wl,--build-id=none -Wl,-T,kernel.ld -o bin/kernel \
     kernel/_start.c \
     kernel/device/i82545em.c \
@@ -32,14 +32,14 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     kernel/tss.c
 
 # Build the userspace image.
-gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
+gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
     -I./userspace/include -Wl,--build-id=none -Wl,-T,userspace.ld -o bin/userspace \
     userspace/_start.c \
-    userspace/lib/stdio.c \
     userspace/program/counter.c \
     userspace/program/memdump.c \
     userspace/program/memmap.c \
     userspace/program/shell.c \
+    userspace/stdio.c \
     userspace/sys.c \
     userspace/userspace.c
 

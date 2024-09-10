@@ -1,4 +1,4 @@
-#include <lib/stdio.h>
+#include <stdio.h>
 #include <sys.h>
 
 char * gets(char *buf) {

@@ -1,5 +1,5 @@
 #include <program/shell.h>
-#include <lib/stdio.h>
+#include <stdio.h>
 
 void shell(void) {
     char buf[2048];
