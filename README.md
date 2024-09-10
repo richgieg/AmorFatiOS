@@ -15,15 +15,15 @@ with wisdom and resilience.
 - [x] Floppy Disk Bootloader
 - [x] Protected Mode
 - [x] Interrupt Handling
-- [ ] Preemptive Task Switching
+- [-] Preemptive Task Switching
   - [x] Round Robin
   - [ ] Priority Based
 - [x] Keyboard Support
 - [x] Text-Mode VGA
 - [x] Virtual Consoles
 - [ ] PCI Device Enumeration (started)
-- [ ] System Call Interface
-- [ ] Userspace
+- [x] Userspace
+- [x] System Call Interface
 - [ ] Virtual Memory
 - [ ] Dynamic Memory Allocation
 - [ ] TCP/IP Stack
@@ -33,8 +33,8 @@ with wisdom and resilience.
   - [ ] TCP/UDP Send/Receive
   - [ ] DHCP Client
   - [ ] DNS Client
-- [ ] Machine Support
-  - [ ] Virtual Machines / Emulators
+- [-] Machine Support
+  - [-] Virtual Machines / Emulators
     - [x] VMware Workstation
     - [ ] Microsoft Hyper-V
     - [ ] Oracle VirtualBox
