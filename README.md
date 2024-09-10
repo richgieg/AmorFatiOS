@@ -18,7 +18,10 @@ with wisdom and resilience.
 - [ ] Preemptive Task Switching
   - [x] Round Robin
   - [ ] Priority Based
-- [x] Keyboard Support
+- [ ] Keyboard Driver (started)
+  - [x] Read and Process Key Presses
+  - [ ] Handle Caps Lock and Num Lock
+- [ ] Mouse Driver (started)
 - [x] Text-Mode VGA
 - [x] Virtual Consoles
 - [ ] PCI Device Enumeration (started)
