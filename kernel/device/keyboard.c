@@ -48,8 +48,27 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
             if (is_left_alt_down || is_right_alt_down) {
                 if (is_left_shift_down || is_right_shift_down) {
                     console_prev();
+                    // Ensure previous console knows if shift is pressed.
+                    if (is_left_shift_down) {
+                        console_key_press(SC_LEFT_SHIFT);
+                    }
+                    if (is_right_shift_down) {
+                        console_key_press(SC_RIGHT_SHIFT);
+                    }
                 } else {
                     console_next();
+                    // Ensure next console doesn't think shift is still pressed.
+                    // That could happen if navigating to the previous console with
+                    // ALT+SHIFT+TAB, then back to the original console with ALT+TAB.
+                    console_key_release(SC_LEFT_SHIFT);
+                    console_key_release(SC_RIGHT_SHIFT);
+                }
+                // Ensure previous/next console knows if alt is pressed.
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
                 }
             } else {
                 console_key_press(scancodew);
