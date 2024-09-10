@@ -49,8 +49,10 @@ with wisdom and resilience.
 
 ## Build
 
-I build the project on Ubuntu 22.04. To ensure you have what you need, run the
-following:
+I currently build the project on Ubuntu 22.04 running on WSL2 (on Windows),
+using GCC 11.4.0 and NASM 2.15.05.
+
+To ensure you have what you need, run the following:
 
 ```
 sudo apt install build-essential
@@ -64,6 +66,18 @@ To build the project, run:
 ./build.sh
 ```
 
-The build script will generate an `os.flp` file in the `bin` directory. This
-is a virtual floppy disk that can be attached to a VMware Workstation VM for
-testing the operating system.
+The build script generates the following raw floppy disk image:
+
+```
+bin/AmorFatiOS.flp
+```
+
+## Run
+
+The OS can be tested in VMware Workstation using the included virtual machine file:
+
+```
+vm/AmorFatiOS.vmx
+```
+
+This VM has a floppy drive that points to the `bin/AmorFatiOS.flp` image.
