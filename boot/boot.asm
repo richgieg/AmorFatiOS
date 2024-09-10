@@ -100,7 +100,7 @@ mov dl, 0           ; drive to read
 int 0x13            ; make the BIOS call
 
 ; Copy the next 18 sectors of userspace image from floppy.
-mov bx, 0xb400
+mov bx, 0x2400
 mov ah, 2
 mov al, 18
 mov ch, 16
