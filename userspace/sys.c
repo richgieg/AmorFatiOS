@@ -247,8 +247,8 @@ void sys_console_putqw_at(u64 qw, u8 col, u8 row) {
         : "a" (CONSOLE_PUTQW_AT),
           "b" ((u32)(qw >> 32)),
           "c" ((u32)qw),
-          "d" ((u32)col),
-          "S" ((u32)row)
+          "d" (col),
+          "S" (row)
         :
     );
 }
