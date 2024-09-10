@@ -167,10 +167,23 @@ char * gets(char *buf) {
                 case SC_BACKTICK:
                     c = (is_lshift_down || is_rshift_down) ? '~' : '`';
                     break;
+                case SC_NUMPAD_SLASH:
+                    c = '/';
+                    break;
+                case SC_NUMPAD_ASTERISK:
+                    c = '*';
+                    break;
+                case SC_NUMPAD_HYPHEN:
+                    c = '-';
+                    break;
+                case SC_NUMPAD_PLUS:
+                    c = '+';
+                    break;
                 case SC_BACKSPACE:
                     c = '\b';
                     break;
                 case SC_ENTER:
+                case SC_NUMPAD_ENTER:
                     c = '\n';
                     is_end_of_input = true;
                     break;

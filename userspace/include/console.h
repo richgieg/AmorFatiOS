@@ -106,4 +106,10 @@ enum vga_color {
 #define SC_EQUAL 0x0055
 #define SC_BACKTICK 0x000e
 
+#define SC_NUMPAD_ENTER 0xe05a
+#define SC_NUMPAD_SLASH 0xe04a
+#define SC_NUMPAD_ASTERISK 0x007c
+#define SC_NUMPAD_HYPHEN 0x007b
+#define SC_NUMPAD_PLUS 0x0079
+
 #endif
