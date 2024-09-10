@@ -1,21 +1,31 @@
 #include <program/shell.h>
 #include <sys.h>
 
+void gets(char *buf);
+
 void shell(void) {
+    char buf[2048];
+
+    while (true) {
+        gets(buf);
+        sys_console_puts(buf);
+        sys_console_putc('\n');
+    }
+}
+
+void gets(char *buf) {
+    const char *const buf_start = buf;
+
     bool is_left_shift_down = false;
     bool is_right_shift_down = false;
 
     struct key_event ke;
     char c;
+    bool is_eof = false;
 
-    while (true) {
+    while (!is_eof) {
         sys_console_read_key_event(&ke);
         c = 0;
-
-        // sys_console_putw(ke.scancode);
-        // sys_console_putc(' ');
-        // ke.is_release ? sys_console_putc('R') : sys_console_putc('P');
-        // sys_console_putc('\n');
 
         if (!ke.is_release) {
             switch (ke.scancode) {
@@ -24,6 +34,9 @@ void shell(void) {
                     break;
                 case SC_RIGHT_SHIFT:
                     is_right_shift_down = true;
+                    break;
+                case SC_SPACE:
+                    c = ' ';
                     break;
                 case SC_A:
                     c = (is_left_shift_down || is_right_shift_down) ? 'A' : 'a';
@@ -133,6 +146,13 @@ void shell(void) {
                 case SC_9:
                     c = (is_left_shift_down || is_right_shift_down) ? '(' : '9';
                     break;
+                case SC_BACKSPACE:
+                    c = '\b';
+                    break;
+                case SC_ENTER:
+                    c = '\n';
+                    is_eof = true;
+                    break;
             }
         } else {
             switch (ke.scancode) {
@@ -146,7 +166,20 @@ void shell(void) {
         }
 
         if (c) {
-            sys_console_putc(c);
+            if (c == '\n') {
+                sys_console_putc(c);
+            } else if (c == '\b') {
+                if (buf > buf_start) {
+                    buf--;
+                    sys_console_putc(c);
+                }
+            } else {
+                *buf = c;
+                buf++;
+                sys_console_putc(c);
+            }
         }
     }
+
+    *buf = '\0';
 }

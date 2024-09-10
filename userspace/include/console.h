@@ -28,6 +28,9 @@ enum vga_color {
 };
 
 #define SC_ENTER 0x005a
+#define SC_TAB 0x000d
+#define SC_SPACE 0x0029
+#define SC_BACKSPACE 0x0066
 
 #define SC_LEFT_CTRL 0x0014
 #define SC_RIGHT_CTRL 0xe014
@@ -37,8 +40,6 @@ enum vga_color {
 
 #define SC_LEFT_SHIFT 0x0012
 #define SC_RIGHT_SHIFT 0x0059
-
-#define SC_TAB 0x000d
 
 #define SC_F11 0x0078
 #define SC_F12 0x0007
