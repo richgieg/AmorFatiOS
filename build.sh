@@ -39,7 +39,9 @@ gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-n
     userspace/program/memdump.c \
     userspace/program/memmap.c \
     userspace/program/shell.c \
+    userspace/ctype.c \
     userspace/stdio.c \
+    userspace/string.c \
     userspace/sys.c \
     userspace/userspace.c
 
