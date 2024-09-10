@@ -38,6 +38,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
     userspace/program/counter.c \
     userspace/program/memdump.c \
     userspace/program/memmap.c \
+    userspace/program/shell.c \
     userspace/sys.c \
     userspace/userspace.c
 
