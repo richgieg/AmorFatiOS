@@ -74,19 +74,19 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
     switch (scancodew) {
         case SC_LEFT_ALT:
             is_left_alt_down = false;
-            console_key_press(scancodew);
+            console_key_release(scancodew);
             break;
         case SC_RIGHT_ALT:
             is_right_alt_down = false;
-            console_key_press(scancodew);
+            console_key_release(scancodew);
             break;
         case SC_LEFT_SHIFT:
             is_left_shift_down = false;
-            console_key_press(scancodew);
+            console_key_release(scancodew);
             break;
         case SC_RIGHT_SHIFT:
             is_right_shift_down = false;
-            console_key_press(scancodew);
+            console_key_release(scancodew);
             break;
         default:
             console_key_release(scancodew);
