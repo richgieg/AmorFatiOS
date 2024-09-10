@@ -9,6 +9,12 @@
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
 
+#define SC_LEFT_ALT 0x0011
+#define SC_RIGHT_ALT 0xe011
+#define SC_LEFT_SHIFT 0x0012
+#define SC_RIGHT_SHIFT 0x0059
+#define SC_TAB 0x000d
+
 static bool is_break;
 static bool is_extended;
 
