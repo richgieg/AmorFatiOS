@@ -35,6 +35,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wal
 gcc -masm=intel -m32 -ffreestanding -nostdlib -fno-pic -fno-pie -Wl,-no-pie -Wall -std=c11 \
     -I./userspace/include -Wl,--build-id=none -Wl,-T,userspace.ld -o bin/userspace \
     userspace/_start.c \
+    userspace/lib/stdio.c \
     userspace/program/counter.c \
     userspace/program/memdump.c \
     userspace/program/memmap.c \
