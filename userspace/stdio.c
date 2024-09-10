@@ -134,6 +134,39 @@ char * gets(char *buf) {
                 case SC_9:
                     c = (is_lshift_down || is_rshift_down) ? '(' : '9';
                     break;
+                case SC_COMMA:
+                    c = (is_lshift_down || is_rshift_down) ? '<' : ',';
+                    break;
+                case SC_PERIOD:
+                    c = (is_lshift_down || is_rshift_down) ? '>' : '.';
+                    break;
+                case SC_SLASH:
+                    c = (is_lshift_down || is_rshift_down) ? '?' : '/';
+                    break;
+                case SC_SEMICOLON:
+                    c = (is_lshift_down || is_rshift_down) ? ':' : ';';
+                    break;
+                case SC_APOSTROPHE:
+                    c = (is_lshift_down || is_rshift_down) ? '"' : '\'';
+                    break;
+                case SC_LEFT_BRACKET:
+                    c = (is_lshift_down || is_rshift_down) ? '{' : '[';
+                    break;
+                case SC_RIGHT_BRACKET:
+                    c = (is_lshift_down || is_rshift_down) ? '}' : ']';
+                    break;
+                case SC_BACKSLASH:
+                    c = (is_lshift_down || is_rshift_down) ? '|' : '\\';
+                    break;
+                case SC_HYPHEN:
+                    c = (is_lshift_down || is_rshift_down) ? '_' : '-';
+                    break;
+                case SC_EQUAL:
+                    c = (is_lshift_down || is_rshift_down) ? '+' : '=';
+                    break;
+                case SC_BACKTICK:
+                    c = (is_lshift_down || is_rshift_down) ? '~' : '`';
+                    break;
                 case SC_BACKSPACE:
                     c = '\b';
                     break;

@@ -94,4 +94,16 @@ enum vga_color {
 #define SC_8 0x003e
 #define SC_9 0x0046
 
+#define SC_COMMA 0x0041
+#define SC_PERIOD 0x0049
+#define SC_SLASH 0x004a
+#define SC_SEMICOLON 0x004c
+#define SC_APOSTROPHE 0x0052
+#define SC_LEFT_BRACKET 0x0054
+#define SC_RIGHT_BRACKET 0x005b
+#define SC_BACKSLASH 0x005d
+#define SC_HYPHEN 0x004e
+#define SC_EQUAL 0x0055
+#define SC_BACKTICK 0x000e
+
 #endif
