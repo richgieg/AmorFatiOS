@@ -16,13 +16,12 @@ void shell(void) {
         gets(buf);
 
         char *trimmed = trim(buf);
-        puts("You wrote: ");
-        puts(trimmed);
-        puts("\n");
-        puts("Trimmed length = ");
-        size_t len = strlen(trimmed);
-        sys_console_putdw(len);
-        puts("\n");
+        if (strcmp(trimmed, "help") == 0) {
+            puts("The \"help\" command is coming soon!\n");
+        } else if (strlen(trimmed) != 0) {
+            puts(trimmed);
+            puts(": command not found\n");
+        }
     }
 }
 
