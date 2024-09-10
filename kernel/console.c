@@ -159,6 +159,18 @@ static void go_to_next_line(int index) {
     }
 }
 
+static void handle_backspace(int index) {
+    struct console *con = &consoles[index];
+    if (con->col > 0) {
+        con->col--;
+    } else if (con->row > 0) {
+        con->col = VGA_COLUMNS - 1;
+        con->row--;
+    }
+    u16 entry = vga_entry('\0', con->bg_color, con->text_color);
+    con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
+}
+
 static void _console_writec(int index, char c) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(c, con->bg_color, con->text_color);
@@ -181,6 +193,8 @@ void console_dbg_writec(char c) {
 static void _console_putc(int index, char c) {
     if (c == '\n') {
         go_to_next_line(index);
+    } else if (c == '\b') {
+        handle_backspace(index);
     } else {
         struct console *con = &consoles[index];
         u16 entry = vga_entry(c, con->bg_color, con->text_color);
