@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys.h>
 
-char * trim(char *str);
+static char * trim(char *str);
 
 void shell(void) {
     char buf[2048];
@@ -26,7 +26,7 @@ void shell(void) {
     }
 }
 
-char * trim(char *str) {
+static char * trim(char *str) {
     // Trim leading space.
     while (isspace(*str)) str++;
 
