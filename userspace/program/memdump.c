@@ -74,7 +74,7 @@ static void show_memdump(void) {
         memory_ptr -= BYTES_PER_LINE;
 
         for (int i = 0; i < BYTES_PER_LINE; i++) {
-            sys_console_writec(*memory_ptr);
+            sys_console_putc(*memory_ptr);
             memory_ptr++;
         }
 
