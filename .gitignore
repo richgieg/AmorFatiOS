@@ -1,1 +1,7 @@
+# Ignore output from the build process.
 bin/
+
+# Ignore everything in vm directory except for AmorFatiOS.vmx.
+vm/*
+!vm/
+!vm/AmorFatiOS.vmx
