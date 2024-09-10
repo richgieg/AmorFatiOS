@@ -15,7 +15,7 @@ with wisdom and resilience.
 - [x] Floppy Disk Bootloader
 - [x] Protected Mode
 - [x] Interrupt Handling
-- [-] Preemptive Task Switching
+- [ ] Preemptive Task Switching
   - [x] Round Robin
   - [ ] Priority Based
 - [x] Keyboard Support
@@ -33,8 +33,8 @@ with wisdom and resilience.
   - [ ] TCP/UDP Send/Receive
   - [ ] DHCP Client
   - [ ] DNS Client
-- [-] Machine Support
-  - [-] Virtual Machines / Emulators
+- [ ] Machine Support
+  - [ ] Virtual Machines / Emulators
     - [x] VMware Workstation
     - [ ] Microsoft Hyper-V
     - [ ] Oracle VirtualBox
