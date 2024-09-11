@@ -64,7 +64,7 @@ static void _console_clear(int index) {
 }
 
 void console_clear(void) {
-    _console_clear(process_get_current_index());
+    _console_clear(process_get_console_index());
 }
 
 void console_dbg_clear(void) {
@@ -77,7 +77,7 @@ static enum vga_color _console_get_bg_color(int index) {
 }
 
 enum vga_color console_get_bg_color(void) {
-    return _console_get_bg_color(process_get_current_index());
+    return _console_get_bg_color(process_get_console_index());
 }
 
 enum vga_color console_dbg_get_bg_color() {
@@ -90,7 +90,7 @@ static void _console_set_bg_color(int index, enum vga_color bg_color) {
 }
 
 void console_set_bg_color(enum vga_color bg_color) {
-    _console_set_bg_color(process_get_current_index(), bg_color);
+    _console_set_bg_color(process_get_console_index(), bg_color);
 }
 
 void console_dbg_set_bg_color(enum vga_color bg_color) {
@@ -103,7 +103,7 @@ static enum vga_color _console_get_text_color(int index) {
 }
 
 enum vga_color console_get_text_color(void) {
-    return _console_get_text_color(process_get_current_index());
+    return _console_get_text_color(process_get_console_index());
 }
 
 enum vga_color console_dbg_get_text_color() {
@@ -116,7 +116,7 @@ static void _console_set_text_color(int index, enum vga_color text_color) {
 }
 
 void console_set_text_color(enum vga_color text_color) {
-    _console_set_text_color(process_get_current_index(), text_color);
+    _console_set_text_color(process_get_console_index(), text_color);
 }
 
 void console_dbg_set_text_color(enum vga_color text_color) {
@@ -130,7 +130,7 @@ static void _console_set_pos(int index, u8 col, u8 row) {
 }
 
 void console_set_pos(u8 col, u8 row) {
-    _console_set_pos(process_get_current_index(), col, row);
+    _console_set_pos(process_get_console_index(), col, row);
 }
 
 void console_dbg_set_pos(u8 col, u8 row) {
@@ -183,7 +183,7 @@ static void _console_writec(int index, char c) {
 }
 
 void console_writec(char c) {
-    _console_writec(process_get_current_index(), c);
+    _console_writec(process_get_console_index(), c);
 }
 
 void console_dbg_writec(char c) {
@@ -208,7 +208,7 @@ static void _console_putc(int index, char c) {
 }
 
 void console_putc(char c) {
-    _console_putc(process_get_current_index(), c);
+    _console_putc(process_get_console_index(), c);
 }
 
 void console_dbg_putc(char c) {
@@ -223,7 +223,7 @@ static void _console_puts(int index, const char *str) {
 }
 
 void console_puts(const char *str) {
-    _console_puts(process_get_current_index(), str);
+    _console_puts(process_get_console_index(), str);
 }
 
 void console_dbg_puts(const char *str) {
@@ -240,7 +240,7 @@ static void _console_putb(int index, u8 b) {
 }
 
 void console_putb(u8 b) {
-    _console_putb(process_get_current_index(), b);
+    _console_putb(process_get_console_index(), b);
 }
 
 void console_dbg_putb(u8 b) {
@@ -261,7 +261,7 @@ static void _console_putw(int index, u16 w) {
 }
 
 void console_putw(u16 w) {
-    _console_putw(process_get_current_index(), w);
+    _console_putw(process_get_console_index(), w);
 }
 
 void console_dbg_putw(u16 w) {
@@ -290,7 +290,7 @@ static void _console_putdw(int index, u32 dw) {
 }
 
 void console_putdw(u32 dw) {
-    _console_putdw(process_get_current_index(), dw);
+    _console_putdw(process_get_console_index(), dw);
 }
 
 void console_dbg_putdw(u32 dw) {
@@ -335,7 +335,7 @@ static void _console_putqw(int index, u64 qw) {
 }
 
 void console_putqw(u64 qw) {
-    _console_putqw(process_get_current_index(), qw);
+    _console_putqw(process_get_console_index(), qw);
 }
 
 void console_dbg_putqw(u64 qw) {
@@ -347,7 +347,7 @@ static void _console_putp(int index, void *p) {
 }
 
 void console_putp(void *p) {
-    _console_putp(process_get_current_index(), p);
+    _console_putp(process_get_console_index(), p);
 }
 
 void console_dbg_putp(void *p) {
@@ -366,7 +366,7 @@ static void _console_putc_at(int index, char c, u8 col, u8 row) {
 }
 
 void console_putc_at(char c, u8 col, u8 row) {
-    _console_putc_at(process_get_current_index(), c, col, row);
+    _console_putc_at(process_get_console_index(), c, col, row);
 }
 
 void console_dbg_putc_at(char c, u8 col, u8 row) {
@@ -385,7 +385,7 @@ static void _console_puts_at(int index, const char *str, u8 col, u8 row) {
 }
 
 void console_puts_at(const char *str, u8 col, u8 row) {
-    _console_puts_at(process_get_current_index(), str, col, row);
+    _console_puts_at(process_get_console_index(), str, col, row);
 }
 
 void console_dbg_puts_at(const char *str, u8 col, u8 row) {
@@ -404,7 +404,7 @@ static void _console_putb_at(int index, u8 b, u8 col, u8 row) {
 }
 
 void console_putb_at(u8 b, u8 col, u8 row) {
-    _console_putb_at(process_get_current_index(), b, col, row);
+    _console_putb_at(process_get_console_index(), b, col, row);
 }
 
 void console_dbg_putb_at(u8 b, u8 col, u8 row) {
@@ -423,7 +423,7 @@ static void _console_putw_at(int index, u16 w, u8 col, u8 row) {
 }
 
 void console_putw_at(u16 w, u8 col, u8 row) {
-    _console_putw_at(process_get_current_index(), w, col, row);
+    _console_putw_at(process_get_console_index(), w, col, row);
 }
 
 void console_dbg_putw_at(u16 w, u8 col, u8 row) {
@@ -442,7 +442,7 @@ static void _console_putdw_at(int index, u32 dw, u8 col, u8 row) {
 }
 
 void console_putdw_at(u32 dw, u8 col, u8 row) {
-    _console_putdw_at(process_get_current_index(), dw, col, row);
+    _console_putdw_at(process_get_console_index(), dw, col, row);
 }
 
 void console_dbg_putdw_at(u32 dw, u8 col, u8 row) {
@@ -461,7 +461,7 @@ static void _console_putqw_at(int index, u64 qw, u8 col, u8 row) {
 }
 
 void console_putqw_at(u64 qw, u8 col, u8 row) {
-    _console_putqw_at(process_get_current_index(), qw, col, row);
+    _console_putqw_at(process_get_console_index(), qw, col, row);
 }
 
 void console_dbg_putqw_at(u64 qw, u8 col, u8 row) {
@@ -473,7 +473,7 @@ static void _console_putp_at(int index, void *p, u8 col, u8 row) {
 }
 
 void console_putp_at(void *p, u8 col, u8 row) {
-    _console_putp_at(process_get_current_index(), p, col, row);
+    _console_putp_at(process_get_console_index(), p, col, row);
 }
 
 void console_dbg_putp_at(void *p, u8 col, u8 row) {
@@ -524,7 +524,7 @@ void console_key_release(u16 scancode) {
 }
 
 void console_read_key_event(struct key_event *ke) {
-    struct console *con = &consoles[process_get_current_index()];
+    struct console *con = &consoles[process_get_console_index()];
     if (con->keb.head == con->keb.tail) {
         process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
     }

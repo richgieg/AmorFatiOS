@@ -14,16 +14,19 @@ struct process {
     u32 kernel_esp_bottom;
     u32 kernel_esp;
     u32 user_esp;
+    int console_index;
 };
 
 static struct process processes[MAX_PROCESSES];
 static int current_process_index;
+static int next_console_index;
 
 void process_init(void) {
     current_process_index = 0;
     struct process *p = &processes[current_process_index];
     p->is_started = true;
     p->state = PROCESS_STATE_RUNNING;
+    p->console_index = next_console_index++;
 }
 
 static int find_available_process_index() {
@@ -49,6 +52,7 @@ void process_create(void (*start)()) {
     p->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);;
     p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
+    p->console_index = next_console_index++;
 }
 
 void process_switch(enum process_state state) {
@@ -62,7 +66,7 @@ void process_switch(enum process_state state) {
             break;
         }
         if (processes[index].state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
-            if (console_has_key_event(index)) {
+            if (console_has_key_event(processes[index].console_index)) {
                 next_process_index = index;
                 break;
             }
@@ -139,6 +143,6 @@ void process_exit(void) {
     process_switch(PROCESS_STATE_NULL);
 }
 
-int process_get_current_index(void) {
-    return current_process_index;
+int process_get_console_index(void) {
+    return processes[current_process_index].console_index;
 }
