@@ -34,5 +34,6 @@ void sys_console_putp_at(void *p, u8 col, u8 row);
 void sys_console_read_key_event(struct key_event *ke);
 int sys_console_get_num_columns(void);
 int sys_console_get_num_rows(void);
+int sys_console_get_num_consoles(void);
 
 #endif

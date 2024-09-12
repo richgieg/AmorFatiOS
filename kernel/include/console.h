@@ -63,5 +63,6 @@ void console_read_key_event(struct key_event *ke);
 bool console_has_key_event(int index);
 int console_get_num_columns(void);
 int console_get_num_rows(void);
+int console_get_num_consoles(void);
 
 #endif

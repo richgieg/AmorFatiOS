@@ -34,6 +34,7 @@
 #define CONSOLE_READ_KEY_EVENT      0x0016
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
 #define CONSOLE_GET_NUM_ROWS        0x0018
+#define CONSOLE_GET_NUM_CONSOLES    0x001e
 
 u32 sys_dispatch(void) {
     u32 result = 0;
@@ -143,6 +144,9 @@ u32 sys_dispatch(void) {
             break;
         case CONSOLE_GET_NUM_ROWS:
             result = console_get_num_rows();
+            break;
+        case CONSOLE_GET_NUM_CONSOLES:
+            result = console_get_num_consoles();
             break;
     }
     return result;

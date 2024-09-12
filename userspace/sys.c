@@ -31,6 +31,7 @@
 #define CONSOLE_READ_KEY_EVENT      0x0016
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
 #define CONSOLE_GET_NUM_ROWS        0x0018
+#define CONSOLE_GET_NUM_CONSOLES    0x001e
 
 int sys_process_create(void (*start)()) {
     int result;
@@ -353,6 +354,17 @@ int sys_console_get_num_rows(void) {
         "int 0x80"
         : "=a" (result)
         : "a" (CONSOLE_GET_NUM_ROWS)
+        :
+    );
+    return result;
+}
+
+int sys_console_get_num_consoles(void) {
+    int result;
+    __asm__(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_NUM_CONSOLES)
         :
     );
     return result;

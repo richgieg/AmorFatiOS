@@ -4,9 +4,10 @@
 #include <bugcheck.h>
 #include <device/vga.h>
 
+#define NUM_CONSOLES 4
+#define NUM_CONSOLES_INC_DBG (NUM_CONSOLES + 1)
+#define DBG_CONSOLE_INDEX (NUM_CONSOLES_INC_DBG - 1)
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
-#define MAX_CONSOLES (MAX_PROCESSES + 1)
-#define DBG_CONSOLE_INDEX (MAX_CONSOLES - 1)
 
 static const char hex_digits[] = "0123456789ABCDEF";
 
@@ -25,7 +26,7 @@ struct console {
     struct key_event_buffer keb;
 } __attribute__((aligned(4096)));
 
-static struct console consoles[MAX_CONSOLES];
+static struct console consoles[NUM_CONSOLES_INC_DBG];
 static int current_console_index;
 
 void console_init(void) {
@@ -501,11 +502,12 @@ void console_repaint(void) {
 }
 
 void console_next(void) {
-    current_console_index = (current_console_index + 1) % MAX_CONSOLES;
+    current_console_index = (current_console_index + 1) % NUM_CONSOLES_INC_DBG;
 }
 
 void console_prev(void) {
-    current_console_index = (current_console_index + MAX_CONSOLES - 1) % MAX_CONSOLES;
+    current_console_index = (
+        current_console_index + NUM_CONSOLES_INC_DBG - 1) % NUM_CONSOLES_INC_DBG;
 }
 
 void console_show_dbg(void) {
@@ -559,4 +561,8 @@ int console_get_num_columns(void) {
 
 int console_get_num_rows(void) {
     return VGA_ROWS;
+}
+
+int console_get_num_consoles(void) {
+    return NUM_CONSOLES;
 }

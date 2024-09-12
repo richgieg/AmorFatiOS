@@ -4,6 +4,7 @@
 #include <console.h>
 #include <tss.h>
 
+#define MAX_PROCESSES 16
 #define STACK_SIZE 4096
 #define STACK_AREA_BASE 0x100000
 

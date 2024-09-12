@@ -1,8 +1,6 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-#define MAX_PROCESSES 8
-
 enum process_state {
     PROCESS_STATE_NULL,
     PROCESS_STATE_RUNNING,
