@@ -12,6 +12,8 @@ enum vga_color sys_console_get_bg_color(void);
 void sys_console_set_bg_color(enum vga_color bg_color);
 enum vga_color sys_console_get_text_color(void);
 void sys_console_set_text_color(enum vga_color text_color);
+u8 sys_console_get_column(void);
+u8 sys_console_get_row(void);
 void sys_console_set_pos(u8 col, u8 row);
 void sys_console_writec(char c);
 void sys_console_putc(char c);

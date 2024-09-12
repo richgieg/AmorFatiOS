@@ -12,6 +12,8 @@
 #define CONSOLE_SET_BG_COLOR        0x0003
 #define CONSOLE_GET_TEXT_COLOR      0x0004
 #define CONSOLE_SET_TEXT_COLOR      0x0005
+#define CONSOLE_GET_COLUMN          0x0021
+#define CONSOLE_GET_ROW             0x0022
 #define CONSOLE_SET_POS             0x0006
 #define CONSOLE_WRITEC              0x0007
 #define CONSOLE_PUTC                0x0008
@@ -74,6 +76,12 @@ u32 sys_dispatch(void) {
             break;
         case CONSOLE_SET_TEXT_COLOR:
             console_set_text_color(arg0);
+            break;
+        case CONSOLE_GET_COLUMN:
+            result = console_get_column();
+            break;
+        case CONSOLE_GET_ROW:
+            result = console_get_row();
             break;
         case CONSOLE_SET_POS:
             console_set_pos(arg0, arg1);

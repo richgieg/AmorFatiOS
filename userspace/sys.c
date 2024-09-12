@@ -9,6 +9,8 @@
 #define CONSOLE_SET_BG_COLOR        0x0003
 #define CONSOLE_GET_TEXT_COLOR      0x0004
 #define CONSOLE_SET_TEXT_COLOR      0x0005
+#define CONSOLE_GET_COLUMN          0x0021
+#define CONSOLE_GET_ROW             0x0022
 #define CONSOLE_SET_POS             0x0006
 #define CONSOLE_WRITEC              0x0007
 #define CONSOLE_PUTC                0x0008
@@ -109,6 +111,28 @@ void sys_console_set_text_color(enum vga_color text_color) {
           "b" (text_color)
         :
     );
+}
+
+u8 sys_console_get_column(void) {
+    int result;
+    __asm__(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_COLUMN)
+        :
+    );
+    return result;
+}
+
+u8 sys_console_get_row(void) {
+    int result;
+    __asm__(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (CONSOLE_GET_ROW)
+        :
+    );
+    return result;
 }
 
 void sys_console_set_pos(u8 col, u8 row) {

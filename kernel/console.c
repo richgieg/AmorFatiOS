@@ -123,6 +123,22 @@ void console_dbg_set_text_color(enum vga_color text_color) {
     _console_set_text_color(DBG_CONSOLE_INDEX, text_color);
 }
 
+static u8 _console_get_column(int index) {
+    return consoles[index].col;
+}
+
+u8 console_get_column(void) {
+    return _console_get_column(process_get_console_index());
+}
+
+static u8 _console_get_row(int index) {
+    return consoles[index].row;
+}
+
+u8 console_get_row(void) {
+    return _console_get_row(process_get_console_index());
+}
+
 static void _console_set_pos(int index, u8 col, u8 row) {
     struct console *con = &consoles[index];
     con->col = col;
