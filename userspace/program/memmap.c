@@ -16,7 +16,7 @@ static void show_memmap(void);
 
 void memmap(void) {
     show_memmap();
-    while (true);
+    sys_process_exit();
 }
 
 static void show_memmap(void) {

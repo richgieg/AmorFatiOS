@@ -4,6 +4,7 @@
 #include <console.h>
 
 void sys_process_create(void (*start)());
+void sys_process_exit(void);
 
 void sys_console_clear(void);
 enum vga_color sys_console_get_bg_color(void);

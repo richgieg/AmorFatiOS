@@ -18,6 +18,8 @@ void shell(void) {
         char *trimmed = trim(buf);
         if (strcmp(trimmed, "help") == 0) {
             puts("The \"help\" command is coming soon!\n");
+        } else if (strcmp(trimmed, "exit") == 0) {
+            sys_process_exit();
         } else if (strlen(trimmed) != 0) {
             puts(trimmed);
             puts(": command not found\n");

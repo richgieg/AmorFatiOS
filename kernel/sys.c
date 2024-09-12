@@ -4,6 +4,7 @@
 #include <console.h>
 
 #define PROCESS_CREATE              0x0000
+#define PROCESS_EXIT                0x0019
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
@@ -40,17 +41,20 @@ u32 sys_dispatch(void) {
 
     __asm__(
         ""
-        : "=a" (syscall_num),
-          "=b" (arg0),
-          "=c" (arg1),
-          "=d" (arg2),
-          "=S" (arg3)
+        : "=a" (syscall_num),   // syscall_num = EAX
+          "=b" (arg0),          // arg0 = EBX
+          "=c" (arg1),          // arg1 = ECX
+          "=d" (arg2),          // arg2 = EDX
+          "=S" (arg3)           // arg3 = ESI
         : :
     );
 
     switch (syscall_num) {
         case PROCESS_CREATE:
             process_create((void (*)(void))arg0);
+            break;
+        case PROCESS_EXIT:
+            process_exit();
             break;
         case CONSOLE_CLEAR:
             console_clear();

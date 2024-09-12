@@ -135,6 +135,10 @@ void process_switch(enum process_state state) {
     }
 }
 
+void process_exit(void) {
+    process_switch(PROCESS_STATE_NULL);
+}
+
 int process_get_current_index(void) {
     return current_process_index;
 }
