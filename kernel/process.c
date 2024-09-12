@@ -19,14 +19,13 @@ struct process {
 
 static struct process processes[MAX_PROCESSES];
 static int current_process_index;
-static int next_console_index;
 
 void process_init(void) {
     current_process_index = 0;
     struct process *p = &processes[current_process_index];
     p->is_started = true;
     p->state = PROCESS_STATE_RUNNING;
-    p->console_index = next_console_index++;
+    p->console_index = 0;
 }
 
 static int find_available_process_index() {
@@ -52,7 +51,7 @@ void process_create(void (*start)()) {
     p->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);;
     p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
-    p->console_index = next_console_index++;
+    p->console_index = processes[current_process_index].console_index;
 }
 
 void process_switch(enum process_state state) {

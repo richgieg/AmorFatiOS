@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <sys.h>
+#include <program/counter.h>
+#include <program/memdump.h>
+#include <program/memmap.h>
 
 static char * trim(char *str);
 
@@ -22,6 +25,12 @@ void shell(void) {
             sys_console_clear();
         } else if (strcmp(trimmed, "exit") == 0) {
             sys_process_exit();
+        } else if (strcmp(trimmed, "counter") == 0) {
+            sys_process_create(counter);
+        } else if (strcmp(trimmed, "memmap") == 0) {
+            sys_process_create(memmap);
+        } else if (strcmp(trimmed, "memdump") == 0) {
+            sys_process_create(memdump);
         } else if (strlen(trimmed) != 0) {
             puts(trimmed);
             puts(": command not found\n");

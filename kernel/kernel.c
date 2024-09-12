@@ -32,8 +32,6 @@ void kernel_init(void) {
     // Create the initial userspace process.
     process_create((void *)0x91000);
 
-    console_puts("AmorFatiOS v0.0.1 - Kernel\n");
-
     while (1) {
         // TODO: Do work here as needed.
         __asm__("hlt");
