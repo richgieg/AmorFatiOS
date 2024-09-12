@@ -1,16 +1,17 @@
 #include <sys.h>
 
 #define PROCESS_CREATE              0x0000
+#define PROCESS_CREATE_IN_CONSOLE   0x001d
 #define PROCESS_EXIT                0x0019
-#define PROCESS_WAIT_FOR_EXIT       0x0020
+#define PROCESS_WAIT_FOR_EXIT       0x001a
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
 #define CONSOLE_SET_BG_COLOR        0x0003
 #define CONSOLE_GET_TEXT_COLOR      0x0004
 #define CONSOLE_SET_TEXT_COLOR      0x0005
-#define CONSOLE_GET_COLUMN          0x0021
-#define CONSOLE_GET_ROW             0x0022
+#define CONSOLE_GET_COLUMN          0x001b
+#define CONSOLE_GET_ROW             0x001c
 #define CONSOLE_SET_POS             0x0006
 #define CONSOLE_WRITEC              0x0007
 #define CONSOLE_PUTC                0x0008
@@ -38,6 +39,19 @@ int sys_process_create(void (*start)()) {
         : "=a" (result)
         : "a" (PROCESS_CREATE),
           "b" (start)
+        :
+    );
+    return result;
+}
+
+int sys_process_create_in_console(void (*start)(), int console_index) {
+    int result;
+    __asm__(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (PROCESS_CREATE_IN_CONSOLE),
+          "b" (start),
+          "c" (console_index)
         :
     );
     return result;

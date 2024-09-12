@@ -4,16 +4,17 @@
 #include <console.h>
 
 #define PROCESS_CREATE              0x0000
+#define PROCESS_CREATE_IN_CONSOLE   0x001d
 #define PROCESS_EXIT                0x0019
-#define PROCESS_WAIT_FOR_EXIT       0x0020
+#define PROCESS_WAIT_FOR_EXIT       0x001a
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
 #define CONSOLE_SET_BG_COLOR        0x0003
 #define CONSOLE_GET_TEXT_COLOR      0x0004
 #define CONSOLE_SET_TEXT_COLOR      0x0005
-#define CONSOLE_GET_COLUMN          0x0021
-#define CONSOLE_GET_ROW             0x0022
+#define CONSOLE_GET_COLUMN          0x001b
+#define CONSOLE_GET_ROW             0x001c
 #define CONSOLE_SET_POS             0x0006
 #define CONSOLE_WRITEC              0x0007
 #define CONSOLE_PUTC                0x0008
@@ -55,6 +56,9 @@ u32 sys_dispatch(void) {
     switch (syscall_num) {
         case PROCESS_CREATE:
             result = process_create((void (*)(void))arg0);
+            break;
+        case PROCESS_CREATE_IN_CONSOLE:
+            result = process_create_in_console((void (*)(void))arg0, arg1);
             break;
         case PROCESS_EXIT:
             process_exit();

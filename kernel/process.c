@@ -40,6 +40,11 @@ static int find_available_process_index() {
 }
 
 int process_create(void (*start)()) {
+    return process_create_in_console(
+        start, processes[current_process_index].console_index);
+}
+
+int process_create_in_console(void (*start)(), int console_index) {
     int index = find_available_process_index();
     if (index == -1) {
         return -1;
@@ -51,7 +56,7 @@ int process_create(void (*start)()) {
     p->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);;
     p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
-    p->console_index = processes[current_process_index].console_index;
+    p->console_index = console_index;
     return index;
 }
 

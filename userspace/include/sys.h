@@ -4,6 +4,7 @@
 #include <console.h>
 
 int sys_process_create(void (*start)());
+int sys_process_create_in_console(void (*start)(), int console_index);
 void sys_process_exit(void);
 void sys_process_wait_for_exit(int pid);
 

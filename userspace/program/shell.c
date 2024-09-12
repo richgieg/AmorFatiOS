@@ -27,13 +27,25 @@ void shell(void) {
             sys_process_exit();
         } else if (strcmp(trimmed, "counter") == 0) {
             int pid = sys_process_create(counter);
-            sys_process_wait_for_exit(pid);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
         } else if (strcmp(trimmed, "memmap") == 0) {
             int pid = sys_process_create(memmap);
-            sys_process_wait_for_exit(pid);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
         } else if (strcmp(trimmed, "memdump") == 0) {
             int pid = sys_process_create(memdump);
-            sys_process_wait_for_exit(pid);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
         } else if (strlen(trimmed) != 0) {
             puts(trimmed);
             puts(": command not found\n");
