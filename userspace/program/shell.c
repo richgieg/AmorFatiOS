@@ -46,6 +46,13 @@ void shell(void) {
             } else {
                 sys_console_puts("Failed to create process.\n");
             }
+        } else if (strcmp(trimmed, "shell") == 0) {
+            int pid = sys_process_create(shell);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
         } else if (strlen(trimmed) != 0) {
             puts(trimmed);
             puts(": command not found\n");
