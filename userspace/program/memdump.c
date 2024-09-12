@@ -53,6 +53,7 @@ void memdump(void) {
                     next_mb();
                     break;
                 case SC_Q:
+                    sys_console_putc('\n');
                     sys_process_exit();
                     break;
             }
