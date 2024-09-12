@@ -38,12 +38,11 @@ static int find_available_process_index() {
     return (index < MAX_PROCESSES) ? index : -1;
 }
 
-void process_create(void (*start)()) {
+int process_create(void (*start)()) {
     int index = find_available_process_index();
     if (index == -1) {
-        BUGCHECK("Maximum number of processes reached.");
+        return -1;
     }
-
     struct process *p = &processes[index];
     p->start = start;
     p->is_started = false;
@@ -52,6 +51,7 @@ void process_create(void (*start)()) {
     p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
     p->console_index = processes[current_process_index].console_index;
+    return index;
 }
 
 void process_switch(enum process_state state) {

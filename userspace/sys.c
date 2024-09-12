@@ -28,14 +28,16 @@
 #define CONSOLE_GET_NUM_COLUMNS     0x0017
 #define CONSOLE_GET_NUM_ROWS        0x0018
 
-void sys_process_create(void (*start)()) {
+int sys_process_create(void (*start)()) {
+    int result;
     __asm__(
         "int 0x80"
-        :
+        : "=a" (result)
         : "a" (PROCESS_CREATE),
           "b" (start)
         :
     );
+    return result;
 }
 
 void sys_process_exit(void) {

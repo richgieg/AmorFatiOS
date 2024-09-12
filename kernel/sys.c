@@ -51,7 +51,7 @@ u32 sys_dispatch(void) {
 
     switch (syscall_num) {
         case PROCESS_CREATE:
-            process_create((void (*)(void))arg0);
+            result = process_create((void (*)(void))arg0);
             break;
         case PROCESS_EXIT:
             process_exit();

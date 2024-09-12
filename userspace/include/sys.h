@@ -3,7 +3,7 @@
 
 #include <console.h>
 
-void sys_process_create(void (*start)());
+int sys_process_create(void (*start)());
 void sys_process_exit(void);
 
 void sys_console_clear(void);
