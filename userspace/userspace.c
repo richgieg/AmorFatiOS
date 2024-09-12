@@ -6,7 +6,7 @@
 #include <program/counter.h>
 
 void userspace_init(void) {
-    int pid_0 = sys_process_create(shell);
+    sys_process_create(shell);
 
     while (1) {
         // TODO: Do some userspace stuff here.

@@ -26,11 +26,14 @@ void shell(void) {
         } else if (strcmp(trimmed, "exit") == 0) {
             sys_process_exit();
         } else if (strcmp(trimmed, "counter") == 0) {
-            sys_process_create(counter);
+            int pid = sys_process_create(counter);
+            sys_process_wait_for_exit(pid);
         } else if (strcmp(trimmed, "memmap") == 0) {
-            sys_process_create(memmap);
+            int pid = sys_process_create(memmap);
+            sys_process_wait_for_exit(pid);
         } else if (strcmp(trimmed, "memdump") == 0) {
-            sys_process_create(memdump);
+            int pid = sys_process_create(memdump);
+            sys_process_wait_for_exit(pid);
         } else if (strlen(trimmed) != 0) {
             puts(trimmed);
             puts(": command not found\n");

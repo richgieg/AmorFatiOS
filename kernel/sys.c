@@ -5,6 +5,7 @@
 
 #define PROCESS_CREATE              0x0000
 #define PROCESS_EXIT                0x0019
+#define PROCESS_WAIT_FOR_EXIT       0x0020
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
@@ -55,6 +56,9 @@ u32 sys_dispatch(void) {
             break;
         case PROCESS_EXIT:
             process_exit();
+            break;
+        case PROCESS_WAIT_FOR_EXIT:
+            process_wait_for_exit(arg0);
             break;
         case CONSOLE_CLEAR:
             console_clear();

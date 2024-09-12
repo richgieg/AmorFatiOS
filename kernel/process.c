@@ -15,6 +15,7 @@ struct process {
     u32 kernel_esp;
     u32 user_esp;
     int console_index;
+    int waiting_for_exit_pid;
 };
 
 static struct process processes[MAX_PROCESSES];
@@ -58,14 +59,25 @@ void process_switch(enum process_state state) {
     int count = MAX_PROCESSES;
     int next_process_index = -1;
     int index = (current_process_index + 1) % MAX_PROCESSES;
+    struct process *p;
 
     while (count--) {
-        if (processes[index].state == PROCESS_STATE_RUNNABLE) {
+        p = &processes[index];
+
+        if (p->state == PROCESS_STATE_RUNNABLE) {
             next_process_index = index;
             break;
         }
-        if (processes[index].state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
-            if (console_has_key_event(processes[index].console_index)) {
+        if (p->state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
+            if (console_has_key_event(p->console_index)) {
+                p->state = PROCESS_STATE_RUNNABLE;
+                next_process_index = index;
+                break;
+            }
+        }
+        if (p->state == PROCESS_STATE_WAITING_FOR_EXIT) {
+            if (processes[p->waiting_for_exit_pid].state == PROCESS_STATE_NULL) {
+                p->state = PROCESS_STATE_RUNNABLE;
                 next_process_index = index;
                 break;
             }
@@ -140,6 +152,11 @@ void process_switch(enum process_state state) {
 
 void process_exit(void) {
     process_switch(PROCESS_STATE_NULL);
+}
+
+void process_wait_for_exit(int pid) {
+    processes[current_process_index].waiting_for_exit_pid = pid;
+    process_switch(PROCESS_STATE_WAITING_FOR_EXIT);
 }
 
 int process_get_console_index(void) {

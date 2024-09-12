@@ -5,6 +5,7 @@
 
 int sys_process_create(void (*start)());
 void sys_process_exit(void);
+void sys_process_wait_for_exit(int pid);
 
 void sys_console_clear(void);
 enum vga_color sys_console_get_bg_color(void);

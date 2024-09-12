@@ -2,6 +2,7 @@
 
 #define PROCESS_CREATE              0x0000
 #define PROCESS_EXIT                0x0019
+#define PROCESS_WAIT_FOR_EXIT       0x0020
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
@@ -54,6 +55,16 @@ void sys_console_clear(void) {
         "int 0x80"
         :
         : "a" (CONSOLE_CLEAR)
+        :
+    );
+}
+
+void sys_process_wait_for_exit(int pid) {
+    __asm__(
+        "int 0x80"
+        :
+        : "a" (PROCESS_WAIT_FOR_EXIT),
+          "b" (pid)
         :
     );
 }

@@ -6,7 +6,7 @@
 #define BYTES_PER_PAGE 4096
 #define BYTES_PER_MB 1024 * 1024
 
-static u32 current_address = 0x00000000;
+static u32 current_address;
 
 static void show_memdump(void);
 static void next_byte(void);
@@ -19,6 +19,8 @@ static void next_mb(void);
 static void prev_mb(void);
 
 void memdump(void) {
+    current_address = 0;
+
     show_memdump();
     while (true) {
         struct key_event ke;
@@ -50,6 +52,9 @@ void memdump(void) {
                 case SC_END:
                     next_mb();
                     break;
+                case SC_Q:
+                    sys_process_exit();
+                    break;
             }
         }
     }
@@ -74,7 +79,7 @@ static void show_memdump(void) {
         memory_ptr -= BYTES_PER_LINE;
 
         for (int i = 0; i < BYTES_PER_LINE; i++) {
-            sys_console_putc(*memory_ptr);
+            sys_console_writec(*memory_ptr);
             memory_ptr++;
         }
 
