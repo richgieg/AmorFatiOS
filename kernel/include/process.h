@@ -13,7 +13,6 @@ enum process_state {
 
 void process_init(void);
 void process_create(void (*start)());
-void process_create2(void (*start)(), int console_index);
 void process_switch(enum process_state state);
 void process_exit(void);
 int process_get_console_index(void);
