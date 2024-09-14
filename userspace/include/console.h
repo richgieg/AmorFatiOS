@@ -41,6 +41,16 @@ enum vga_color {
 #define SC_LEFT_SHIFT 0x0012
 #define SC_RIGHT_SHIFT 0x0059
 
+#define SC_F1 0x0005
+#define SC_F2 0x0006
+#define SC_F3 0x0004
+#define SC_F4 0x000c
+#define SC_F5 0x0003
+#define SC_F6 0x000b
+#define SC_F7 0x0083
+#define SC_F8 0x000a
+#define SC_F9 0x0001
+#define SC_F10 0x0009
 #define SC_F11 0x0078
 #define SC_F12 0x0007
 

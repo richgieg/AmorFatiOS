@@ -11,17 +11,20 @@
 
 #define SC_LEFT_ALT 0x0011
 #define SC_RIGHT_ALT 0xe011
-#define SC_LEFT_SHIFT 0x0012
-#define SC_RIGHT_SHIFT 0x0059
-#define SC_TAB 0x000d
+#define SC_LEFT 0xe06b
+#define SC_RIGHT 0xe074
+#define SC_F1 0x0005
+#define SC_F2 0x0006
+#define SC_F3 0x0004
+#define SC_F4 0x000c
+#define SC_F5 0x0003
+#define SC_F6 0x000b
 
 static bool is_break;
 static bool is_extended;
 
 static bool is_left_alt_down;
 static bool is_right_alt_down;
-static bool is_left_shift_down;
-static bool is_right_shift_down;
 
 static void handle_key_press(u8 scancode, u8 is_extended) {
     u16 scancodew = 0;
@@ -42,34 +45,100 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
             is_right_alt_down = true;
             console_key_press(scancodew);
             break;
-        case SC_LEFT_SHIFT:
-            is_left_shift_down = true;
-            console_key_press(scancodew);
-            break;
-        case SC_RIGHT_SHIFT:
-            is_right_shift_down = true;
-            console_key_press(scancodew);
-            break;
-        case SC_TAB:
+        case SC_F1:
             if (is_left_alt_down || is_right_alt_down) {
-                if (is_left_shift_down || is_right_shift_down) {
-                    console_prev();
-                    // Ensure previous console knows if shift is pressed.
-                    if (is_left_shift_down) {
-                        console_key_press(SC_LEFT_SHIFT);
-                    }
-                    if (is_right_shift_down) {
-                        console_key_press(SC_RIGHT_SHIFT);
-                    }
-                } else {
-                    console_next();
-                    // Ensure next console doesn't think shift is still pressed.
-                    // That could happen if navigating to the previous console with
-                    // ALT+SHIFT+TAB, then back to the original console with ALT+TAB.
-                    console_key_release(SC_LEFT_SHIFT);
-                    console_key_release(SC_RIGHT_SHIFT);
+                console_switch_to(0);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
                 }
-                // Ensure previous/next console knows if alt is pressed.
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_F2:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(1);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_F3:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(2);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_F4:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(3);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_F5:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(4);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_F6:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(5);
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_LEFT:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_prev();
+                if (is_left_alt_down) {
+                    console_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    console_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                console_key_press(scancodew);
+            }
+            break;
+        case SC_RIGHT:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_next();
                 if (is_left_alt_down) {
                     console_key_press(SC_LEFT_ALT);
                 }
@@ -103,14 +172,6 @@ static void handle_key_release(u8 scancode, u8 is_extended) {
             break;
         case SC_RIGHT_ALT:
             is_right_alt_down = false;
-            console_key_release(scancodew);
-            break;
-        case SC_LEFT_SHIFT:
-            is_left_shift_down = false;
-            console_key_release(scancodew);
-            break;
-        case SC_RIGHT_SHIFT:
-            is_right_shift_down = false;
             console_key_release(scancodew);
             break;
         default:

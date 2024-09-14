@@ -4,7 +4,7 @@
 #include <bugcheck.h>
 #include <device/vga.h>
 
-#define NUM_CONSOLES 4
+#define NUM_CONSOLES 6
 #define NUM_CONSOLES_INC_DBG (NUM_CONSOLES + 1)
 #define DBG_CONSOLE_INDEX (NUM_CONSOLES_INC_DBG - 1)
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
@@ -510,7 +510,11 @@ void console_prev(void) {
         current_console_index + NUM_CONSOLES_INC_DBG - 1) % NUM_CONSOLES_INC_DBG;
 }
 
-void console_show_dbg(void) {
+void console_switch_to(int index) {
+    current_console_index = index;
+}
+
+void console_switch_to_dbg_and_repaint(void) {
     current_console_index = DBG_CONSOLE_INDEX;
     console_repaint();
 }
