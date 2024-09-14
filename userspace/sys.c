@@ -4,6 +4,7 @@
 #define PROCESS_CREATE_IN_CONSOLE   0x001d
 #define PROCESS_EXIT                0x0019
 #define PROCESS_WAIT_FOR_EXIT       0x001a
+#define PROCESS_GET_CONSOLE_INDEX   0x001f
 
 #define CONSOLE_CLEAR               0x0001
 #define CONSOLE_GET_BG_COLOR        0x0002
@@ -84,6 +85,17 @@ void sys_process_wait_for_exit(int pid) {
           "b" (pid)
         :
     );
+}
+
+int sys_process_get_console_index(void) {
+    int result;
+    __asm__(
+        "int 0x80"
+        : "=a" (result)
+        : "a" (PROCESS_GET_CONSOLE_INDEX)
+        :
+    );
+    return result;
 }
 
 enum vga_color sys_console_get_bg_color(void) {

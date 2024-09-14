@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys.h>
 #include <program/counter.h>
+#include <program/login.h>
 #include <program/memdump.h>
 #include <program/memmap.h>
 
@@ -12,7 +13,7 @@ static char * trim(char *str);
 void shell(void) {
     char buf[2048];
 
-    puts("AmorFatiOS Shell v0.0.1\n\n");
+    // puts("AmorFatiOS Shell v0.0.1\n\n");
 
     while (true) {
         puts("$> ");
@@ -27,6 +28,13 @@ void shell(void) {
             sys_process_exit();
         } else if (strcmp(trimmed, "counter") == 0) {
             int pid = sys_process_create(counter);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
+        } else if (strcmp(trimmed, "login") == 0) {
+            int pid = sys_process_create(login);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {
