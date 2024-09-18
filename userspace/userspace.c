@@ -1,6 +1,5 @@
 #include <userspace.h>
 #include <sys.h>
-// #include <program/shell_spawner.h>
 #include <program/conproc.h>
 
 void userspace_init(void) {
