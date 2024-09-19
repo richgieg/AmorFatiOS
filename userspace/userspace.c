@@ -1,15 +1,14 @@
 #include <userspace.h>
 #include <sys.h>
-#include <program/conproc.h>
+#include <stdio.h>
+#include <program/login.h>
 
 void userspace_init(void) {
-    int num_consoles = sys_console_get_num_consoles();
-
-    for (int i = 0; i < num_consoles; i++) {
-        sys_process_create_in_console(conproc, i);
-    }
-
-    while (1) {
-        // TODO: Do some userspace stuff here.
+    while (true) {
+        puts("AmorFatiOS v0.0.1 (vt");
+        sys_console_putb(sys_process_get_console_index() + 1);
+        puts(")\n\n");
+        int pid = sys_process_create(login);
+        sys_process_wait_for_exit(pid);
     }
 }

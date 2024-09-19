@@ -4,38 +4,36 @@
 #include <console.h>
 
 #define PROCESS_CREATE              0x0000
-#define PROCESS_CREATE_IN_CONSOLE   0x001d
-#define PROCESS_EXIT                0x0019
-#define PROCESS_WAIT_FOR_EXIT       0x001a
-#define PROCESS_GET_CONSOLE_INDEX   0x001f
+#define PROCESS_EXIT                0x0001
+#define PROCESS_WAIT_FOR_EXIT       0x0002
+#define PROCESS_GET_CONSOLE_INDEX   0x0003
 
-#define CONSOLE_CLEAR               0x0001
-#define CONSOLE_GET_BG_COLOR        0x0002
-#define CONSOLE_SET_BG_COLOR        0x0003
-#define CONSOLE_GET_TEXT_COLOR      0x0004
-#define CONSOLE_SET_TEXT_COLOR      0x0005
-#define CONSOLE_GET_COLUMN          0x001b
-#define CONSOLE_GET_ROW             0x001c
-#define CONSOLE_SET_POS             0x0006
-#define CONSOLE_WRITEC              0x0007
-#define CONSOLE_PUTC                0x0008
-#define CONSOLE_PUTS                0x0009
-#define CONSOLE_PUTB                0x000a
-#define CONSOLE_PUTW                0x000b
-#define CONSOLE_PUTDW               0x000c
-#define CONSOLE_PUTQW               0x000d
-#define CONSOLE_PUTP                0x000e
-#define CONSOLE_PUTC_AT             0x000f
-#define CONSOLE_PUTS_AT             0x0010
-#define CONSOLE_PUTB_AT             0x0011
-#define CONSOLE_PUTW_AT             0x0012
-#define CONSOLE_PUTDW_AT            0x0013
-#define CONSOLE_PUTQW_AT            0x0014
-#define CONSOLE_PUTP_AT             0x0015
-#define CONSOLE_READ_KEY_EVENT      0x0016
-#define CONSOLE_GET_NUM_COLUMNS     0x0017
-#define CONSOLE_GET_NUM_ROWS        0x0018
-#define CONSOLE_GET_NUM_CONSOLES    0x001e
+#define CONSOLE_CLEAR               0x0004
+#define CONSOLE_GET_BG_COLOR        0x0005
+#define CONSOLE_SET_BG_COLOR        0x0006
+#define CONSOLE_GET_TEXT_COLOR      0x0007
+#define CONSOLE_SET_TEXT_COLOR      0x0008
+#define CONSOLE_GET_COLUMN          0x0009
+#define CONSOLE_GET_ROW             0x000a
+#define CONSOLE_SET_POS             0x000b
+#define CONSOLE_WRITEC              0x000c
+#define CONSOLE_PUTC                0x000d
+#define CONSOLE_PUTS                0x000e
+#define CONSOLE_PUTB                0x000f
+#define CONSOLE_PUTW                0x0010
+#define CONSOLE_PUTDW               0x0011
+#define CONSOLE_PUTQW               0x0012
+#define CONSOLE_PUTP                0x0013
+#define CONSOLE_PUTC_AT             0x0014
+#define CONSOLE_PUTS_AT             0x0015
+#define CONSOLE_PUTB_AT             0x0016
+#define CONSOLE_PUTW_AT             0x0017
+#define CONSOLE_PUTDW_AT            0x0018
+#define CONSOLE_PUTQW_AT            0x0019
+#define CONSOLE_PUTP_AT             0x001a
+#define CONSOLE_READ_KEY_EVENT      0x001b
+#define CONSOLE_GET_NUM_COLUMNS     0x001c
+#define CONSOLE_GET_NUM_ROWS        0x001d
 
 u32 sys_dispatch(void) {
     u32 result = 0;
@@ -58,9 +56,6 @@ u32 sys_dispatch(void) {
     switch (syscall_num) {
         case PROCESS_CREATE:
             result = process_create((void (*)(void))arg0);
-            break;
-        case PROCESS_CREATE_IN_CONSOLE:
-            result = process_create_in_console((void (*)(void))arg0, arg1);
             break;
         case PROCESS_EXIT:
             process_exit();
@@ -148,9 +143,6 @@ u32 sys_dispatch(void) {
             break;
         case CONSOLE_GET_NUM_ROWS:
             result = console_get_num_rows();
-            break;
-        case CONSOLE_GET_NUM_CONSOLES:
-            result = console_get_num_consoles();
             break;
     }
     return result;

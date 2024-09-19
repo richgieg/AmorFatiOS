@@ -29,8 +29,11 @@ void kernel_init(void) {
     // Enable interrupts
     __asm__("sti");
 
-    // Create the initial userspace process.
-    process_create((void *)0x91000);
+    // Create the initial userspace process for each console.
+    int num_consoles = console_get_num_consoles();
+    for (int i = 0; i < num_consoles; i++) {
+        process_create_in_console((void *)0x91000, i);
+    }
 
     while (1) {
         // TODO: Do work here as needed.
