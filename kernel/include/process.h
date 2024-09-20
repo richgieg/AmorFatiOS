@@ -17,5 +17,6 @@ void process_switch(enum process_state state);
 void process_exit(void);
 void process_wait_for_exit(int pid);
 int process_get_console_index(void);
+void process_dbg_print_tree(void);
 
 #endif

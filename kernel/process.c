@@ -272,3 +272,21 @@ void remove_child(struct process *child) {
         }
     }
 }
+
+void dbg_print_tree(struct process *p, int level) {
+    for (int i = 0; i < level; i++) {
+        console_dbg_puts("----");
+    }
+    console_dbg_putp(p->start);
+    console_dbg_puts("\n");
+
+    struct process *c = p->first_child;
+    while (c) {
+        dbg_print_tree(c, level + 1);
+        c = c->next_sibling;
+    }
+}
+
+void process_dbg_print_tree(void) {
+    dbg_print_tree(&system_node->p, 0);
+}
