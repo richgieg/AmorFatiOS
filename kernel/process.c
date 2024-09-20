@@ -17,6 +17,9 @@ struct process {
     u32 user_esp;
     int console_index;
     int waiting_for_exit_pid;
+    struct process *parent;
+    struct process *first_child;
+    struct process *next_sibling;
 };
 
 struct process_list_node {
@@ -32,9 +35,11 @@ static struct process_list_node *waiting_list;
 static struct process_list_node *running_node;
 static struct process_list_node *system_node;
 
-void enqueue(struct process_list_node **head, struct process_list_node *node);
-struct process_list_node *dequeue(struct process_list_node **head);
-void remove(struct process_list_node **head, struct process_list_node *node);
+void enqueue_list_node(struct process_list_node **head, struct process_list_node *node);
+struct process_list_node *dequeue_list_node(struct process_list_node **head);
+void remove_list_node(struct process_list_node **head, struct process_list_node *node);
+void add_child(struct process *parent, struct process *child);
+void remove_child(struct process *child);
 
 void process_init(void) {
     system_node = &plnodes[0];
@@ -72,7 +77,11 @@ int process_create_in_console(void (*start)(), int console_index) {
     p->kernel_esp = p->kernel_esp_bottom;
     p->user_esp = p->kernel_esp + STACK_SIZE;
     p->console_index = console_index;
-    enqueue(&runnable_list, &plnodes[index]);
+    p->parent = &running_node->p;
+    p->first_child = NULL;
+    p->next_sibling = NULL;
+    add_child(&running_node->p, p);
+    enqueue_list_node(&runnable_list, &plnodes[index]);
     return index;
 }
 
@@ -85,23 +94,23 @@ void process_switch(enum process_state state) {
         if (waiting_node->p.state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
             if (console_has_key_event(waiting_node->p.console_index)) {
                 waiting_node->p.state = PROCESS_STATE_RUNNABLE;
-                remove(&waiting_list, waiting_node);
-                enqueue(&runnable_list, waiting_node);
+                remove_list_node(&waiting_list, waiting_node);
+                enqueue_list_node(&runnable_list, waiting_node);
                 break;
             }
         }
         if (waiting_node->p.state == PROCESS_STATE_WAITING_FOR_EXIT) {
             if (plnodes[waiting_node->p.waiting_for_exit_pid].p.state == PROCESS_STATE_NULL) {
                 waiting_node->p.state = PROCESS_STATE_RUNNABLE;
-                remove(&waiting_list, waiting_node);
-                enqueue(&runnable_list, waiting_node);
+                remove_list_node(&waiting_list, waiting_node);
+                enqueue_list_node(&runnable_list, waiting_node);
                 break;
             }
         }
         waiting_node = waiting_node->next;
     }
 
-    struct process_list_node *next_node = dequeue(&runnable_list);
+    struct process_list_node *next_node = dequeue_list_node(&runnable_list);
 
     if (!next_node) {
         // If currently running the system process, just stay on it.
@@ -113,11 +122,13 @@ void process_switch(enum process_state state) {
     }
 
     switch (state) {
+        // The process exited.
         case PROCESS_STATE_NULL:
-            // The process exited.
+            remove_child(&running_node->p);
+            add_child(running_node->p.parent, running_node->p.first_child);
             break;
         case PROCESS_STATE_RUNNABLE:
-            enqueue(&runnable_list, running_node);
+            enqueue_list_node(&runnable_list, running_node);
             break;
         case PROCESS_STATE_RUNNING:
             BUGCHECK("Cannot pass PROCESS_STATE_RUNNING to process_switch.");
@@ -125,7 +136,7 @@ void process_switch(enum process_state state) {
         case PROCESS_STATE_WAITING:
         case PROCESS_STATE_WAITING_FOR_EXIT:
         case PROCESS_STATE_WAITING_FOR_KEY_EVENT:
-            enqueue(&waiting_list, running_node);
+            enqueue_list_node(&waiting_list, running_node);
             break;
     }
 
@@ -196,7 +207,7 @@ int process_get_console_index(void) {
     return running_node->p.console_index;
 }
 
-void enqueue(struct process_list_node **head, struct process_list_node *node) {
+void enqueue_list_node(struct process_list_node **head, struct process_list_node *node) {
     if (*head) {
         struct process_list_node *n = *head;
         while (n->next) {
@@ -209,7 +220,7 @@ void enqueue(struct process_list_node **head, struct process_list_node *node) {
     node->next = NULL;
 }
 
-struct process_list_node *dequeue(struct process_list_node **head) {
+struct process_list_node *dequeue_list_node(struct process_list_node **head) {
     struct process_list_node *node = *head;
     if (node) {
         *head = node->next;
@@ -218,7 +229,7 @@ struct process_list_node *dequeue(struct process_list_node **head) {
     return node;
 }
 
-void remove(struct process_list_node **head, struct process_list_node *node) {
+void remove_list_node(struct process_list_node **head, struct process_list_node *node) {
     if (!head) {
         return;
     }
@@ -234,4 +245,30 @@ void remove(struct process_list_node **head, struct process_list_node *node) {
         }
     }
     node->next = NULL;
+}
+
+void add_child(struct process *parent, struct process *child) {
+    if (parent->first_child) {
+        struct process *c = parent->first_child;
+        while (c->next_sibling) {
+            c = c->next_sibling;
+        }
+        c->next_sibling = child;
+    } else {
+        parent->first_child = child;
+    }
+}
+
+void remove_child(struct process *child) {
+    if (child->parent->first_child == child) {
+        child->parent->first_child = NULL;
+    } else {
+        struct process *prev = child->parent->first_child;
+        while (prev && prev->next_sibling != child) {
+            prev = prev->next_sibling;
+        }
+        if (prev) {
+            prev->next_sibling = child->next_sibling;
+        }
+    }
 }
