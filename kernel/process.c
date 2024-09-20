@@ -18,6 +18,7 @@ struct process {
     u32 user_esp;
     int console_index;
     int waiting_for_exit_pid;
+    bool has_pending_kill_signal;
     struct tree_node *tree_node;
     struct list_node *list_node;
 };
@@ -59,6 +60,7 @@ void process_init(void) {
     system_process->is_started = true;
     system_process->state = PROCESS_STATE_RUNNING;
     system_process->console_index = 0;
+    system_process->has_pending_kill_signal = false;
 
     system_process->list_node = &list_nodes[0];
     system_process->list_node->process = system_process;
@@ -107,6 +109,7 @@ int process_create_in_console(void (*start)(), int console_index) {
     process->kernel_esp = process->kernel_esp_bottom;
     process->user_esp = process->kernel_esp + STACK_SIZE;
     process->console_index = console_index;
+    process->has_pending_kill_signal = false;
 
     process->list_node = &list_nodes[index];
     process->list_node->process = process;
@@ -125,13 +128,27 @@ int process_create_in_console(void (*start)(), int console_index) {
 }
 
 void process_switch(enum process_state new_state) {
+    // Process pending kill signals.
+    // TODO: Make this better!
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes[i].has_pending_kill_signal) {
+            processes[i].state = PROCESS_STATE_NULL;
+            remove_process_from_tree(&processes[i]);
+            console_handle_process_kill(processes[i].console_index,
+                                        processes[i].pid);
+            remove_list_node(&runnable_list, processes[i].list_node);
+            remove_list_node(&waiting_list, processes[i].list_node);
+        }
+    }
+
     struct list_node *waiting_node = waiting_list;
 
     // Find a waiting process that is ready to run (if any) and move it to the
     // runnable queue.
     while (waiting_node) {
         if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
-            if (console_has_key_event(waiting_node->process->console_index)) {
+            if (console_has_key_event_for_process(waiting_node->process->console_index,
+                                                  waiting_node->process->pid)) {
                 waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
@@ -162,6 +179,8 @@ void process_switch(enum process_state new_state) {
 
     switch (new_state) {
         case PROCESS_STATE_NULL: // process is exiting
+            console_handle_process_exit(running_process->console_index,
+                                        running_process->pid);
             remove_process_from_tree(running_process);
             break;
         case PROCESS_STATE_RUNNABLE:
@@ -197,6 +216,8 @@ void process_switch(enum process_state new_state) {
 
     if (!running_process->is_started) {
         running_process->is_started = true;
+        console_handle_process_start(running_process->console_index,
+                                     running_process->pid);
 
         // Start the process.
         __asm__(
@@ -276,6 +297,21 @@ void process_get_child_pids(int pid, int *buf, size_t buf_size, int *count) {
     }
 
     *count = c;
+}
+
+int process_get_current_pid(void) {
+    return running_process->pid;
+}
+
+void process_send_kill_signal(int pid) {
+    if (pid < 0 || pid >= MAX_PROCESSES) {
+        return;
+    }
+    struct process *process = &processes[pid];
+    if (process->state == PROCESS_STATE_NULL) {
+        return;
+    }
+    process->has_pending_kill_signal = true;
 }
 
 static void enqueue_list_node(struct list_node **head, struct list_node *node) {

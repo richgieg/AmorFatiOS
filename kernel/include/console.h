@@ -58,12 +58,15 @@ void console_next(void);
 void console_prev(void);
 void console_switch_to(int index);
 void console_switch_to_dbg_and_repaint(void);
-void console_key_press(u16 scancode);
-void console_key_release(u16 scancode);
+void console_handle_key_press(u16 scancode);
+void console_handle_key_release(u16 scancode);
 void console_read_key_event(struct key_event *ke);
-bool console_has_key_event(int index);
+bool console_has_key_event_for_process(int index, int pid);
 int console_get_num_columns(void);
 int console_get_num_rows(void);
 int console_get_num_consoles(void);
+void console_handle_process_start(int index, int pid);
+void console_handle_process_exit(int index, int pid);
+void console_handle_process_kill(int index, int pid);
 
 #endif

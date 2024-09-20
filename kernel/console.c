@@ -9,12 +9,32 @@
 #define DBG_CONSOLE_INDEX (NUM_CONSOLES_INC_DBG - 1)
 #define KEY_EVENT_BUFFER_MAX_EVENTS 256
 
+#define SC_LEFT_CTRL 0x0014
+#define SC_RIGHT_CTRL 0xe014
+#define SC_LEFT_ALT 0x0011
+#define SC_RIGHT_ALT 0xe011
+#define SC_LEFT 0xe06b
+#define SC_RIGHT 0xe074
+#define SC_F1 0x0005
+#define SC_F2 0x0006
+#define SC_F3 0x0004
+#define SC_F4 0x000c
+#define SC_F5 0x0003
+#define SC_F6 0x000b
+#define SC_C 0x0021
+
 static const char hex_digits[] = "0123456789ABCDEF";
 
 struct key_event_buffer {
     struct key_event events[KEY_EVENT_BUFFER_MAX_EVENTS];
     u8 head;
     u8 tail;
+};
+
+// TODO: Use a linked list instead once we have a memory manager.
+struct focus_list {
+    int pids[64];
+    int current_index;
 };
 
 struct console {
@@ -24,10 +44,16 @@ struct console {
     u8 col;
     u8 row;
     struct key_event_buffer keb;
+    struct focus_list focus_list;
 } __attribute__((aligned(4096)));
 
 static struct console consoles[NUM_CONSOLES_INC_DBG];
 static int current_console_index;
+
+static bool is_left_alt_down;
+static bool is_right_alt_down;
+static bool is_left_ctrl_down;
+static bool is_right_ctrl_down;
 
 void console_init(void) {
     enum vga_color bg_color = VGA_COLOR_CYAN;
@@ -40,6 +66,7 @@ void console_init(void) {
         for (int j = 0; j < VGA_ROWS * VGA_COLUMNS; j++) {
             consoles[i].buffer[j] = entry;
         }
+        consoles[i].focus_list.current_index = -1;
     }
 
     bg_color = VGA_COLOR_BLACK;
@@ -519,7 +546,7 @@ void console_switch_to_dbg_and_repaint(void) {
     console_repaint();
 }
 
-void console_key_press(u16 scancode) {
+static void buffer_key_press(u16 scancode) {
     if (current_console_index == DBG_CONSOLE_INDEX) {
         return;
     }
@@ -532,7 +559,7 @@ void console_key_press(u16 scancode) {
     }
 }
 
-void console_key_release(u16 scancode) {
+static void buffer_key_release(u16 scancode) {
     if (current_console_index == DBG_CONSOLE_INDEX) {
         return;
     }
@@ -545,8 +572,177 @@ void console_key_release(u16 scancode) {
     }
 }
 
+// REMINDER: This runs in interrupt context!
+void console_handle_key_press(u16 scancode) {
+    switch (scancode) {
+        case SC_LEFT_CTRL:
+            is_left_ctrl_down = true;
+            buffer_key_press(scancode);
+            break;
+        case SC_RIGHT_CTRL:
+            is_right_ctrl_down = true;
+            buffer_key_press(scancode);
+            break;
+        case SC_LEFT_ALT:
+            is_left_alt_down = true;
+            buffer_key_press(scancode);
+            break;
+        case SC_RIGHT_ALT:
+            is_right_alt_down = true;
+            buffer_key_press(scancode);
+            break;
+        case SC_F1:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(0);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_F2:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(1);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_F3:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(2);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_F4:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(3);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_F5:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(4);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_F6:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_switch_to(5);
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_LEFT:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_prev();
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_RIGHT:
+            if (is_left_alt_down || is_right_alt_down) {
+                console_next();
+                if (is_left_alt_down) {
+                    buffer_key_press(SC_LEFT_ALT);
+                }
+                if (is_right_alt_down) {
+                    buffer_key_press(SC_RIGHT_ALT);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        case SC_C:
+            if (is_left_ctrl_down || is_right_ctrl_down) {
+                if (current_console_index != DBG_CONSOLE_INDEX) {
+                    struct console *con = &consoles[current_console_index];
+                    int pid = con->focus_list.pids[con->focus_list.current_index];
+                    process_send_kill_signal(pid);
+                }
+            } else {
+                buffer_key_press(scancode);
+            }
+            break;
+        default:
+            buffer_key_press(scancode);
+            break;
+    }
+}
+
+// REMINDER: This runs in interrupt context!
+void console_handle_key_release(u16 scancode) {
+    switch (scancode) {
+        case SC_LEFT_CTRL:
+            is_left_ctrl_down = false;
+            buffer_key_release(scancode);
+            break;
+        case SC_RIGHT_CTRL:
+            is_right_ctrl_down = false;
+            buffer_key_release(scancode);
+            break;
+        case SC_LEFT_ALT:
+            is_left_alt_down = false;
+            buffer_key_release(scancode);
+            break;
+        case SC_RIGHT_ALT:
+            is_right_alt_down = false;
+            buffer_key_release(scancode);
+            break;
+        default:
+            buffer_key_release(scancode);
+            break;
+    }
+}
+
 void console_read_key_event(struct key_event *ke) {
     struct console *con = &consoles[process_get_console_index()];
+    int pid = process_get_current_pid();
+    if (con->focus_list.pids[con->focus_list.current_index] != pid) {
+        process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
+    }
     if (con->keb.head == con->keb.tail) {
         process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
     }
@@ -554,8 +750,11 @@ void console_read_key_event(struct key_event *ke) {
     con->keb.head = (con->keb.head + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;
 }
 
-bool console_has_key_event(int index) {
+bool console_has_key_event_for_process(int index, int pid) {
     struct console *con = &consoles[index];
+    if (con->focus_list.pids[con->focus_list.current_index] != pid) {
+        return false;
+    }
     return con->keb.head != con->keb.tail;
 }
 
@@ -569,4 +768,53 @@ int console_get_num_rows(void) {
 
 int console_get_num_consoles(void) {
     return NUM_CONSOLES;
+}
+
+/**
+ * Adds a pid to the end of a console's focus list. After this operation, the
+ * associated process will have focus on the console.
+ */
+static void add_pid_to_focus_list(int index, int pid) {
+    struct console *con = &consoles[index];
+    int max_entries = sizeof(con->focus_list.pids) / sizeof(con->focus_list.pids[0]);
+    con->focus_list.current_index++;
+    if (con->focus_list.current_index == max_entries) {
+        BUGCHECK("Console focus list overflow.");
+    }
+    con->focus_list.pids[con->focus_list.current_index] = pid;
+}
+
+/**
+ * Removes a pid from a console's focus list. If the process currently has
+ * focus then focus will be transferred to the pid that is immediately before
+ * it in the focus list.
+ */
+static void remove_pid_from_focus_list(int index, int pid) {
+    struct console *con = &consoles[index];
+    for (int i = 0; i <= con->focus_list.current_index; i++) {
+        if (con->focus_list.pids[i] == pid) {
+            // Remove entry by shifting following entries over by one.
+            for (int j = i; j < con->focus_list.current_index; j++) {
+                con->focus_list.pids[j] = con->focus_list.pids[j + 1];
+            }
+            con->focus_list.current_index--;
+            break;
+        }
+    }
+}
+
+void console_handle_process_start(int index, int pid) {
+    add_pid_to_focus_list(index, pid);
+}
+
+void console_handle_process_exit(int index, int pid) {
+    remove_pid_from_focus_list(index, pid);
+}
+
+void console_handle_process_kill(int index, int pid) {
+    struct console *con = &consoles[index];
+    if (con->focus_list.pids[con->focus_list.current_index] == pid) {
+        _console_putc(index, '\n');
+    }
+    console_handle_process_exit(index, pid);
 }

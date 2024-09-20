@@ -20,5 +20,7 @@ void process_exit(void);
 void process_wait_for_exit(int pid);
 int process_get_console_index(void);
 void process_get_child_pids(int pid, int *buf, size_t buf_size, int *count);
+int process_get_current_pid(void);
+void process_send_kill_signal(int pid);
 
 #endif
