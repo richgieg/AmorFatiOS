@@ -17,42 +17,69 @@ struct process {
     u32 user_esp;
     int console_index;
     int waiting_for_exit_pid;
-    struct process *parent;
-    struct process *first_child;
-    struct process *next_sibling;
+    struct tree_node *tree_node;
+    struct list_node *list_node;
 };
 
-struct process_list_node {
-    struct process p;
-    struct process_list_node *next;
+struct tree_node {
+    struct process *process;
+    struct tree_node *parent;
+    struct tree_node *next_sibling;
+    struct tree_node *first_child;
+};
+
+struct list_node {
+    struct process *process;
+    struct list_node *next;
 };
 
 // Statically allocate all nodes for now (until there's memory manager).
-static struct process_list_node plnodes[MAX_PROCESSES];
+static struct process processes[MAX_PROCESSES];
+static struct tree_node tree_nodes[MAX_PROCESSES];
+static struct list_node list_nodes[MAX_PROCESSES];
 
-static struct process_list_node *runnable_list;
-static struct process_list_node *waiting_list;
-static struct process_list_node *running_node;
-static struct process_list_node *system_node;
+static struct process *system_process;
+static struct process *running_process;
 
-void enqueue_list_node(struct process_list_node **head, struct process_list_node *node);
-struct process_list_node *dequeue_list_node(struct process_list_node **head);
-void remove_list_node(struct process_list_node **head, struct process_list_node *node);
-void add_child(struct process *parent, struct process *child);
-void remove_child(struct process *child);
+static struct tree_node tree_root;
+
+static struct list_node *runnable_list;
+static struct list_node *waiting_list;
+
+static void enqueue_list_node(struct list_node **head, struct list_node *node);
+static struct list_node *dequeue_list_node(struct list_node **head);
+static void remove_list_node(struct list_node **head, struct list_node *node);
+static void add_child_to_parent(struct tree_node *parent, struct tree_node *child);
+static void remove_process_from_tree(struct process *process);
 
 void process_init(void) {
-    system_node = &plnodes[0];
-    system_node->p.is_started = true;
-    system_node->p.state = PROCESS_STATE_RUNNING;
-    system_node->p.console_index = 0;
-    running_node = system_node;
+    system_process = &processes[0];
+    system_process->is_started = true;
+    system_process->state = PROCESS_STATE_RUNNING;
+    system_process->console_index = 0;
+
+    system_process->list_node = &list_nodes[0];
+    system_process->list_node->process = system_process;
+    system_process->list_node->next = NULL;
+
+    system_process->tree_node = &tree_nodes[0];
+    system_process->tree_node->process = system_process;
+    system_process->tree_node->parent = &tree_root;
+    system_process->tree_node->next_sibling = NULL;
+    system_process->tree_node->first_child = NULL;
+
+    tree_root.process = NULL;
+    tree_root.parent = NULL;
+    tree_root.next_sibling = NULL;
+    tree_root.first_child = system_process->tree_node;
+
+    running_process = system_process;
 }
 
-static int find_available_process_list_node_index() {
+static int find_available_process_index() {
     int index;
     for (index = 0; index < MAX_PROCESSES; index++) {
-        if (plnodes[index].p.state == PROCESS_STATE_NULL) {
+        if (processes[index].state == PROCESS_STATE_NULL) {
             break;
         }
     }
@@ -60,48 +87,57 @@ static int find_available_process_list_node_index() {
 }
 
 int process_create(void (*start)()) {
-    return process_create_in_console(
-        start, running_node->p.console_index);
+    return process_create_in_console(start, running_process->console_index);
 }
 
 int process_create_in_console(void (*start)(), int console_index) {
-    int index = find_available_process_list_node_index();
+    int index = find_available_process_index();
     if (index == -1) {
         return -1;
     }
-    struct process *p = &plnodes[index].p;
-    p->start = start;
-    p->is_started = false;
-    p->state = PROCESS_STATE_RUNNABLE;
-    p->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);
-    p->kernel_esp = p->kernel_esp_bottom;
-    p->user_esp = p->kernel_esp + STACK_SIZE;
-    p->console_index = console_index;
-    p->parent = &running_node->p;
-    p->first_child = NULL;
-    p->next_sibling = NULL;
-    add_child(&running_node->p, p);
-    enqueue_list_node(&runnable_list, &plnodes[index]);
+
+    struct process *process = &processes[index];
+    process->start = start;
+    process->is_started = false;
+    process->state = PROCESS_STATE_RUNNABLE;
+    process->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);
+    process->kernel_esp = process->kernel_esp_bottom;
+    process->user_esp = process->kernel_esp + STACK_SIZE;
+    process->console_index = console_index;
+
+    process->list_node = &list_nodes[index];
+    process->list_node->process = process;
+    process->list_node->next = NULL;
+
+    process->tree_node = &tree_nodes[index];
+    process->tree_node->process = process;
+    process->tree_node->parent = running_process->tree_node;
+    process->tree_node->next_sibling = NULL;
+    process->tree_node->first_child = NULL;
+
+    add_child_to_parent(running_process->tree_node, process->tree_node);
+    enqueue_list_node(&runnable_list, process->list_node);
+
     return index;
 }
 
-void process_switch(enum process_state state) {
-    struct process_list_node *waiting_node = waiting_list;
+void process_switch(enum process_state new_state) {
+    struct list_node *waiting_node = waiting_list;
 
     // Find a waiting process that is ready to run (if any) and move it to the
     // runnable queue.
     while (waiting_node) {
-        if (waiting_node->p.state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
-            if (console_has_key_event(waiting_node->p.console_index)) {
-                waiting_node->p.state = PROCESS_STATE_RUNNABLE;
+        if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
+            if (console_has_key_event(waiting_node->process->console_index)) {
+                waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
                 break;
             }
         }
-        if (waiting_node->p.state == PROCESS_STATE_WAITING_FOR_EXIT) {
-            if (plnodes[waiting_node->p.waiting_for_exit_pid].p.state == PROCESS_STATE_NULL) {
-                waiting_node->p.state = PROCESS_STATE_RUNNABLE;
+        if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_EXIT) {
+            if (processes[waiting_node->process->waiting_for_exit_pid].state == PROCESS_STATE_NULL) {
+                waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
                 break;
@@ -110,25 +146,23 @@ void process_switch(enum process_state state) {
         waiting_node = waiting_node->next;
     }
 
-    struct process_list_node *next_node = dequeue_list_node(&runnable_list);
+    struct list_node *next_node = dequeue_list_node(&runnable_list);
 
     if (!next_node) {
         // If currently running the system process, just stay on it.
-        if (running_node == system_node) {
+        if (running_process == system_process) {
             return;
         }
         // This should never happen, since the system process never dies.
         BUGCHECK("Could not find a runnable process.");
     }
 
-    switch (state) {
-        // The process exited.
-        case PROCESS_STATE_NULL:
-            remove_child(&running_node->p);
-            add_child(running_node->p.parent, running_node->p.first_child);
+    switch (new_state) {
+        case PROCESS_STATE_NULL: // process is exiting
+            remove_process_from_tree(running_process);
             break;
         case PROCESS_STATE_RUNNABLE:
-            enqueue_list_node(&runnable_list, running_node);
+            enqueue_list_node(&runnable_list, running_process->list_node);
             break;
         case PROCESS_STATE_RUNNING:
             BUGCHECK("Cannot pass PROCESS_STATE_RUNNING to process_switch.");
@@ -136,30 +170,30 @@ void process_switch(enum process_state state) {
         case PROCESS_STATE_WAITING:
         case PROCESS_STATE_WAITING_FOR_EXIT:
         case PROCESS_STATE_WAITING_FOR_KEY_EVENT:
-            enqueue_list_node(&waiting_list, running_node);
+            enqueue_list_node(&waiting_list, running_process->list_node);
             break;
     }
 
-    running_node->p.state = state;
+    running_process->state = new_state;
 
     // Save the context of the running process.
     __asm__ volatile(
         "pushfd;"
         "pushad;"
         "mov %[old_esp], esp;"
-        : [old_esp] "=m" (running_node->p.kernel_esp)
+        : [old_esp] "=m" (running_process->kernel_esp)
         :
         : "memory"
     );
 
     // Switch to the next process.
-    running_node = next_node;
-    running_node->p.state = PROCESS_STATE_RUNNING;
+    running_process = next_node->process;
+    running_process->state = PROCESS_STATE_RUNNING;
 
-    tss_set_kernel_stack(running_node->p.kernel_esp_bottom);
+    tss_set_kernel_stack(running_process->kernel_esp_bottom);
 
-    if (!running_node->p.is_started) {
-        running_node->p.is_started = true;
+    if (!running_process->is_started) {
+        running_process->is_started = true;
 
         // Start the process.
         __asm__(
@@ -173,12 +207,12 @@ void process_switch(enum process_state state) {
             "push 0x23;"
             "push %[new_esp];"
             "pushfd;"
-            "ord [esp], 0x200;"
+            "ord [esp], 0x200;" // enables interrupts upon iret
             "push 0x1b;"
             "push %[start];"
             "iret;"
             :
-            : [new_esp] "m" (running_node->p.user_esp), [start] "m" (running_node->p.start)
+            : [new_esp] "m" (running_process->user_esp), [start] "m" (running_process->start)
             : "memory"
         );
     } else {
@@ -188,7 +222,7 @@ void process_switch(enum process_state state) {
             "popad;"
             "popfd;"
             :
-            : [new_esp] "m" (running_node->p.kernel_esp)
+            : [new_esp] "m" (running_process->kernel_esp)
             : "memory"
         );
     }
@@ -199,17 +233,17 @@ void process_exit(void) {
 }
 
 void process_wait_for_exit(int pid) {
-    running_node->p.waiting_for_exit_pid = pid;
+    running_process->waiting_for_exit_pid = pid;
     process_switch(PROCESS_STATE_WAITING_FOR_EXIT);
 }
 
 int process_get_console_index(void) {
-    return running_node->p.console_index;
+    return running_process->console_index;
 }
 
-void enqueue_list_node(struct process_list_node **head, struct process_list_node *node) {
+static void enqueue_list_node(struct list_node **head, struct list_node *node) {
     if (*head) {
-        struct process_list_node *n = *head;
+        struct list_node *n = *head;
         while (n->next) {
             n = n->next;
         }
@@ -220,8 +254,8 @@ void enqueue_list_node(struct process_list_node **head, struct process_list_node
     node->next = NULL;
 }
 
-struct process_list_node *dequeue_list_node(struct process_list_node **head) {
-    struct process_list_node *node = *head;
+static struct list_node *dequeue_list_node(struct list_node **head) {
+    struct list_node *node = *head;
     if (node) {
         *head = node->next;
         node->next = NULL;
@@ -229,14 +263,14 @@ struct process_list_node *dequeue_list_node(struct process_list_node **head) {
     return node;
 }
 
-void remove_list_node(struct process_list_node **head, struct process_list_node *node) {
+static void remove_list_node(struct list_node **head, struct list_node *node) {
     if (!head) {
         return;
     }
     if (*head == node) {
         *head = node->next;
     } else {
-        struct process_list_node *prev = *head;
+        struct list_node *prev = *head;
         while (prev && prev->next != node) {
             prev = prev->next;
         }
@@ -247,46 +281,63 @@ void remove_list_node(struct process_list_node **head, struct process_list_node 
     node->next = NULL;
 }
 
-void add_child(struct process *parent, struct process *child) {
+static void add_child_to_parent(struct tree_node *parent, struct tree_node *child) {
     if (parent->first_child) {
-        struct process *c = parent->first_child;
-        while (c->next_sibling) {
-            c = c->next_sibling;
+        struct tree_node *node = parent->first_child;
+        while (node->next_sibling) {
+            node = node->next_sibling;
         }
-        c->next_sibling = child;
+        node->next_sibling = child;
     } else {
         parent->first_child = child;
     }
 }
 
-void remove_child(struct process *child) {
-    if (child->parent->first_child == child) {
-        child->parent->first_child = NULL;
+static void remove_process_from_tree(struct process *process) {
+    struct tree_node *node = process->tree_node;
+
+    // Remove the node from parent's children.
+    if (node->parent->first_child == node) {
+        node->parent->first_child = NULL;
     } else {
-        struct process *prev = child->parent->first_child;
-        while (prev && prev->next_sibling != child) {
+        struct tree_node *prev = node->parent->first_child;
+        while (prev && prev->next_sibling != node) {
             prev = prev->next_sibling;
         }
         if (prev) {
-            prev->next_sibling = child->next_sibling;
+            prev->next_sibling = node->next_sibling;
         }
+    }
+
+    // Add node's children to root node's children.
+    add_child_to_parent(&tree_root, node->first_child);
+
+    // Set parent to tree root for all children.
+    struct tree_node *child = node->first_child;
+    while (child) {
+        child->parent = &tree_root;
+        child = child->next_sibling;
     }
 }
 
-void dbg_print_tree(struct process *p, int level) {
+static void dbg_print_tree2(struct tree_node *node, int level) {
     for (int i = 0; i < level; i++) {
         console_dbg_puts("----");
     }
-    console_dbg_putp(p->start);
+    console_dbg_putp(node->process->start);
     console_dbg_puts("\n");
 
-    struct process *c = p->first_child;
-    while (c) {
-        dbg_print_tree(c, level + 1);
-        c = c->next_sibling;
+    struct tree_node *child = node->first_child;
+    while (child) {
+        dbg_print_tree2(child, level + 1);
+        child = child->next_sibling;
     }
 }
 
 void process_dbg_print_tree(void) {
-    dbg_print_tree(&system_node->p, 0);
+    struct tree_node *child = tree_root.first_child;
+    while (child) {
+        dbg_print_tree2(child, 0);
+        child = child->next_sibling;
+    }
 }

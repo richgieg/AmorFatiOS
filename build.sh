@@ -38,6 +38,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-n
     userspace/libc/ctype.c \
     userspace/libc/stdio.c \
     userspace/libc/string.c \
+    userspace/program/conproc.c \
     userspace/program/counter.c \
     userspace/program/login.c \
     userspace/program/memdump.c \
