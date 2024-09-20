@@ -4,8 +4,6 @@
 #include <device/ps2.h>
 #include <device/pic.h>
 #include <console.h>
-#include <types.h>
-#include <process.h>
 
 #define EXTENDED_KEY_PREFIX 0xe0
 #define BREAK_CODE_PREFIX 0xf0
@@ -148,12 +146,6 @@ static void handle_key_press(u8 scancode, u8 is_extended) {
                 }
             } else {
                 console_key_press(scancodew);
-            }
-            break;
-        // TODO: Remove this temporary process tree print test.
-        case 0xe075: // up arrow
-            if (is_left_alt_down || is_right_alt_down) {
-                process_dbg_print_tree();
             }
             break;
         default:

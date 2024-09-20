@@ -9,6 +9,7 @@
 #define STACK_AREA_BASE 0x100000
 
 struct process {
+    int pid;
     void (*start)();
     bool is_started;
     enum process_state state;
@@ -54,6 +55,7 @@ static void remove_process_from_tree(struct process *process);
 
 void process_init(void) {
     system_process = &processes[0];
+    system_process->pid = 0;
     system_process->is_started = true;
     system_process->state = PROCESS_STATE_RUNNING;
     system_process->console_index = 0;
@@ -97,6 +99,7 @@ int process_create_in_console(void (*start)(), int console_index) {
     }
 
     struct process *process = &processes[index];
+    process->pid = index; // this approach is only temporary
     process->start = start;
     process->is_started = false;
     process->state = PROCESS_STATE_RUNNABLE;
@@ -241,6 +244,40 @@ int process_get_console_index(void) {
     return running_process->console_index;
 }
 
+static struct process *get_process_by_pid(int pid) {
+    if (pid < 0 || pid >= MAX_PROCESSES) {
+        return NULL;
+    }
+    if (processes[pid].state == PROCESS_STATE_NULL) {
+        return NULL;
+    }
+    return &processes[pid];
+}
+
+void process_get_child_pids(int pid, int *buf, size_t buf_size, int *count) {
+    struct tree_node *child;
+    int max = buf_size / sizeof(int);
+    int c = 0;
+
+    if (pid == -1) {
+        child = tree_root.first_child;
+    } else {
+        struct process *process = get_process_by_pid(pid);
+        if (!process) {
+            return;
+        }
+        child = process->tree_node->first_child;
+    }
+
+    while (child && c < max) {
+        buf[c] = child->process->pid;
+        child = child->next_sibling;
+        c++;
+    }
+
+    *count = c;
+}
+
 static void enqueue_list_node(struct list_node **head, struct list_node *node) {
     if (*head) {
         struct list_node *n = *head;
@@ -316,28 +353,6 @@ static void remove_process_from_tree(struct process *process) {
     struct tree_node *child = node->first_child;
     while (child) {
         child->parent = &tree_root;
-        child = child->next_sibling;
-    }
-}
-
-static void dbg_print_tree2(struct tree_node *node, int level) {
-    for (int i = 0; i < level; i++) {
-        console_dbg_puts("----");
-    }
-    console_dbg_putp(node->process->start);
-    console_dbg_puts("\n");
-
-    struct tree_node *child = node->first_child;
-    while (child) {
-        dbg_print_tree2(child, level + 1);
-        child = child->next_sibling;
-    }
-}
-
-void process_dbg_print_tree(void) {
-    struct tree_node *child = tree_root.first_child;
-    while (child) {
-        dbg_print_tree2(child, 0);
         child = child->next_sibling;
     }
 }

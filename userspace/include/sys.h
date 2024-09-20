@@ -7,6 +7,7 @@ int sys_process_create(void (*start)());
 void sys_process_exit(void);
 void sys_process_wait_for_exit(int pid);
 int sys_process_get_console_index(void);
+void sys_process_get_child_pids(int pid, int *buf, size_t buf_size, int *count);
 
 void sys_console_clear(void);
 enum vga_color sys_console_get_bg_color(void);

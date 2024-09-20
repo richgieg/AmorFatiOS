@@ -7,33 +7,34 @@
 #define PROCESS_EXIT                0x0001
 #define PROCESS_WAIT_FOR_EXIT       0x0002
 #define PROCESS_GET_CONSOLE_INDEX   0x0003
+#define PROCESS_GET_CHILD_PIDS      0x0004
 
-#define CONSOLE_CLEAR               0x0004
-#define CONSOLE_GET_BG_COLOR        0x0005
-#define CONSOLE_SET_BG_COLOR        0x0006
-#define CONSOLE_GET_TEXT_COLOR      0x0007
-#define CONSOLE_SET_TEXT_COLOR      0x0008
-#define CONSOLE_GET_COLUMN          0x0009
-#define CONSOLE_GET_ROW             0x000a
-#define CONSOLE_SET_POS             0x000b
-#define CONSOLE_WRITEC              0x000c
-#define CONSOLE_PUTC                0x000d
-#define CONSOLE_PUTS                0x000e
-#define CONSOLE_PUTB                0x000f
-#define CONSOLE_PUTW                0x0010
-#define CONSOLE_PUTDW               0x0011
-#define CONSOLE_PUTQW               0x0012
-#define CONSOLE_PUTP                0x0013
-#define CONSOLE_PUTC_AT             0x0014
-#define CONSOLE_PUTS_AT             0x0015
-#define CONSOLE_PUTB_AT             0x0016
-#define CONSOLE_PUTW_AT             0x0017
-#define CONSOLE_PUTDW_AT            0x0018
-#define CONSOLE_PUTQW_AT            0x0019
-#define CONSOLE_PUTP_AT             0x001a
-#define CONSOLE_READ_KEY_EVENT      0x001b
-#define CONSOLE_GET_NUM_COLUMNS     0x001c
-#define CONSOLE_GET_NUM_ROWS        0x001d
+#define CONSOLE_CLEAR               0x0005
+#define CONSOLE_GET_BG_COLOR        0x0006
+#define CONSOLE_SET_BG_COLOR        0x0007
+#define CONSOLE_GET_TEXT_COLOR      0x0008
+#define CONSOLE_SET_TEXT_COLOR      0x0009
+#define CONSOLE_GET_COLUMN          0x000a
+#define CONSOLE_GET_ROW             0x000b
+#define CONSOLE_SET_POS             0x000c
+#define CONSOLE_WRITEC              0x000d
+#define CONSOLE_PUTC                0x000e
+#define CONSOLE_PUTS                0x000f
+#define CONSOLE_PUTB                0x0010
+#define CONSOLE_PUTW                0x0011
+#define CONSOLE_PUTDW               0x0012
+#define CONSOLE_PUTQW               0x0013
+#define CONSOLE_PUTP                0x0014
+#define CONSOLE_PUTC_AT             0x0015
+#define CONSOLE_PUTS_AT             0x0016
+#define CONSOLE_PUTB_AT             0x0017
+#define CONSOLE_PUTW_AT             0x0018
+#define CONSOLE_PUTDW_AT            0x0019
+#define CONSOLE_PUTQW_AT            0x001a
+#define CONSOLE_PUTP_AT             0x001b
+#define CONSOLE_READ_KEY_EVENT      0x001c
+#define CONSOLE_GET_NUM_COLUMNS     0x001d
+#define CONSOLE_GET_NUM_ROWS        0x001e
 
 u32 sys_dispatch(void) {
     u32 result = 0;
@@ -65,6 +66,9 @@ u32 sys_dispatch(void) {
             break;
         case PROCESS_GET_CONSOLE_INDEX:
             result = process_get_console_index();
+            break;
+        case PROCESS_GET_CHILD_PIDS:
+            process_get_child_pids(arg0, (int *)arg1, arg2, (int*)arg3);
             break;
         case CONSOLE_CLEAR:
             console_clear();

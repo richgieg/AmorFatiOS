@@ -1,6 +1,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <types.h>
+
 enum process_state {
     PROCESS_STATE_NULL,
     PROCESS_STATE_RUNNING,
@@ -17,6 +19,6 @@ void process_switch(enum process_state new_state);
 void process_exit(void);
 void process_wait_for_exit(int pid);
 int process_get_console_index(void);
-void process_dbg_print_tree(void);
+void process_get_child_pids(int pid, int *buf, size_t buf_size, int *count);
 
 #endif
