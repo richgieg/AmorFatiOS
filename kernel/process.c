@@ -14,7 +14,6 @@ struct process {
     enum process_state state;
     void *kernel_stack;
     void *user_stack;
-    u32 kernel_esp_bottom;
     u32 kernel_esp;
     u32 user_esp;
     int console_index;
@@ -113,8 +112,7 @@ int process_create_in_console(void (*start)(), int console_index, bool is_killab
     process->is_started = false;
     process->state = PROCESS_STATE_RUNNABLE;
     process->kernel_stack = mm_alloc_page();
-    process->kernel_esp_bottom = (u32)process->kernel_stack + PAGE_SIZE;
-    process->kernel_esp = process->kernel_esp_bottom;
+    process->kernel_esp = (u32)process->kernel_stack + PAGE_SIZE;
     process->user_stack = mm_alloc_page();
     process->user_esp = (u32)process->user_stack + PAGE_SIZE;
     process->console_index = console_index;
