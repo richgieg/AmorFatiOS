@@ -3,16 +3,17 @@
 #include <bugcheck.h>
 #include <console.h>
 #include <tss.h>
+#include <mm.h>
 
 #define MAX_PROCESSES 32
-#define STACK_SIZE 4096
-#define STACK_AREA_BASE 0x100000
 
 struct process {
     int pid;
     void (*start)();
     bool is_started;
     enum process_state state;
+    void *kernel_stack;
+    void *user_stack;
     u32 kernel_esp_bottom;
     u32 kernel_esp;
     u32 user_esp;
@@ -111,9 +112,11 @@ int process_create_in_console(void (*start)(), int console_index, bool is_killab
     process->start = start;
     process->is_started = false;
     process->state = PROCESS_STATE_RUNNABLE;
-    process->kernel_esp_bottom = STACK_AREA_BASE + STACK_SIZE + (index * STACK_SIZE * 2);
+    process->kernel_stack = mm_alloc_page();
+    process->kernel_esp_bottom = (u32)process->kernel_stack + PAGE_SIZE;
     process->kernel_esp = process->kernel_esp_bottom;
-    process->user_esp = process->kernel_esp + STACK_SIZE;
+    process->user_stack = mm_alloc_page();
+    process->user_esp = (u32)process->user_stack + PAGE_SIZE;
     process->console_index = console_index;
     process->is_killable = is_killable;
     process->has_pending_kill_signal = false;
@@ -145,6 +148,8 @@ void process_switch(enum process_state new_state) {
                                         processes[i].pid);
             remove_list_node(&runnable_list, processes[i].list_node);
             remove_list_node(&waiting_list, processes[i].list_node);
+            mm_free_page(processes[i].kernel_stack);
+            mm_free_page(processes[i].user_stack);
         }
     }
 
@@ -189,6 +194,8 @@ void process_switch(enum process_state new_state) {
             console_handle_process_exit(running_process->console_index,
                                         running_process->pid);
             remove_process_from_tree(running_process);
+            mm_free_page(running_process->kernel_stack);
+            mm_free_page(running_process->user_stack);
             break;
         case PROCESS_STATE_RUNNABLE:
             enqueue_list_node(&runnable_list, running_process->list_node);
@@ -219,7 +226,8 @@ void process_switch(enum process_state new_state) {
     running_process = next_node->process;
     running_process->state = PROCESS_STATE_RUNNING;
 
-    tss_set_kernel_stack(running_process->kernel_esp_bottom);
+    // Set to the bottom of the kernel stack.
+    tss_set_kernel_stack((u32)running_process->kernel_stack + PAGE_SIZE);
 
     if (!running_process->is_started) {
         running_process->is_started = true;

@@ -3,12 +3,25 @@
 
 #include <console.h>
 
+struct mm_stats {
+    size_t page_size;
+    size_t chunk_size;
+    int num_pages_allocated;
+    int num_chunks_allocated;
+};
+
 int sys_process_create(void (*start)());
 int sys_process_create_ex(void (*start)(), bool is_killable);
 void sys_process_exit(void);
 void sys_process_wait_for_exit(int pid);
 int sys_process_get_console_index(void);
 void sys_process_get_child_pids(int pid, int *buf, size_t buf_size, int *count);
+
+void *sys_mm_alloc_page(void);
+void sys_mm_free_page(void *page);
+void *sys_mm_alloc_chunk(void);
+void sys_mm_free_chunk(void *chunk);
+void sys_mm_get_stats(struct mm_stats *stats);
 
 void sys_console_clear(void);
 enum vga_color sys_console_get_bg_color(void);

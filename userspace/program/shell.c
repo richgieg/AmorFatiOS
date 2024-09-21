@@ -7,6 +7,7 @@
 #include <program/login.h>
 #include <program/memdump.h>
 #include <program/memmap.h>
+#include <program/mmstats.h>
 #include <program/proctree.h>
 
 static char * trim(char *str);
@@ -50,6 +51,13 @@ void shell(void) {
             }
         } else if (strcmp(trimmed, "memdump") == 0) {
             int pid = sys_process_create(memdump);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
+        } else if (strcmp(trimmed, "mmstats") == 0) {
+            int pid = sys_process_create(mmstats);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {

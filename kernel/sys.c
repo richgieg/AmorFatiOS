@@ -1,6 +1,7 @@
 #include <sys.h>
 #include <types.h>
 #include <process.h>
+#include <mm.h>
 #include <console.h>
 
 #define PROCESS_CREATE              0x0000
@@ -10,32 +11,38 @@
 #define PROCESS_GET_CONSOLE_INDEX   0x0004
 #define PROCESS_GET_CHILD_PIDS      0x0005
 
-#define CONSOLE_CLEAR               0x0006
-#define CONSOLE_GET_BG_COLOR        0x0007
-#define CONSOLE_SET_BG_COLOR        0x0008
-#define CONSOLE_GET_TEXT_COLOR      0x0009
-#define CONSOLE_SET_TEXT_COLOR      0x000a
-#define CONSOLE_GET_COLUMN          0x000b
-#define CONSOLE_GET_ROW             0x000c
-#define CONSOLE_SET_POS             0x000d
-#define CONSOLE_WRITEC              0x000e
-#define CONSOLE_PUTC                0x000f
-#define CONSOLE_PUTS                0x0010
-#define CONSOLE_PUTB                0x0011
-#define CONSOLE_PUTW                0x0012
-#define CONSOLE_PUTDW               0x0013
-#define CONSOLE_PUTQW               0x0014
-#define CONSOLE_PUTP                0x0015
-#define CONSOLE_PUTC_AT             0x0016
-#define CONSOLE_PUTS_AT             0x0017
-#define CONSOLE_PUTB_AT             0x0018
-#define CONSOLE_PUTW_AT             0x0019
-#define CONSOLE_PUTDW_AT            0x001a
-#define CONSOLE_PUTQW_AT            0x001b
-#define CONSOLE_PUTP_AT             0x001c
-#define CONSOLE_READ_KEY_EVENT      0x001d
-#define CONSOLE_GET_NUM_COLUMNS     0x001e
-#define CONSOLE_GET_NUM_ROWS        0x001f
+#define MM_ALLOC_PAGE               0x0006
+#define MM_FREE_PAGE                0x0007
+#define MM_ALLOC_CHUNK              0x0008
+#define MM_FREE_CHUNK               0x0009
+#define MM_GET_STATS                0x000a
+
+#define CONSOLE_CLEAR               0x000b
+#define CONSOLE_GET_BG_COLOR        0x000c
+#define CONSOLE_SET_BG_COLOR        0x000d
+#define CONSOLE_GET_TEXT_COLOR      0x000e
+#define CONSOLE_SET_TEXT_COLOR      0x000f
+#define CONSOLE_GET_COLUMN          0x0010
+#define CONSOLE_GET_ROW             0x0011
+#define CONSOLE_SET_POS             0x0012
+#define CONSOLE_WRITEC              0x0013
+#define CONSOLE_PUTC                0x0014
+#define CONSOLE_PUTS                0x0015
+#define CONSOLE_PUTB                0x0016
+#define CONSOLE_PUTW                0x0017
+#define CONSOLE_PUTDW               0x0018
+#define CONSOLE_PUTQW               0x0019
+#define CONSOLE_PUTP                0x001a
+#define CONSOLE_PUTC_AT             0x001b
+#define CONSOLE_PUTS_AT             0x001c
+#define CONSOLE_PUTB_AT             0x001d
+#define CONSOLE_PUTW_AT             0x001e
+#define CONSOLE_PUTDW_AT            0x001f
+#define CONSOLE_PUTQW_AT            0x0020
+#define CONSOLE_PUTP_AT             0x0021
+#define CONSOLE_READ_KEY_EVENT      0x0022
+#define CONSOLE_GET_NUM_COLUMNS     0x0023
+#define CONSOLE_GET_NUM_ROWS        0x0024
 
 u32 sys_dispatch(void) {
     u32 result = 0;
@@ -73,6 +80,21 @@ u32 sys_dispatch(void) {
             break;
         case PROCESS_GET_CHILD_PIDS:
             process_get_child_pids(arg0, (int *)arg1, arg2, (int*)arg3);
+            break;
+        case MM_ALLOC_PAGE:
+            result = (u32)mm_alloc_page();
+            break;
+        case MM_FREE_PAGE:
+            mm_free_page((void *)arg0);
+            break;
+        case MM_ALLOC_CHUNK:
+            result = (u32)mm_alloc_chunk();
+            break;
+        case MM_FREE_CHUNK:
+            mm_free_chunk((void *)arg0);
+            break;
+        case MM_GET_STATS:
+            mm_get_stats((struct mm_stats *)arg0);
             break;
         case CONSOLE_CLEAR:
             console_clear();

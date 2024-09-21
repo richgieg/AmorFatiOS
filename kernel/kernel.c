@@ -1,4 +1,5 @@
 #include <kernel.h>
+#include <mm.h>
 #include <device/vga.h>
 #include <gdt.h>
 #include <idt.h>
@@ -13,6 +14,7 @@
 #include <process.h>
 
 void kernel_init(void) {
+    mm_init();
     vga_init();
     console_init();
     process_init();
