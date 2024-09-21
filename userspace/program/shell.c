@@ -11,11 +11,10 @@
 #include <program/proctree.h>
 
 static char * trim(char *str);
+static void print_help(void);
 
 void shell(void) {
     char buf[2048];
-
-    // puts("AmorFatiOS Shell v0.0.1\n\n");
 
     while (true) {
         puts("$> ");
@@ -23,7 +22,7 @@ void shell(void) {
 
         char *trimmed = trim(buf);
         if (strcmp(trimmed, "help") == 0) {
-            puts("The \"help\" command is coming soon!\n");
+            print_help();
         } else if (strcmp(trimmed, "clear") == 0) {
             sys_console_clear();
         } else if (strcmp(trimmed, "exit") == 0) {
@@ -42,15 +41,15 @@ void shell(void) {
             } else {
                 sys_console_puts("Failed to create process.\n");
             }
-        } else if (strcmp(trimmed, "memmap") == 0) {
-            int pid = sys_process_create(memmap);
+        } else if (strcmp(trimmed, "memdump") == 0) {
+            int pid = sys_process_create(memdump);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {
                 sys_console_puts("Failed to create process.\n");
             }
-        } else if (strcmp(trimmed, "memdump") == 0) {
-            int pid = sys_process_create(memdump);
+        } else if (strcmp(trimmed, "memmap") == 0) {
+            int pid = sys_process_create(memmap);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {
@@ -101,4 +100,12 @@ static char * trim(char *str) {
     *(end + 1) = '\0';
 
     return str;
+}
+
+static void print_help(void) {
+    puts("\nShell Commands:\n");
+    puts("exit, clear, help\n\n");
+    puts("Programs:\n");
+    puts("counter, login, memdump, memmap, mmstats, proctree, shell\n\n");
+    puts("TIP: Press CTRL+C to kill a program and return to the shell.\n\n");
 }
