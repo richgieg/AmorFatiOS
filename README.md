@@ -27,8 +27,9 @@ with wisdom and resilience.
 - [ ] PCI Device Enumeration (started)
 - [x] Userspace
 - [x] System Call Interface
-- [ ] Virtual Memory
-- [ ] Dynamic Memory Allocation
+- [ ] Memory Manager (started)
+  - [ ] Dynamic Memory Allocation (started)
+  - [ ] Virtual Memory
 - [ ] TCP/IP Stack
   - [ ] Intel 82545EM Driver (started)
   - [ ] Ethernet Send/Receive
@@ -81,3 +82,15 @@ vm/AmorFatiOS.vmx
 ```
 
 This VM has a floppy drive that points to the `bin/AmorFatiOS.flp` image.
+
+## VMware Workstation
+
+Currently, AmorFatiOS works best in VMware Workstation, so that's the platform I recommend testing with.
+
+At the time of writing, VMware Workstation is freely available for personal use.
+
+### Windows Installer
+https://softwareupdate.vmware.com/cds/vmw-desktop/ws/17.6.0/24238078/windows/core/VMware-workstation-17.6.0-24238078.exe.tar
+
+### Linux Installer
+https://softwareupdate.vmware.com/cds/vmw-desktop/ws/17.6.0/24238078/linux/core/VMware-Workstation-17.6.0-24238078.x86_64.bundle.tar
