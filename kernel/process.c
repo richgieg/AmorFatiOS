@@ -18,6 +18,7 @@ struct process {
     u32 user_esp;
     int console_index;
     int waiting_for_exit_pid;
+    bool is_killable;
     bool has_pending_kill_signal;
     struct tree_node *tree_node;
     struct list_node *list_node;
@@ -60,6 +61,7 @@ void process_init(void) {
     system_process->is_started = true;
     system_process->state = PROCESS_STATE_RUNNING;
     system_process->console_index = 0;
+    system_process->is_killable = false;
     system_process->has_pending_kill_signal = false;
 
     system_process->list_node = &list_nodes[0];
@@ -91,10 +93,14 @@ static int find_available_process_index() {
 }
 
 int process_create(void (*start)()) {
-    return process_create_in_console(start, running_process->console_index);
+    return process_create_in_console(start, running_process->console_index, true);
 }
 
-int process_create_in_console(void (*start)(), int console_index) {
+int process_create_ex(void (*start)(), bool is_killable) {
+    return process_create_in_console(start, running_process->console_index, is_killable);
+}
+
+int process_create_in_console(void (*start)(), int console_index, bool is_killable) {
     int index = find_available_process_index();
     if (index == -1) {
         return -1;
@@ -109,6 +115,7 @@ int process_create_in_console(void (*start)(), int console_index) {
     process->kernel_esp = process->kernel_esp_bottom;
     process->user_esp = process->kernel_esp + STACK_SIZE;
     process->console_index = console_index;
+    process->is_killable = is_killable;
     process->has_pending_kill_signal = false;
 
     process->list_node = &list_nodes[index];
@@ -311,7 +318,9 @@ void process_send_kill_signal(int pid) {
     if (process->state == PROCESS_STATE_NULL) {
         return;
     }
-    process->has_pending_kill_signal = true;
+    if (process->is_killable) {
+        process->has_pending_kill_signal = true;
+    }
 }
 
 static void enqueue_list_node(struct list_node **head, struct list_node *node) {

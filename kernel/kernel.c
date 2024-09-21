@@ -32,7 +32,7 @@ void kernel_init(void) {
     // Create the initial userspace process for each console.
     int num_consoles = console_get_num_consoles();
     for (int i = 0; i < num_consoles; i++) {
-        process_create_in_console((void *)0x91000, i);
+        process_create_in_console((void *)0x91000, i, false);
     }
 
     while (1) {

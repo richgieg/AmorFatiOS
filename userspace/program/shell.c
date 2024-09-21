@@ -63,7 +63,7 @@ void shell(void) {
                 sys_console_puts("Failed to create process.\n");
             }
         } else if (strcmp(trimmed, "shell") == 0) {
-            int pid = sys_process_create(shell);
+            int pid = sys_process_create_ex(shell, false);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {

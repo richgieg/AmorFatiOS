@@ -18,7 +18,7 @@ void login(void) {
         }
     }
 
-    int pid = sys_process_create(shell);
+    int pid = sys_process_create_ex(shell, false);
     sys_process_wait_for_exit(pid);
     sys_console_clear();
     sys_process_exit();

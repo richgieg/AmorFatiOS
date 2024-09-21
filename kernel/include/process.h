@@ -14,7 +14,8 @@ enum process_state {
 
 void process_init(void);
 int process_create(void (*start)());
-int process_create_in_console(void (*start)(), int console_index);
+int process_create_ex(void (*start)(), bool is_killable);
+int process_create_in_console(void (*start)(), int console_index, bool is_killable);
 void process_switch(enum process_state new_state);
 void process_exit(void);
 void process_wait_for_exit(int pid);
