@@ -10,6 +10,9 @@ This quote encapsulates the essence of amor fati—the love of one's fate—by
 emphasizing the importance of embracing whatever comes your way and responding
 with wisdom and resilience.
 
+#### Watch the demo video on YouTube:
+[![Watch the video](https://img.youtube.com/vi/daBceW_YN5Y/maxresdefault.jpg)](https://www.youtube.com/watch?v=daBceW_YN5Y)
+
 ## Goals
 
 - [x] Floppy Disk Bootloader
