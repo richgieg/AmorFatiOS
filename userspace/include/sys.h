@@ -3,6 +3,9 @@
 
 #include <console.h>
 
+#define PAGE_SIZE 4096
+#define CHUNK_SIZE (PAGE_SIZE * 16)
+
 struct mm_stats {
     size_t page_size;
     size_t chunk_size;

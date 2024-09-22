@@ -18,6 +18,13 @@ void *mm_alloc_page(void);
 void mm_free_page(void *page);
 void *mm_alloc_chunk(void);
 void mm_free_chunk(void *chunk);
+
+void *mm_alloc_page_for_pid(int pid);
+void mm_free_page_for_pid(int pid, void *page);
+void *mm_alloc_chunk_for_pid(int pid);
+void mm_free_chunk_for_pid(int pid, void *chunk);
+void mm_free_all_for_pid(int pid);
+
 void mm_get_stats(struct mm_stats *stats);
 
 #endif

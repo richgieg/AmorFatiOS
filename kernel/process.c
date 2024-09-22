@@ -111,9 +111,9 @@ int process_create_in_console(void (*start)(), int console_index, bool is_killab
     process->start = start;
     process->is_started = false;
     process->state = PROCESS_STATE_RUNNABLE;
-    process->kernel_stack = mm_alloc_page();
+    process->kernel_stack = mm_alloc_page_for_pid(process->pid);
     process->kernel_esp = (u32)process->kernel_stack + PAGE_SIZE;
-    process->user_stack = mm_alloc_page();
+    process->user_stack = mm_alloc_page_for_pid(process->pid);
     process->user_esp = (u32)process->user_stack + PAGE_SIZE;
     process->console_index = console_index;
     process->is_killable = is_killable;
@@ -146,8 +146,7 @@ void process_switch(enum process_state new_state) {
                                         processes[i].pid);
             remove_list_node(&runnable_list, processes[i].list_node);
             remove_list_node(&waiting_list, processes[i].list_node);
-            mm_free_page(processes[i].kernel_stack);
-            mm_free_page(processes[i].user_stack);
+            mm_free_all_for_pid(processes[i].pid);
         }
     }
 
@@ -192,8 +191,7 @@ void process_switch(enum process_state new_state) {
             console_handle_process_exit(running_process->console_index,
                                         running_process->pid);
             remove_process_from_tree(running_process);
-            mm_free_page(running_process->kernel_stack);
-            mm_free_page(running_process->user_stack);
+            mm_free_all_for_pid(running_process->pid);
             break;
         case PROCESS_STATE_RUNNABLE:
             enqueue_list_node(&runnable_list, running_process->list_node);
