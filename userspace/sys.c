@@ -38,6 +38,10 @@
 #define CONSOLE_GET_NUM_COLUMNS     0x0021
 #define CONSOLE_GET_NUM_ROWS        0x0022
 
+#define NET_SUBSCRIBE               0x0023
+#define NET_UNSUBSCRIBE             0x0024
+#define NET_READ_FRAME              0x0025
+
 int sys_process_create(void (*start)()) {
     int result;
     __asm__(
@@ -418,4 +422,33 @@ int sys_console_get_num_rows(void) {
         :
     );
     return result;
+}
+
+void sys_net_subscribe(void) {
+    __asm__(
+        "int 0x80"
+        :
+        : "a" (NET_SUBSCRIBE)
+        :
+    );
+}
+
+void sys_net_unsubscribe(void) {
+    __asm__(
+        "int 0x80"
+        :
+        : "a" (NET_UNSUBSCRIBE)
+        :
+    );
+}
+
+void sys_net_read_frame(u8 *buf, size_t *length) {
+    __asm__(
+        "int 0x80"
+        :
+        : "a" (NET_READ_FRAME),
+          "b" (buf),
+          "c" (length)
+        :
+    );
 }

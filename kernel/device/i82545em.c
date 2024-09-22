@@ -5,6 +5,7 @@
 #include <lib/string.h>
 #include <console.h>
 #include <bugcheck.h>
+#include <net.h>
 
 // General Registers
 #define R_CTRL      0x00000
@@ -147,6 +148,8 @@ static void interrupt_service_routine(void) {
                 console_dbg_putc(' ');
             }
             console_dbg_putc('\n');
+
+            net_handle_frame_receive(rx_buffers[rx_cur_idx], rx_descriptors[rx_cur_idx].length);
 
             rx_descriptors[rx_cur_idx].status = 0;
             rx_cur_idx = (rx_cur_idx + 1) % RX_BUFFER_COUNT;

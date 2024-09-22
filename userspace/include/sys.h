@@ -54,4 +54,8 @@ void sys_console_read_key_event(struct key_event *ke);
 int sys_console_get_num_columns(void);
 int sys_console_get_num_rows(void);
 
+void sys_net_subscribe(void);
+void sys_net_unsubscribe(void);
+void sys_net_read_frame(u8 *buf, size_t *length);
+
 #endif

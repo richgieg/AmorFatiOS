@@ -4,6 +4,7 @@
 #include <console.h>
 #include <tss.h>
 #include <mm.h>
+#include <net.h>
 
 #define MAX_PROCESSES 32
 #define STACK_SIZE 4096
@@ -148,6 +149,7 @@ void process_switch(enum process_state new_state) {
             remove_list_node(&runnable_list, processes[i].list_node);
             remove_list_node(&waiting_list, processes[i].list_node);
             mm_free_all_for_pid(processes[i].pid);
+            net_unsubscribe_for_pid(processes[i].pid);
         }
     }
 
@@ -163,6 +165,13 @@ void process_switch(enum process_state new_state) {
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
                 break;
+            }
+        }
+        if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_NET_FRAME) {
+            if (net_has_frame_for_process(waiting_node->process->pid)) {
+                waiting_node->process->state = PROCESS_STATE_RUNNABLE;
+                remove_list_node(&waiting_list, waiting_node);
+                enqueue_list_node(&runnable_list, waiting_node);
             }
         }
         if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_EXIT) {
@@ -193,6 +202,7 @@ void process_switch(enum process_state new_state) {
                                         running_process->pid);
             remove_process_from_tree(running_process);
             mm_free_all_for_pid(running_process->pid);
+            net_unsubscribe_for_pid(running_process->pid);
             break;
         case PROCESS_STATE_RUNNABLE:
             enqueue_list_node(&runnable_list, running_process->list_node);
@@ -203,6 +213,7 @@ void process_switch(enum process_state new_state) {
         case PROCESS_STATE_WAITING:
         case PROCESS_STATE_WAITING_FOR_EXIT:
         case PROCESS_STATE_WAITING_FOR_KEY_EVENT:
+        case PROCESS_STATE_WAITING_FOR_NET_FRAME:
             enqueue_list_node(&waiting_list, running_process->list_node);
             break;
     }

@@ -12,6 +12,7 @@
 #include <device/pci.h>
 #include <console.h>
 #include <process.h>
+#include <net.h>
 
 void kernel_init(void) {
     mm_init();
@@ -27,6 +28,7 @@ void kernel_init(void) {
     keyboard_init();
     mouse_init();
     pci_init();
+    net_init();
 
     // Enable interrupts
     __asm__("sti");

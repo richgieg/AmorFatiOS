@@ -9,6 +9,7 @@
 #include <program/memmap.h>
 #include <program/mmstats.h>
 #include <program/proctree.h>
+#include <program/wireshart.h>
 
 static char * trim(char *str);
 static void print_help(void);
@@ -71,6 +72,13 @@ void shell(void) {
             }
         } else if (strcmp(trimmed, "shell") == 0) {
             int pid = sys_process_create_ex(shell, false);
+            if (pid != -1) {
+                sys_process_wait_for_exit(pid);
+            } else {
+                sys_console_puts("Failed to create process.\n");
+            }
+        } else if (strcmp(trimmed, "wireshart") == 0) {
+            int pid = sys_process_create(wireshart);
             if (pid != -1) {
                 sys_process_wait_for_exit(pid);
             } else {

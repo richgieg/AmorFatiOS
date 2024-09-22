@@ -3,6 +3,7 @@
 #include <process.h>
 #include <mm.h>
 #include <console.h>
+#include <net.h>
 
 #define PROCESS_CREATE              0x0000
 #define PROCESS_CREATE_EX           0x0001
@@ -41,6 +42,10 @@
 #define CONSOLE_READ_KEY_EVENT      0x0020
 #define CONSOLE_GET_NUM_COLUMNS     0x0021
 #define CONSOLE_GET_NUM_ROWS        0x0022
+
+#define NET_SUBSCRIBE               0x0023
+#define NET_UNSUBSCRIBE             0x0024
+#define NET_READ_FRAME              0x0025
 
 u32 sys_dispatch(void) {
     u32 result = 0;
@@ -165,6 +170,15 @@ u32 sys_dispatch(void) {
             break;
         case CONSOLE_GET_NUM_ROWS:
             result = console_get_num_rows();
+            break;
+        case NET_SUBSCRIBE:
+            net_subscribe();
+            break;
+        case NET_UNSUBSCRIBE:
+            net_unsubscribe();
+            break;
+        case NET_READ_FRAME:
+            net_read_frame((u8 *)arg0, (size_t *)arg1);
             break;
     }
     return result;

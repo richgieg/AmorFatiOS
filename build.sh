@@ -28,6 +28,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-n
     kernel/idt.c \
     kernel/kernel.c \
     kernel/mm.c \
+    kernel/net.c \
     kernel/process.c \
     kernel/sys.c \
     kernel/tss.c
@@ -47,6 +48,7 @@ gcc -masm=intel -m32 -ffreestanding -nostdinc -nostdlib -fno-pic -fno-pie -Wl,-n
     userspace/program/mmstats.c \
     userspace/program/proctree.c \
     userspace/program/shell.c \
+    userspace/program/wireshart.c \
     userspace/sys.c \
     userspace/userspace.c
 
