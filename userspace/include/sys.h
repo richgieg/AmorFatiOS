@@ -7,10 +7,13 @@
 #define CHUNK_SIZE (PAGE_SIZE * 16)
 
 struct mm_stats {
-    size_t page_size;
-    size_t chunk_size;
-    int num_pages_allocated;
-    int num_chunks_allocated;
+    int num_8b_allocs;
+    int num_64b_allocs;
+    int num_512b_allocs;
+    int num_4k_allocs;
+    int num_32k_allocs;
+    int num_256k_allocs;
+    int num_2m_allocs;
 };
 
 int sys_process_create(void (*start)());
@@ -20,10 +23,8 @@ void sys_process_wait_for_exit(int pid);
 int sys_process_get_console_index(void);
 void sys_process_get_child_pids(int pid, int *buf, size_t buf_size, int *count);
 
-void *sys_mm_alloc_page(void);
-void sys_mm_free_page(void *page);
-void *sys_mm_alloc_chunk(void);
-void sys_mm_free_chunk(void *chunk);
+void *sys_mm_alloc(size_t size);
+void sys_mm_free(void *ptr);
 void sys_mm_get_stats(struct mm_stats *stats);
 
 void sys_console_clear(void);

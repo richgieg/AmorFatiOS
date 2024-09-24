@@ -7,24 +7,21 @@
 #define CHUNK_SIZE (PAGE_SIZE * 16)
 
 struct mm_stats {
-    size_t page_size;
-    size_t chunk_size;
-    int num_pages_allocated;
-    int num_chunks_allocated;
+    int num_8b_allocs;
+    int num_64b_allocs;
+    int num_512b_allocs;
+    int num_4k_allocs;
+    int num_32k_allocs;
+    int num_256k_allocs;
+    int num_2m_allocs;
 };
 
 void mm_init(void);
-void *mm_alloc_page(void);
-void mm_free_page(void *page);
-void *mm_alloc_chunk(void);
-void mm_free_chunk(void *chunk);
-
-void *mm_alloc_page_for_pid(int pid);
-void mm_free_page_for_pid(int pid, void *page);
-void *mm_alloc_chunk_for_pid(int pid);
-void mm_free_chunk_for_pid(int pid, void *chunk);
+void *mm_alloc(size_t size);
+void mm_free(void *ptr);
+void *mm_alloc_for_pid(int pid, size_t size);
+void mm_free_for_pid(int pid, void *ptr);
 void mm_free_all_for_pid(int pid);
-
 void mm_get_stats(struct mm_stats *stats);
 
 #endif

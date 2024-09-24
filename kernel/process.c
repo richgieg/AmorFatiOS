@@ -6,6 +6,7 @@
 #include <mm.h>
 
 #define MAX_PROCESSES 32
+#define STACK_SIZE 4096
 
 struct process {
     int pid;
@@ -111,10 +112,10 @@ int process_create_in_console(void (*start)(), int console_index, bool is_killab
     process->start = start;
     process->is_started = false;
     process->state = PROCESS_STATE_RUNNABLE;
-    process->kernel_stack = mm_alloc_page_for_pid(process->pid);
-    process->kernel_esp = (u32)process->kernel_stack + PAGE_SIZE;
-    process->user_stack = mm_alloc_page_for_pid(process->pid);
-    process->user_esp = (u32)process->user_stack + PAGE_SIZE;
+    process->kernel_stack = mm_alloc_for_pid(process->pid, STACK_SIZE);
+    process->kernel_esp = (u32)process->kernel_stack + STACK_SIZE;
+    process->user_stack = mm_alloc_for_pid(process->pid, STACK_SIZE);
+    process->user_esp = (u32)process->user_stack + STACK_SIZE;
     process->console_index = console_index;
     process->is_killable = is_killable;
     process->has_pending_kill_signal = false;
