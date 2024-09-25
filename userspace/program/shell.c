@@ -114,6 +114,6 @@ static void print_help(void) {
     puts("\nShell Commands:\n");
     puts("exit, clear, help\n\n");
     puts("Programs:\n");
-    puts("counter, login, memdump, memmap, mmstats, proctree, shell\n\n");
+    puts("counter, login, memdump, memmap, mmstats, proctree, shell, wireshart\n\n");
     puts("TIP: Press CTRL+C to kill a program and return to the shell.\n\n");
 }
