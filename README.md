@@ -31,8 +31,9 @@ with wisdom and resilience.
 - [x] Userspace
 - [x] System Call Interface
 - [ ] Memory Manager (started)
-  - [x] Dynamic Memory Allocation (quick throwaway implementation)
-  - [ ] Dynamic Memory Allocation (real implementation)
+  - [ ] Dynamic Memory Allocation
+    - [x] Quick Throwaway Implementation
+    - [ ] Actual Implementation
   - [ ] Virtual Memory
 - [ ] TCP/IP Stack
   - [ ] Intel 82545EM Driver (started)
