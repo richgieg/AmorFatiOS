@@ -31,11 +31,12 @@ with wisdom and resilience.
 - [x] Userspace
 - [x] System Call Interface
 - [ ] Memory Manager (started)
-  - [ ] Dynamic Memory Allocation (started)
+  - [x] Dynamic Memory Allocation (quick throwaway implementation)
+  - [ ] Dynamic Memory Allocation (real implementation)
   - [ ] Virtual Memory
 - [ ] TCP/IP Stack
   - [ ] Intel 82545EM Driver (started)
-  - [ ] Ethernet Send/Receive
+  - [ ] Ethernet Send/Receive (started)
   - [ ] IP Send/Receive
   - [ ] TCP/UDP Send/Receive
   - [ ] DHCP Client
