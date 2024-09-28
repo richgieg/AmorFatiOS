@@ -35,3 +35,7 @@ void vga_copy(void *src) {
         dst[i] = ((u64 *)src)[i];
     }
 }
+
+void vga_write(int index, u16 entry) {
+    vga_buffer[index] = entry;
+}

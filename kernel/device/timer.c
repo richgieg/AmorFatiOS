@@ -2,7 +2,6 @@
 #include <port.h>
 #include <idt.h>
 #include <device/pic.h>
-#include <console.h>
 #include <process.h>
 
 #define BASE_FREQ_HZ 1193182
@@ -13,11 +12,6 @@ static u32 ticks;
 static void interrupt_service_routine(void) {
     outb(PIC1_COMMAND, PIC_EOI);
     ticks++;
-
-    // Repaint console 30 times per second.
-    if (ticks % 33 == 0) {
-        console_repaint();
-    }
 
     // Switch processes 200 times per second.
     if (ticks % 5 == 0) {

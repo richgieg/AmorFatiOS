@@ -55,6 +55,12 @@ static bool is_right_alt_down;
 static bool is_left_ctrl_down;
 static bool is_right_ctrl_down;
 
+static int lock = 0;
+
+static void console_repaint(void) {
+    vga_copy(consoles[current_console_index].buffer);
+}
+
 void console_init(void) {
     enum vga_color bg_color = VGA_COLOR_CYAN;
     enum vga_color text_color = VGA_COLOR_BRIGHT_WHITE;
@@ -77,6 +83,23 @@ void console_init(void) {
     for (int j = 0; j < VGA_ROWS * VGA_COLUMNS; j++) {
         consoles[DBG_CONSOLE_INDEX].buffer[j] = entry;
     }
+
+    console_repaint();
+}
+
+static inline void acquire_spin_lock(void) {
+    __asm__(
+        "retry:"
+        "bts %[lock], 1;"
+        "jnc retry;"
+        :
+        : [lock] "m" (lock)
+        : "memory"
+    );
+}
+
+static inline void release_spin_lock(void) {
+    lock = 0;
 }
 
 static void _console_clear(int index) {
@@ -86,6 +109,12 @@ static void _console_clear(int index) {
     for (int i = 0; i < VGA_ROWS * VGA_COLUMNS; i++) {
         con->buffer[i] = entry;
     }
+
+    acquire_spin_lock();
+    if (index == current_console_index) {
+        vga_copy(consoles[current_console_index].buffer);
+    }
+    release_spin_lock();
 
     con->col = 0;
     con->row = 0;
@@ -191,6 +220,12 @@ static void scroll_one_line(int index) {
     for (int i = 0; i < VGA_COLUMNS; i++) {
         con->buffer[(VGA_ROWS - 1) * VGA_COLUMNS + i] = vga_entry(0, con->bg_color, con->text_color);
     }
+
+    acquire_spin_lock();
+    if (index == current_console_index) {
+        vga_copy(consoles[current_console_index].buffer);
+    }
+    release_spin_lock();
 }
 
 static void go_to_next_line(int index) {
@@ -213,12 +248,24 @@ static void handle_backspace(int index) {
     }
     u16 entry = vga_entry('\0', con->bg_color, con->text_color);
     con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
+
+    acquire_spin_lock();
+    if (index == current_console_index) {
+        vga_write(con->row * VGA_COLUMNS + con->col, entry);
+    }
+    release_spin_lock();
 }
 
 static void _console_writec(int index, char c) {
     struct console *con = &consoles[index];
     u16 entry = vga_entry(c, con->bg_color, con->text_color);
     con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
+
+    acquire_spin_lock();
+    if (index == current_console_index) {
+        vga_write(con->row * VGA_COLUMNS + con->col, entry);
+    }
+    release_spin_lock();
 
     con->col++;
     if (con->col >= VGA_COLUMNS) {
@@ -243,6 +290,12 @@ static void _console_putc(int index, char c) {
         struct console *con = &consoles[index];
         u16 entry = vga_entry(c, con->bg_color, con->text_color);
         con->buffer[con->row * VGA_COLUMNS + con->col] = entry;
+
+        acquire_spin_lock();
+        if (index == current_console_index) {
+            vga_write(con->row * VGA_COLUMNS + con->col, entry);
+        }
+        release_spin_lock();
 
         con->col++;
         if (con->col >= VGA_COLUMNS) {
@@ -524,24 +577,23 @@ void console_dbg_putp_at(void *p, u8 col, u8 row) {
     _console_putp_at(DBG_CONSOLE_INDEX, p, col, row);
 }
 
-void console_repaint(void) {
-    vga_copy(consoles[current_console_index].buffer);
-}
-
 void console_next(void) {
     current_console_index = (current_console_index + 1) % NUM_CONSOLES_INC_DBG;
+    console_repaint();
 }
 
 void console_prev(void) {
     current_console_index = (
         current_console_index + NUM_CONSOLES_INC_DBG - 1) % NUM_CONSOLES_INC_DBG;
+    console_repaint();
 }
 
 void console_switch_to(int index) {
     current_console_index = index;
+    console_repaint();
 }
 
-void console_switch_to_dbg_and_repaint(void) {
+void console_switch_to_dbg(void) {
     current_console_index = DBG_CONSOLE_INDEX;
     console_repaint();
 }

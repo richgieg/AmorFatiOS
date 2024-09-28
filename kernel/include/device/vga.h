@@ -27,6 +27,7 @@ enum vga_color {
 
 void vga_init(void);
 void vga_copy(void *src);
+void vga_write(int index, u16 entry);
 
 static inline u16 vga_entry(
     char character, enum vga_color bg_color, enum vga_color text_color
