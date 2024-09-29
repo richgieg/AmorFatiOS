@@ -55,7 +55,7 @@ static bool is_right_alt_down;
 static bool is_left_ctrl_down;
 static bool is_right_ctrl_down;
 
-static int lock = 0;
+// static int lock = 0;
 
 static void console_repaint(void) {
     vga_copy(consoles[current_console_index].buffer);
@@ -88,18 +88,21 @@ void console_init(void) {
 }
 
 static inline void acquire_spin_lock(void) {
-    __asm__(
-        "retry:"
-        "bts %[lock], 0;"
-        "jc retry;"
-        :
-        : [lock] "m" (lock)
-        : "memory"
-    );
+    // NOTE: Locking is temporarily disabled until I can fix the debug print
+    // dealock issue.
+
+    // __asm__(
+    //     "retry:"
+    //     "bts %[lock], 0;"
+    //     "jc retry;"
+    //     :
+    //     : [lock] "m" (lock)
+    //     : "memory"
+    // );
 }
 
 static inline void release_spin_lock(void) {
-    lock = 0;
+    // lock = 0;
 }
 
 static void _console_clear(int index) {
