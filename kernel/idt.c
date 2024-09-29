@@ -4,6 +4,8 @@
 #include <sys.h>
 
 #define IDT_MAX_DESCRIPTORS 256
+#define RING_0_INTERRUPT_GATE 0x8e
+#define RING_3_TRAP_GATE 0xef
 
 struct idtr {
     u16 limit;
@@ -322,44 +324,44 @@ void idt_init(void) {
     idtr.base = (u32)idt;
     idtr.limit = sizeof(idt) - 1;
 
-    idt_set_descriptor(0x00, exception_handler_0x00, 0x8e);
-    idt_set_descriptor(0x01, exception_handler_0x01, 0x8e);
-    idt_set_descriptor(0x02, exception_handler_0x02, 0x8e);
-    idt_set_descriptor(0x03, exception_handler_0x03, 0x8e);
-    idt_set_descriptor(0x04, exception_handler_0x04, 0x8e);
-    idt_set_descriptor(0x05, exception_handler_0x05, 0x8e);
-    idt_set_descriptor(0x06, exception_handler_0x06, 0x8e);
-    idt_set_descriptor(0x07, exception_handler_0x07, 0x8e);
-    idt_set_descriptor(0x08, exception_handler_0x08, 0x8e);
-    idt_set_descriptor(0x09, exception_handler_0x09, 0x8e);
-    idt_set_descriptor(0x0a, exception_handler_0x0a, 0x8e);
-    idt_set_descriptor(0x0b, exception_handler_0x0b, 0x8e);
-    idt_set_descriptor(0x0c, exception_handler_0x0c, 0x8e);
-    idt_set_descriptor(0x0d, exception_handler_0x0d, 0x8e);
-    idt_set_descriptor(0x0e, exception_handler_0x0e, 0x8e);
-    idt_set_descriptor(0x10, exception_handler_0x10, 0x8e);
-    idt_set_descriptor(0x11, exception_handler_0x11, 0x8e);
-    idt_set_descriptor(0x12, exception_handler_0x12, 0x8e);
-    idt_set_descriptor(0x13, exception_handler_0x13, 0x8e);
+    idt_set_descriptor(0x00, exception_handler_0x00, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x01, exception_handler_0x01, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x02, exception_handler_0x02, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x03, exception_handler_0x03, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x04, exception_handler_0x04, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x05, exception_handler_0x05, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x06, exception_handler_0x06, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x07, exception_handler_0x07, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x08, exception_handler_0x08, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x09, exception_handler_0x09, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x0a, exception_handler_0x0a, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x0b, exception_handler_0x0b, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x0c, exception_handler_0x0c, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x0d, exception_handler_0x0d, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x0e, exception_handler_0x0e, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x10, exception_handler_0x10, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x11, exception_handler_0x11, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x12, exception_handler_0x12, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x13, exception_handler_0x13, RING_0_INTERRUPT_GATE);
 
-    idt_set_descriptor(0x20, interrupt_handler_0x20, 0x8e);
-    idt_set_descriptor(0x21, interrupt_handler_0x21, 0x8e);
-    idt_set_descriptor(0x22, interrupt_handler_0x22, 0x8e);
-    idt_set_descriptor(0x23, interrupt_handler_0x23, 0x8e);
-    idt_set_descriptor(0x24, interrupt_handler_0x24, 0x8e);
-    idt_set_descriptor(0x25, interrupt_handler_0x25, 0x8e);
-    idt_set_descriptor(0x26, interrupt_handler_0x26, 0x8e);
-    idt_set_descriptor(0x27, interrupt_handler_0x27, 0x8e);
-    idt_set_descriptor(0x28, interrupt_handler_0x28, 0x8e);
-    idt_set_descriptor(0x29, interrupt_handler_0x29, 0x8e);
-    idt_set_descriptor(0x2a, interrupt_handler_0x2a, 0x8e);
-    idt_set_descriptor(0x2b, interrupt_handler_0x2b, 0x8e);
-    idt_set_descriptor(0x2c, interrupt_handler_0x2c, 0x8e);
-    idt_set_descriptor(0x2d, interrupt_handler_0x2d, 0x8e);
-    idt_set_descriptor(0x2e, interrupt_handler_0x2e, 0x8e);
-    idt_set_descriptor(0x2f, interrupt_handler_0x2f, 0x8e);
+    idt_set_descriptor(0x20, interrupt_handler_0x20, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x21, interrupt_handler_0x21, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x22, interrupt_handler_0x22, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x23, interrupt_handler_0x23, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x24, interrupt_handler_0x24, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x25, interrupt_handler_0x25, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x26, interrupt_handler_0x26, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x27, interrupt_handler_0x27, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x28, interrupt_handler_0x28, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x29, interrupt_handler_0x29, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2a, interrupt_handler_0x2a, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2b, interrupt_handler_0x2b, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2c, interrupt_handler_0x2c, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2d, interrupt_handler_0x2d, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2e, interrupt_handler_0x2e, RING_0_INTERRUPT_GATE);
+    idt_set_descriptor(0x2f, interrupt_handler_0x2f, RING_0_INTERRUPT_GATE);
 
-    idt_set_descriptor(0x80, interrupt_handler_0x80, 0xee);
+    idt_set_descriptor(0x80, interrupt_handler_0x80, RING_3_TRAP_GATE);
 
     __asm__("lidt %0" : : "m"(idtr)); // load the new IDT
 }
