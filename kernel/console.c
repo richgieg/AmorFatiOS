@@ -90,8 +90,8 @@ void console_init(void) {
 static inline void acquire_spin_lock(void) {
     __asm__(
         "retry:"
-        "bts %[lock], 1;"
-        "jnc retry;"
+        "bts %[lock], 0;"
+        "jc retry;"
         :
         : [lock] "m" (lock)
         : "memory"
