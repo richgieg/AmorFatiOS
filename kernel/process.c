@@ -137,6 +137,8 @@ int process_create_in_console(void (*start)(), int console_index, bool is_killab
     return index;
 }
 
+// This should only be called by timer ISR and process_wait_for_* functions.
+// Assumes that interrupts are disabled.
 void process_switch(enum process_state new_state) {
     // Process pending kill signals.
     // TODO: Make this better!
@@ -276,12 +278,27 @@ void process_switch(enum process_state new_state) {
 }
 
 void process_exit(void) {
+    __asm__("cli");
     process_switch(PROCESS_STATE_NULL);
 }
 
 void process_wait_for_exit(int pid) {
+    __asm__("cli");
     running_process->waiting_for_exit_pid = pid;
     process_switch(PROCESS_STATE_WAITING_FOR_EXIT);
+    __asm__("sti");
+}
+
+void process_wait_for_key_event(void) {
+    __asm__("cli");
+    process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
+    __asm__("sti");
+}
+
+void process_wait_for_net_frame(void) {
+    __asm__("cli");
+    process_switch(PROCESS_STATE_WAITING_FOR_NET_FRAME);
+    __asm__("sti");
 }
 
 int process_get_console_index(void) {

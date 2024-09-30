@@ -796,10 +796,10 @@ void console_read_key_event(struct key_event *ke) {
     struct console *con = &consoles[process_get_console_index()];
     int pid = process_get_current_pid();
     if (con->focus_list.pids[con->focus_list.current_index] != pid) {
-        process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
+        process_wait_for_key_event();
     }
     if (con->keb.head == con->keb.tail) {
-        process_switch(PROCESS_STATE_WAITING_FOR_KEY_EVENT);
+        process_wait_for_key_event();
     }
     *ke = con->keb.events[con->keb.head];
     con->keb.head = (con->keb.head + 1) % KEY_EVENT_BUFFER_MAX_EVENTS;

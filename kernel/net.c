@@ -62,7 +62,7 @@ void net_unsubscribe_for_pid(int pid) {
 void net_read_frame(u8 *buf, size_t *length) {
     int pid = process_get_current_pid();
     if (!net_has_frame_for_process(pid)) {
-        process_switch(PROCESS_STATE_WAITING_FOR_NET_FRAME);
+        process_wait_for_net_frame();
     }
 
     memcpy(buf, frame_buffer.frames[frame_buffer.head].data,
