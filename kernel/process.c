@@ -209,7 +209,6 @@ void process_switch(enum process_state new_state) {
         case PROCESS_STATE_RUNNING:
             BUGCHECK("Cannot pass PROCESS_STATE_RUNNING to process_switch.");
             break;
-        case PROCESS_STATE_WAITING:
         case PROCESS_STATE_WAITING_FOR_EXIT:
         case PROCESS_STATE_WAITING_FOR_KEY_EVENT:
         case PROCESS_STATE_WAITING_FOR_NET_FRAME:
