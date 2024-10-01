@@ -160,9 +160,11 @@ void process_switch(enum process_state new_state) {
     }
 
     struct list_node *waiting_node = waiting_list;
+    struct list_node *next_waiting_node;
 
     // Move waiting processes to the runnable queue if they are eligible.
     while (waiting_node) {
+        next_waiting_node = waiting_node->next;
         if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
             if (console_has_key_event_for_process(waiting_node->process->console_index,
                                                   waiting_node->process->pid)) {
@@ -170,22 +172,20 @@ void process_switch(enum process_state new_state) {
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
             }
-        }
-        if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_NET_FRAME) {
+        } else if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_NET_FRAME) {
             if (net_has_frame_for_process(waiting_node->process->pid)) {
                 waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
             }
-        }
-        if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_EXIT) {
+        } else if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_EXIT) {
             if (processes[waiting_node->process->waiting_for_exit_pid].state == PROCESS_STATE_NULL) {
                 waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
             }
         }
-        waiting_node = waiting_node->next;
+        waiting_node = next_waiting_node;
     }
 
     struct list_node *next_node = dequeue_list_node(&runnable_list);
