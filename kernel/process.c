@@ -157,8 +157,7 @@ void process_switch(enum process_state new_state) {
 
     struct list_node *waiting_node = waiting_list;
 
-    // Find a waiting process that is ready to run (if any) and move it to the
-    // runnable queue.
+    // Move waiting processes to the runnable queue if they are eligible.
     while (waiting_node) {
         if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_KEY_EVENT) {
             if (console_has_key_event_for_process(waiting_node->process->console_index,
@@ -166,7 +165,6 @@ void process_switch(enum process_state new_state) {
                 waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
-                break;
             }
         }
         if (waiting_node->process->state == PROCESS_STATE_WAITING_FOR_NET_FRAME) {
@@ -181,7 +179,6 @@ void process_switch(enum process_state new_state) {
                 waiting_node->process->state = PROCESS_STATE_RUNNABLE;
                 remove_list_node(&waiting_list, waiting_node);
                 enqueue_list_node(&runnable_list, waiting_node);
-                break;
             }
         }
         waiting_node = waiting_node->next;
