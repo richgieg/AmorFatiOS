@@ -143,8 +143,12 @@ void process_switch(enum process_state new_state) {
     // Process pending kill signals.
     // TODO: Make this better!
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes[i].has_pending_kill_signal) {
+        if (processes[i].has_pending_kill_signal &&
+            processes[i].state != PROCESS_STATE_NULL &&
+            processes[i].state != PROCESS_STATE_RUNNING
+        ) {
             processes[i].state = PROCESS_STATE_NULL;
+            processes[i].has_pending_kill_signal = false;
             remove_process_from_tree(&processes[i]);
             console_handle_process_kill(processes[i].console_index,
                                         processes[i].pid);
