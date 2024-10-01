@@ -149,13 +149,13 @@ void process_switch(enum process_state new_state) {
         ) {
             processes[i].state = PROCESS_STATE_NULL;
             processes[i].has_pending_kill_signal = false;
-            remove_process_from_tree(&processes[i]);
             console_handle_process_kill(processes[i].console_index,
                                         processes[i].pid);
+            net_unsubscribe_for_pid(processes[i].pid);
+            mm_free_all_for_pid(processes[i].pid);
+            remove_process_from_tree(&processes[i]);
             remove_list_node(&runnable_list, processes[i].list_node);
             remove_list_node(&waiting_list, processes[i].list_node);
-            mm_free_all_for_pid(processes[i].pid);
-            net_unsubscribe_for_pid(processes[i].pid);
         }
     }
 
@@ -203,9 +203,9 @@ void process_switch(enum process_state new_state) {
         case PROCESS_STATE_NULL: // process is exiting
             console_handle_process_exit(running_process->console_index,
                                         running_process->pid);
-            remove_process_from_tree(running_process);
-            mm_free_all_for_pid(running_process->pid);
             net_unsubscribe_for_pid(running_process->pid);
+            mm_free_all_for_pid(running_process->pid);
+            remove_process_from_tree(running_process);
             break;
         case PROCESS_STATE_RUNNABLE:
             enqueue_list_node(&runnable_list, running_process->list_node);
