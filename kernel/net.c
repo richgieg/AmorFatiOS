@@ -54,9 +54,7 @@ void net_unsubscribe(void) {
 }
 
 void net_unsubscribe_for_pid(int pid) {
-    if (frame_buffer.pid == process_get_current_pid()) {
-        frame_buffer.pid = -1;
-    }
+    frame_buffer.pid = -1;
 }
 
 void net_read_frame(u8 *buf, size_t *length) {
