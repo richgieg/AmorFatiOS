@@ -442,13 +442,15 @@ void sys_net_unsubscribe(void) {
     );
 }
 
-void sys_net_read_frame(u8 *buf, size_t *length) {
+ssize_t sys_net_read_frame(u8 *buf, size_t buf_size) {
+    int result;
     __asm__(
         "int 0x80"
-        :
+        : "=a" (result)
         : "a" (NET_READ_FRAME),
           "b" (buf),
-          "c" (length)
+          "c" (buf_size)
         :
     );
+    return result;
 }

@@ -20,5 +20,6 @@ typedef s32 intptr_t;
 typedef u32 uintptr_t;
 
 typedef u32 size_t;
+typedef s32 ssize_t;
 
 #endif

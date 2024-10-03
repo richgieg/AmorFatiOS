@@ -5,13 +5,13 @@ void wireshart(void) {
     sys_net_subscribe();
 
     u8 data[2048];
-    size_t length;
     int count = 0;
+    ssize_t bytes_read;
 
     sys_console_puts("Waiting for frames...\n\n");
 
     while (true) {
-        sys_net_read_frame(data, &length);
+        bytes_read = sys_net_read_frame(data, sizeof(data));
 
         sys_console_puts("********************************************************************************");
 
@@ -20,12 +20,12 @@ void wireshart(void) {
         sys_console_putc('\n');
 
         sys_console_puts("Length: ");
-        sys_console_putdw(length);
+        sys_console_putdw(bytes_read);
         sys_console_puts("\n");
 
         sys_console_puts("Data: ");
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < bytes_read; i++) {
             sys_console_putb(data[i]);
             sys_console_putc(' ');
         }

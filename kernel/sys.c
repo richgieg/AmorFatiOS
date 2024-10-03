@@ -178,7 +178,7 @@ u32 sys_dispatch(void) {
             net_unsubscribe();
             break;
         case NET_READ_FRAME:
-            net_read_frame((u8 *)arg0, (size_t *)arg1);
+            result = net_read_frame((u8 *)arg0, arg1);
             break;
     }
     return result;

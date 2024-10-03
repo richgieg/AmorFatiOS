@@ -57,19 +57,24 @@ void net_unsubscribe_for_pid(int pid) {
     frame_buffer.pid = -1;
 }
 
-void net_read_frame(u8 *buf, size_t *length) {
+ssize_t net_read_frame(u8 *buf, size_t buf_size) {
     int pid = process_get_current_pid();
     if (!net_has_frame_for_process(pid)) {
         process_wait_for_net_frame();
     }
 
-    memcpy(buf, frame_buffer.frames[frame_buffer.head].data,
-        frame_buffer.frames[frame_buffer.head].length);
+    size_t length = buf_size;
+    if (length > frame_buffer.frames[frame_buffer.head].length) {
+        length = frame_buffer.frames[frame_buffer.head].length;
+    }
 
-    *length = frame_buffer.frames[frame_buffer.head].length;
+    memcpy(buf, frame_buffer.frames[frame_buffer.head].data, length);
 
     frame_buffer.head = (frame_buffer.head + 1) % NUM_FRAMES;
     frame_buffer.is_full = false;
+
+    // TODO: If error, return -1.
+    return length;
 }
 
 bool net_has_frame_for_process(int pid) {

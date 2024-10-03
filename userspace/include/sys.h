@@ -56,6 +56,6 @@ int sys_console_get_num_rows(void);
 
 void sys_net_subscribe(void);
 void sys_net_unsubscribe(void);
-void sys_net_read_frame(u8 *buf, size_t *length);
+ssize_t sys_net_read_frame(u8 *buf, size_t buf_size);
 
 #endif
